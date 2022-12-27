@@ -11,9 +11,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: SvgPicture.asset('assets/icons/flag.svg',
-      fit: BoxFit.scaleDown,),
+    return SafeArea(
+        child: SizedBox(
+          child: SvgPicture.asset('assets/icons/flag.svg',
+            fit: BoxFit.scaleDown,),
+        )
     );
   }
 }
