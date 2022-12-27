@@ -10,7 +10,9 @@ class LearnPaage extends StatefulWidget {
 class _LearnPaageState extends State<LearnPaage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Text("학습"),
+    );
   }
 }
 
