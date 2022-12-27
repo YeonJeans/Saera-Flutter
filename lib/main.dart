@@ -5,24 +5,26 @@ import 'package:flutter/material.dart';
 import 'login/presentation/login_screen.dart';
 
 void main() {
-  runApp(new MaterialApp(
+  runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: new SplashScreen(),
+    home: const SplashScreen(),
     routes: <String, WidgetBuilder>{
-      '/login': (BuildContext context) => new LoginPage()
+      '/login': (BuildContext context) => const LoginPage()
     },
   ));
 }
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
-  _SplashScreenState createState() => new _SplashScreenState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   startTime() async {
-    var _duration = new Duration(seconds: 2);
-    return new Timer(_duration, navigationPage);
+    var duration = const Duration(seconds: 2);
+    return Timer(duration, navigationPage);
   }
 
   void navigationPage() {
@@ -38,12 +40,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: new Container(
-            color: Color(0xfff0f8ff),
+        body: Container(
+            color: const Color(0xfff0f8ff),
             child: Center(
-              child: Container(
-                child: Image.asset('images/splash.jpg'),
-              ),
+              child: Image.asset('assets/images/splash.jpg'),
             )
         )
     );
