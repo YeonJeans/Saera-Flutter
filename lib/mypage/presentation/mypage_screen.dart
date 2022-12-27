@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saera/style/font.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("마이페이지"),
+      child: Text("마이페이지",style: TextStyles.TitleTextStyle),
     );
   }
 }
