@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Row _recentlyStatement(String label, bool bookmark) {
+    Row _recentlyLearnStatement(String label, bool bookmark) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
