@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+          children: <Widget>[
             Flexible(
                 child: TextField(
                   controller: _textEditingController,
@@ -153,16 +153,30 @@ class _HomePageState extends State<HomePage> {
     );
 
     return SafeArea(
-      child:Scaffold(
-        body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 21),
-          children: [
-            appBarSection,
-            searchSection,
-            recentlyLearnedSection,
-            nearPlaceSection,
-            placeRecommendSection
-          ],
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        resizeToAvoidBottomInset: false,
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                alignment: Alignment.center,
+                image: AssetImage('assets/images/home_bg.png'),
+                fit: BoxFit.fill
+              ),
+            ),
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 21),
+              children: <Widget>[
+                appBarSection,
+                searchSection,
+                recentlyLearnedSection,
+                nearPlaceSection,
+                placeRecommendSection
+              ],
+            ),
+          ),
         ),
       ),
     );
