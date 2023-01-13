@@ -11,7 +11,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController _textEditingController = TextEditingController();
+  late TextEditingController _textEditingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _textEditingController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,32 +74,30 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    Widget searchSection = Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Flexible(
-                child: TextField(
-                  controller: _textEditingController,
-                  maxLines: 1,
-                  //onSubmitted:
-                  //onChanged:
-                  decoration: InputDecoration(
-                    prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
-                    hintText: '이런 문장을 학습할까요?',
-                    hintStyle: const TextStyle(color: ColorStyles.searchTextGray),
-                    enabledBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(99.0)),
-                      borderSide: BorderSide(color: ColorStyles.searchFillGray)
-                    ),
-                    focusedBorder: InputBorder.none,
-                    filled: true,
-                    fillColor: ColorStyles.searchFillGray
-                  ),
-                )
+    Widget searchSection = Row(
+      children: <Widget>[
+        Flexible(
+            child: TextField(
+              controller: _textEditingController,
+              maxLines: 1,
+              //onSubmitted:
+              //onChanged:
+              decoration: InputDecoration(
+                prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                hintText: '어떤 문장을 학습할까요?',
+                hintStyle: const TextStyle(color: ColorStyles.searchTextGray, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
+                enabledBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(99.0)),
+                    borderSide: BorderSide(color: ColorStyles.searchFillGray)
+                ),
+                focusedBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(99.0)),
+                  borderSide: BorderSide(color: ColorStyles.searchFillGray),
+                ),
+                filled: true,
+                fillColor: ColorStyles.searchFillGray,
+              ),
             )
-          ],
         )
       ],
     );
