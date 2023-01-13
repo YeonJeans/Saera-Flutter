@@ -133,6 +133,11 @@ class _HomePageState extends State<HomePage> {
             onPressed: null,
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(color),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)
+                )
+              )
             ),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 11),
