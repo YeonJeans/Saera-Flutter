@@ -58,7 +58,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+        resizeToAvoidBottomInset: false,
         bottomNavigationBar: SizedBox(
           height: 80.0,
           child: TabBar(
