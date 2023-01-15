@@ -10,6 +10,7 @@ class ColorStyles {
 
   // Gray Color
   static const Color searchFillGray = Color(0xffEFEFEF);
+  static const Color expFillGray = Color(0xffEAEAEA);
   static const Color searchTextGray = Color(0xffAAAAAA);
   static const Color dateExpGray = Color(0xff999999);
   static const Color recentInfoGray = Color(0xff828282);
