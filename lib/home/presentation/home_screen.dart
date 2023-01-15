@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:saera/home/presentation/bookmark_screen.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
@@ -29,12 +30,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 
     Widget appBarSection = Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          SvgPicture.asset('assets/icons/bookmark.svg',
-              fit: BoxFit.scaleDown
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BookmarkPage())
+                );
+              },
+              icon: SvgPicture.asset('assets/icons/bookmark.svg')
           )
         ],
       ),
