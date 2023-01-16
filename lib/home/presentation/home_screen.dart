@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:saera/home/presentation/bookmark_screen.dart';
+import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart';
+import 'package:saera/home/presentation/widgets/home_screen_background_image.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
@@ -173,33 +174,26 @@ class _HomePageState extends State<HomePage> {
       ],
     );
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: false,
-        body: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                alignment: Alignment.center,
-                image: AssetImage('assets/images/home_bg.png'),
-                fit: BoxFit.fill
+    return Stack(
+      children: [
+        HomeBackgroundImage(key: null,),
+        SafeArea(
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              resizeToAvoidBottomInset: false,
+              body: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 21),
+                children: <Widget>[
+                  appBarSection,
+                  searchSection,
+                  recentlyLearnedSection,
+                  nearPlaceSection,
+                  placeRecommendSection
+                ],
               ),
-            ),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 21),
-              children: <Widget>[
-                appBarSection,
-                searchSection,
-                recentlyLearnedSection,
-                nearPlaceSection,
-                placeRecommendSection
-              ],
-            ),
-          ),
-        ),
-      ),
+            )
+        )
+      ],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:saera/home/bookmark_home/presentation/widgets/bookmark_home_background_image.dart';
 import 'package:saera/style/color.dart';
 
 class BookmarkPage extends StatefulWidget {
@@ -26,35 +27,33 @@ class _BookmarkPageState extends State<BookmarkPage> {
                 'assets/icons/back.svg',
                 fit: BoxFit.scaleDown,
               ),
-              label: const Text(' 뒤로', style: TextStyle(color: ColorStyles.primary, fontSize: 18, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal))
+              label: const Text(' 뒤로', style: TextStyle(
+                  color: ColorStyles.primary,
+                  fontSize: 18,
+                  fontFamily: "NotoSansKR",
+                  fontWeight: FontWeight.normal))
 
           )
         ],
       ),
     );
 
-    return Container(
-      color: const Color(0xfff0f8ff),
-      child: SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: false,
-            body: Container(
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/home_detail_bg.png'),
-                      fit: BoxFit.fill
-                  )
-              ),
-              child: ListView(
+    return Stack(
+      children: [
+        BookmarkBackgroundImage(key: null,),
+        SafeArea(
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              resizeToAvoidBottomInset: false,
+              body: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 children: <Widget>[
                   appBarSection
                 ],
               ),
-            ),
-          )
-      ),
+            )
+        )
+      ],
     );
   }
 }
