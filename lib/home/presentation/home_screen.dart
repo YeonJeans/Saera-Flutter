@@ -87,8 +87,7 @@ class _HomePageState extends State<HomePage> {
             child: TextField(
               controller: _textEditingController,
               maxLines: 1,
-              //onSubmitted:
-              //onChanged:
+              readOnly: true,
               decoration: InputDecoration(
                 prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                 hintText: '어떤 문장을 학습할까요?',
