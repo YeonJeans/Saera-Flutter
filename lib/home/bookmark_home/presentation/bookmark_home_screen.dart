@@ -20,34 +20,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget appBarSection = Container(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextButton.icon(
-              onPressed: () => Navigator.pop(context),
-              style:
-                  ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
-              icon: SvgPicture.asset(
-                'assets/icons/back.svg',
-                fit: BoxFit.scaleDown,
-              ),
-              label: const Text(' 뒤로',
-                  style: TextStyle(
-                      color: ColorStyles.primary,
-                      fontSize: 18,
-                      fontFamily: "NotoSansKR",
-                      fontWeight: FontWeight.normal
-                  )
-              )
-          )
-        ],
-      ),
-    );
-
     Widget textSection = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
       child: Text(
         "$userName님이 즐겨찾기한\n문장들이에요.",
         style: const TextStyle(
@@ -80,7 +54,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
               body: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 children: <Widget>[
-                  appBarSection,
                   textSection,
                   bookmarkStatementSection
                 ],
