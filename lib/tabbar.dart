@@ -51,7 +51,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
 
   List<Widget> _widgetOptions = [
     HomePage(),
-    LearnPaage(),
+    LearnPage(),
     MyPage(),
   ];
 
