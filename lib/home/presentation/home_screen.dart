@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     label,
-                    style: TextStyle(color: Colors.black, fontSize: 14, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
+                    style: TextStyles.regular00TextStyle
                   ),
                   Row(
                     children: const [
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                   hintText: '어떤 문장을 학습할까요?',
-                  hintStyle: const TextStyle(color: ColorStyles.searchTextGray, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
+                  hintStyle: TextStyles.mediumAATextStyle,
                   enabledBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(99.0)),
                       borderSide: BorderSide(color: ColorStyles.searchFillGray)
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
           const Text(
             '최근 학습한 문장이 없습니다.\n하단에서 학습 버튼을 눌러 억양 학습을 시작하세요.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: ColorStyles.recentInfoGray, fontSize: 14, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
+            style: TextStyles.regular82TextStyle,
           ),
         ],
       ),
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
 
     Widget nearPlaceSection = const Text(
       '@@님 근처에 이 있네요.\n에서 사용할 수 있는 문장을\n빠르게 학습해 보세요.',
-      style: TextStyle(color: ColorStyles.textBlack, fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold)
+      style: TextStyles.large33TextStyle
     );
 
     Container _recommendStatementButton(Color color, String label) {
@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     label,
-                    style: const TextStyle(color: Colors.black, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
+                    style: TextStyles.medium00TextStyle
                   ),
                   SvgPicture.asset('assets/icons/enter.svg')
                 ],

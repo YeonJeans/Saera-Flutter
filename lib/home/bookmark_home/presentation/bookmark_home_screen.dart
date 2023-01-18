@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:saera/home/bookmark_home/presentation/widgets/bookmark_home_background_image.dart';
 import 'package:saera/home/bookmark_home/presentation/widgets/bookmark_list_tile.dart';
 import 'package:saera/style/color.dart';
+import 'package:saera/style/font.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({Key? key}) : super(key: key);
@@ -24,11 +25,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
       padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
       child: Text(
         "$userName님이 즐겨찾기한\n문장들이에요.",
-        style: const TextStyle(
-            color: Colors.black,
-            fontSize: 24,
-            fontFamily: "NotoSansKR",
-            fontWeight: FontWeight.bold),
+        style: TextStyles.xLargeTextStyle
       )
     );
 

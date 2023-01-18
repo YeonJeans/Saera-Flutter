@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/style/color.dart';
+import 'package:saera/style/font.dart';
 
 class BookmarkListTile extends StatelessWidget {
   BookmarkListTile(this._data);
@@ -21,11 +22,7 @@ class BookmarkListTile extends StatelessWidget {
               children: [
                 Text(
                   _data.statement,
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontFamily: "NotoSansKR",
-                      fontWeight: FontWeight.normal),
+                  style: TextStyles.regular00TextStyle
                 ),
                 Row(
                   children: [
@@ -33,14 +30,9 @@ class BookmarkListTile extends StatelessWidget {
                       backgroundColor: ColorStyles.saeraBeige,
                       label: Text(
                         _data.tag,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                            fontFamily: "NotoSansKR",
-                            fontWeight: FontWeight.normal
+                        style: TextStyles.small00TextStyle
                         ),
                       ),
-                    ),
                   ],
                 )
               ],
