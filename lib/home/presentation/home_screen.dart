@@ -30,23 +30,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
-    Widget appBarSection = Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const BookmarkPage())
-                );
-              },
-              icon: SvgPicture.asset('assets/icons/bookmark.svg')
-          )
-        ],
-      ),
-    );
-
     Row _recentlyLearnStatement(String label, bool bookmark) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -81,31 +64,34 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    Widget searchSection = Row(
-      children: <Widget>[
-        Flexible(
-            child: TextField(
-              controller: _textEditingController,
-              maxLines: 1,
-              readOnly: true,
-              decoration: InputDecoration(
-                prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
-                hintText: '어떤 문장을 학습할까요?',
-                hintStyle: const TextStyle(color: ColorStyles.searchTextGray, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
-                enabledBorder: const OutlineInputBorder(
+    Widget searchSection = Container(
+      padding: const EdgeInsets.only(top: 20),
+      child: Row(
+        children: <Widget>[
+          Flexible(
+              child: TextField(
+                controller: _textEditingController,
+                maxLines: 1,
+                readOnly: true,
+                decoration: InputDecoration(
+                  prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  hintText: '어떤 문장을 학습할까요?',
+                  hintStyle: const TextStyle(color: ColorStyles.searchTextGray, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
+                  enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(99.0)),
+                      borderSide: BorderSide(color: ColorStyles.searchFillGray)
+                  ),
+                  focusedBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(99.0)),
-                    borderSide: BorderSide(color: ColorStyles.searchFillGray)
+                    borderSide: BorderSide(color: ColorStyles.searchFillGray),
+                  ),
+                  filled: true,
+                  fillColor: ColorStyles.searchFillGray,
                 ),
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(99.0)),
-                  borderSide: BorderSide(color: ColorStyles.searchFillGray),
-                ),
-                filled: true,
-                fillColor: ColorStyles.searchFillGray,
-              ),
-            )
-        )
-      ],
+              )
+          )
+        ],
+      ),
     );
 
     Widget recentlyLearnedSection = Container(
@@ -183,7 +169,6 @@ class _HomePageState extends State<HomePage> {
               body: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 21),
                 children: <Widget>[
-                  appBarSection,
                   searchSection,
                   recentlyLearnedSection,
                   nearPlaceSection,
