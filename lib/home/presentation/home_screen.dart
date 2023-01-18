@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart';
+import 'package:saera/home/presentation/widgets/home_screen_background_image.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
@@ -29,12 +31,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 
     Widget appBarSection = Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          SvgPicture.asset('assets/icons/bookmark.svg',
-              fit: BoxFit.scaleDown
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BookmarkPage())
+                );
+              },
+              icon: SvgPicture.asset('assets/icons/bookmark.svg')
           )
         ],
       ),
@@ -80,8 +87,7 @@ class _HomePageState extends State<HomePage> {
             child: TextField(
               controller: _textEditingController,
               maxLines: 1,
-              //onSubmitted:
-              //onChanged:
+              readOnly: true,
               decoration: InputDecoration(
                 prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                 hintText: '어떤 문장을 학습할까요?',
@@ -167,33 +173,26 @@ class _HomePageState extends State<HomePage> {
       ],
     );
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: false,
-        body: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                alignment: Alignment.center,
-                image: AssetImage('assets/images/home_bg.png'),
-                fit: BoxFit.fill
+    return Stack(
+      children: [
+        HomeBackgroundImage(key: null,),
+        SafeArea(
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              resizeToAvoidBottomInset: false,
+              body: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 21),
+                children: <Widget>[
+                  appBarSection,
+                  searchSection,
+                  recentlyLearnedSection,
+                  nearPlaceSection,
+                  placeRecommendSection
+                ],
               ),
-            ),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 21),
-              children: <Widget>[
-                appBarSection,
-                searchSection,
-                recentlyLearnedSection,
-                nearPlaceSection,
-                placeRecommendSection
-              ],
-            ),
-          ),
-        ),
-      ),
+            )
+        )
+      ],
     );
   }
 }
