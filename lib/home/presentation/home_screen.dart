@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart';
 import 'package:saera/home/presentation/widgets/home_screen_background_image.dart';
+import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
@@ -13,20 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late TextEditingController _textEditingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _textEditingController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _textEditingController.dispose();
-    super.dispose();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
 
@@ -70,9 +58,9 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           Flexible(
               child: TextField(
-                controller: _textEditingController,
                 maxLines: 1,
                 readOnly: true,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage())),
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                   hintText: '어떤 문장을 학습할까요?',
