@@ -32,24 +32,23 @@ class _SearchPageState extends State<SearchPage> {
 
     Widget appBarSection = Container(
         padding: const EdgeInsets.symmetric(vertical: 5),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextButton.icon(
                 onPressed: () => Navigator.pop(context),
-                style:
-                ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
+                style: TextButton.styleFrom(
+                    backgroundColor: Colors.transparent
+                ),
                 icon: SvgPicture.asset(
                   'assets/icons/back.svg',
-                  fit: BoxFit.scaleDown,
                 ),
-                label: const Text(' 뒤로',
-                    style: TextStyle(
-                        color: ColorStyles.primary,
-                        fontSize: 18,
-                        fontFamily: "NotoSansKR",
-                        fontWeight: FontWeight.normal
-                    )
+                label: Padding(
+                  padding: EdgeInsets.only(bottom: 2),
+                  child: const Text(' 뒤로',
+                    style: TextStyles.backBtnTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
                 )
             )
           ],
