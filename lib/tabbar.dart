@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart';
 
 import 'package:saera/home/presentation/home_screen.dart';
 import 'package:saera/learn/presentation/learn_screen.dart';
 import 'package:saera/mypage/presentation/mypage_screen.dart';
+import 'package:saera/style/font.dart';
 
 class TabBarMainPage extends StatelessWidget {
   @override
@@ -33,7 +35,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(_handleTabSelection);
   }
 
@@ -51,7 +53,8 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
 
   List<Widget> _widgetOptions = [
     HomePage(),
-    LearnPaage(),
+    LearnPage(),
+    BookmarkPage(),
     MyPage(),
   ];
 
@@ -60,30 +63,36 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
     return Scaffold(
         resizeToAvoidBottomInset: false,
         bottomNavigationBar: SizedBox(
-          height: 80.0,
+          height: 60.0,
           child: TabBar(
-
             controller: _tabController,
             tabs: <Widget>[
               Tab(
                 icon: _seletedIndex == 0 ? Icon(Icons.home, color: Color(0xff4478FF)) : Icon(Icons.home_outlined, color: Color(0xff4478FF)),
                 child: Text(
                   '홈',
-                  style: TextStyle(color: Color(0xff4478FF), fontSize: 11),
+                  style: _seletedIndex == 0? TextStyles.tabBarBoldTextStyle : TextStyles.tabBarRegularTextStyle,
                 ),
               ),
               Tab(
                 icon: _seletedIndex == 1 ? Icon(Icons.list_alt, color: Color(0xff4478FF)) : Icon(Icons.list_alt_outlined, color: Color(0xff4478FF)),
                 child: Text(
                   '학습',
-                  style: TextStyle(color: Color(0xff4478FF), fontSize: 11),
+                  style: _seletedIndex == 1? TextStyles.tabBarBoldTextStyle : TextStyles.tabBarRegularTextStyle,
                 ),
               ),
               Tab(
-                icon: _seletedIndex == 2? Icon(Icons.person, color: Color(0xff4478FF),) : Icon(Icons.person_2_outlined, color: Color(0xff4478FF)),
+                icon: _seletedIndex == 2? Icon(Icons.star, color: Color(0xff4478FF)) : Icon(Icons.star_border, color: Color(0xff4478FF)),
+                child: Text(
+                  '북마크',
+                  style: _seletedIndex == 2? TextStyles.tabBarBoldTextStyle : TextStyles.tabBarRegularTextStyle,
+                ),
+              ),
+              Tab(
+                icon: _seletedIndex == 3? Icon(Icons.person, color: Color(0xff4478FF),) : Icon(Icons.person_2_outlined, color: Color(0xff4478FF)),
                 child: Text(
                   '내 정보',
-                  style: TextStyle(color: Color(0xff4478FF), fontSize: 11),
+                  style: _seletedIndex == 3? TextStyles.tabBarBoldTextStyle : TextStyles.tabBarRegularTextStyle,
                 ),
               ),
             ],
@@ -96,8 +105,6 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
             children: _widgetOptions,
           ),
         )
-
-
     );
   }
 }

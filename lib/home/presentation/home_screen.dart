@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart';
 import 'package:saera/home/presentation/widgets/home_screen_background_image.dart';
+import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
@@ -13,39 +14,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late TextEditingController _textEditingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _textEditingController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _textEditingController.dispose();
-    super.dispose();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
-
-    Widget appBarSection = Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const BookmarkPage())
-                );
-              },
-              icon: SvgPicture.asset('assets/icons/bookmark.svg')
-          )
-        ],
-      ),
-    );
 
     Row _recentlyLearnStatement(String label, bool bookmark) {
       return Row(
@@ -59,7 +30,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     label,
-                    style: TextStyle(color: Colors.black, fontSize: 14, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
+                    style: TextStyles.regular00TextStyle
                   ),
                   Row(
                     children: const [
@@ -81,31 +52,34 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    Widget searchSection = Row(
-      children: <Widget>[
-        Flexible(
-            child: TextField(
-              controller: _textEditingController,
-              maxLines: 1,
-              readOnly: true,
-              decoration: InputDecoration(
-                prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
-                hintText: '어떤 문장을 학습할까요?',
-                hintStyle: const TextStyle(color: ColorStyles.searchTextGray, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
-                enabledBorder: const OutlineInputBorder(
+    Widget searchSection = Container(
+      padding: const EdgeInsets.only(top: 20),
+      child: Row(
+        children: <Widget>[
+          Flexible(
+              child: TextField(
+                maxLines: 1,
+                readOnly: true,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage())),
+                decoration: InputDecoration(
+                  prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  hintText: '어떤 문장을 학습할까요?',
+                  hintStyle: TextStyles.mediumAATextStyle,
+                  enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(99.0)),
+                      borderSide: BorderSide(color: ColorStyles.searchFillGray)
+                  ),
+                  focusedBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(99.0)),
-                    borderSide: BorderSide(color: ColorStyles.searchFillGray)
+                    borderSide: BorderSide(color: ColorStyles.searchFillGray),
+                  ),
+                  filled: true,
+                  fillColor: ColorStyles.searchFillGray,
                 ),
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(99.0)),
-                  borderSide: BorderSide(color: ColorStyles.searchFillGray),
-                ),
-                filled: true,
-                fillColor: ColorStyles.searchFillGray,
-              ),
-            )
-        )
-      ],
+              )
+          )
+        ],
+      ),
     );
 
     Widget recentlyLearnedSection = Container(
@@ -121,7 +95,7 @@ class _HomePageState extends State<HomePage> {
           const Text(
             '최근 학습한 문장이 없습니다.\n하단에서 학습 버튼을 눌러 억양 학습을 시작하세요.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: ColorStyles.recentInfoGray, fontSize: 14, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
+            style: TextStyles.regular82TextStyle,
           ),
         ],
       ),
@@ -129,7 +103,7 @@ class _HomePageState extends State<HomePage> {
 
     Widget nearPlaceSection = const Text(
       '@@님 근처에 이 있네요.\n에서 사용할 수 있는 문장을\n빠르게 학습해 보세요.',
-      style: TextStyle(color: ColorStyles.textBlack, fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold)
+      style: TextStyles.large33TextStyle
     );
 
     Container _recommendStatementButton(Color color, String label) {
@@ -152,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     label,
-                    style: const TextStyle(color: Colors.black, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.normal),
+                    style: TextStyles.medium00TextStyle
                   ),
                   SvgPicture.asset('assets/icons/enter.svg')
                 ],
@@ -183,7 +157,6 @@ class _HomePageState extends State<HomePage> {
               body: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 21),
                 children: <Widget>[
-                  appBarSection,
                   searchSection,
                   recentlyLearnedSection,
                   nearPlaceSection,
