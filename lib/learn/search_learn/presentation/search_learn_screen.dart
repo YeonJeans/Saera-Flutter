@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
 
+import '../../../home/bookmark_home/presentation/widgets/bookmark_list_tile.dart';
 import '../../../style/color.dart';
 import '../../../style/font.dart';
 
@@ -82,6 +83,59 @@ class _SearchPageState extends State<SearchPage> {
         ],
     );
 
+    Widget filterSection = Container(
+      padding: const EdgeInsets.only(top: 5.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Wrap(
+                spacing: 10.0,
+                children: [
+                  Chip(
+                    label: Text(
+                        '질문',
+                      style: TextStyles.regular00TextStyle,
+                    ),
+                    backgroundColor: ColorStyles.saeraYellow,
+                    deleteIcon: const Icon(
+                      Icons.cancel_rounded,
+                      color: ColorStyles.deleteGray,
+                      size: 20.0,
+                    ),
+                    onDeleted: () {
+                      print("deleted");
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+          IconButton(
+              onPressed: null,
+              icon: SvgPicture.asset('assets/icons/filter.svg')
+          )
+        ],
+      ),
+    );
+
+    List<BookmarkListData> statement = [
+      BookmarkListData('화장실은 어디에 있나요?', '질문'),
+      BookmarkListData('아이스 아메리카노 한 잔 주세요.', '주문')
+    ];
+    Widget statementSection = ListView.separated(
+        shrinkWrap: true,
+        padding: EdgeInsets.only(top: 10),
+        itemBuilder: (BuildContext context, int index) {
+          return BookmarkListTile(statement[index]);
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const Divider(thickness: 1,);
+        },
+        itemCount: statement.length
+    );
+
     return Stack(
       children: [
         SearchLearnBackgroundImage(key: null,),
@@ -96,6 +150,8 @@ class _SearchPageState extends State<SearchPage> {
                   children: <Widget>[
                     appBarSection,
                     searchSection,
+                    filterSection,
+                    statementSection
                   ],
                 ),
               )
