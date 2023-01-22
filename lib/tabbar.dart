@@ -69,6 +69,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
             tabs: <Widget>[
               Tab(
                 icon: _seletedIndex == 0 ? Icon(Icons.home, color: Color(0xff4478FF)) : Icon(Icons.home_outlined, color: Color(0xff4478FF)),
+                iconMargin: EdgeInsets.only(bottom: 5.0),
                 child: Text(
                   '홈',
                   style: _seletedIndex == 0? TextStyles.tabBarBoldTextStyle : TextStyles.tabBarRegularTextStyle,
@@ -76,6 +77,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
               ),
               Tab(
                 icon: _seletedIndex == 1 ? Icon(Icons.list_alt, color: Color(0xff4478FF)) : Icon(Icons.list_alt_outlined, color: Color(0xff4478FF)),
+                iconMargin: EdgeInsets.only(bottom: 5.0),
                 child: Text(
                   '학습',
                   style: _seletedIndex == 1? TextStyles.tabBarBoldTextStyle : TextStyles.tabBarRegularTextStyle,
@@ -83,6 +85,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
               ),
               Tab(
                 icon: _seletedIndex == 2? Icon(Icons.star, color: Color(0xff4478FF)) : Icon(Icons.star_border, color: Color(0xff4478FF)),
+                iconMargin: EdgeInsets.only(bottom: 5.0),
                 child: Text(
                   '북마크',
                   style: _seletedIndex == 2? TextStyles.tabBarBoldTextStyle : TextStyles.tabBarRegularTextStyle,
@@ -90,6 +93,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
               ),
               Tab(
                 icon: _seletedIndex == 3? Icon(Icons.person, color: Color(0xff4478FF),) : Icon(Icons.person_2_outlined, color: Color(0xff4478FF)),
+                iconMargin: EdgeInsets.only(bottom: 5.0),
                 child: Text(
                   '내 정보',
                   style: _seletedIndex == 3? TextStyles.tabBarBoldTextStyle : TextStyles.tabBarRegularTextStyle,
