@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
+import 'package:saera/learn/accent_learn/presentation/widgets/recordBar.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 
 class AccentPracticePage extends StatefulWidget {
   const AccentPracticePage({Key? key}) : super(key: key);
@@ -13,15 +16,17 @@ class AccentPracticePage extends StatefulWidget {
 
 class _AccentPracticePageState extends State<AccentPracticePage> with TickerProviderStateMixin {
 
-  double _currentSliderValue = 20;
+
   String userName = "수연";
 
   int accuracyRate = 90;
-
   int recordingState = 1;
 
   bool _isBookmarked = false;
-  bool _isPlaying = false;
+
+  AudioPlayer audioPlayer = AudioPlayer();
+
+  String audioPath = "https://www.youtube.com/watch?v=_LXp1Lgfdk0";
 
   Widget appBarSection (){
     return Container(
@@ -104,89 +109,19 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     );
   }
 
-  Widget exampleRecordBar(){
-    return Container(
-      margin: EdgeInsets.only(left: 2.0, right: 16.0, top: 13.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _isPlaying = !_isPlaying;
-              });
-
-            },
-            icon: _isPlaying ?
-                SvgPicture.asset('assets/icons/stop.svg',
-                    fit: BoxFit.scaleDown
-                )
-                :
-                SvgPicture.asset('assets/icons/play.svg',
-                  fit: BoxFit.scaleDown
-                ),
-            iconSize: 32,
-          ),
-          // SizedBox(
-          //     width: 16
-          // ),
-          Row(
-            children: [
-              Container(
-                margin: EdgeInsets.only(right: 5.0),
-                child: Text("00:00",
-                  style: TextStyles.small66TextStyle,
-                ),
-              ),
-              SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0),
-                    trackHeight: 5.0,
-                    overlayShape: RoundSliderOverlayShape(overlayRadius: 5.0),
-                  ),
-                  child: Container(
-                    width: 200,
-                    child: Slider(
-                      value: _currentSliderValue,
-                      max: 200,
-                      activeColor: ColorStyles.primary.withOpacity(0.4),
-                      inactiveColor: Color(0xffE7E7E7),
-                      label: _currentSliderValue.round().toString(),
-                      onChanged: (double value) {
-                        setState(() {
-                          _currentSliderValue = value;
-                        });
-                      },
-                    ),
-                  )
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 5.0),
-                child: Text("00:03",
-                  style: TextStyles.small66TextStyle,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget exampleGraph(){
     return Container(
       margin: EdgeInsets.only(top: 19),
       height: 135,
       decoration: BoxDecoration(
-        color: Color(0xffFFFFFF),
+        color: ColorStyles.saeraWhite,
         borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
         boxShadow:[
           BoxShadow(
             color: Color(0xff663E68A8).withOpacity(0.3),
             spreadRadius: 0.1,
             blurRadius: 8,
-            offset: Offset(0, 0), // changes position of shadow
+            offset: const Offset(0, 0), // changes position of shadow
           ),
         ],
       ),
@@ -201,7 +136,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           exampleSectionText(),
-          exampleRecordBar(),
+          RecordBar(recordPath: audioPath),
           exampleGraph(),
         ]
       ),
@@ -479,7 +414,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           practiceSectionText(),
-          exampleRecordBar(),
+          RecordBar(recordPath: audioPath),
           (){
             if(recordingState == 1){
               return recordingStart();
