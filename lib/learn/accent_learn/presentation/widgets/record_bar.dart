@@ -120,7 +120,7 @@ class _RecordBarState extends State<RecordBar> {
                     overlayShape: const RoundSliderOverlayShape(overlayRadius: 5.0),
                   ),
                   child: Container(
-                    width: 220,
+                    width: MediaQuery.of(context).size.width - 200,
                     child: Slider(
                       min: 0,
                       max: duration.inSeconds.toDouble(),
