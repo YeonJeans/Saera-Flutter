@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
-import 'package:saera/learn/accent_learn/presentation/widgets/recordBar.dart';
+import 'package:saera/learn/accent_learn/presentation/widgets/accent_line_chart.dart';
+import 'package:saera/learn/accent_learn/presentation/widgets/record_bar.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -35,20 +36,18 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            child: TextButton.icon(
-                onPressed: () {
-                  print("뒤로!");
-                },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
-                icon: SvgPicture.asset(
-                  'assets/icons/back.svg',
-                  fit: BoxFit.scaleDown,
-                ),
-                label: const Text(' 뒤로',
-                    style: TextStyles.backBtnTextStyle
-                )
-            ),
+          TextButton.icon(
+              onPressed: () {
+                //print("뒤로!");
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
+              icon: SvgPicture.asset(
+                'assets/icons/back.svg',
+                fit: BoxFit.scaleDown,
+              ),
+              label: const Text(' 뒤로',
+                  style: TextStyles.backBtnTextStyle
+              )
           ),
 
           IconButton(
@@ -76,8 +75,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget practiceSentenceSection() {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
-      padding: EdgeInsets.only(top:30.0, bottom: 24.0),
+      margin: const EdgeInsets.only(top: 20.0),
+      padding: const EdgeInsets.only(top:30.0, bottom: 24.0),
       decoration: BoxDecoration(
           color: ColorStyles.etcYellow,
           borderRadius: BorderRadius.circular(10)
@@ -111,26 +110,30 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget exampleGraph(){
     return Container(
-      margin: EdgeInsets.only(top: 19),
+      margin: const EdgeInsets.only(top: 19),
       height: 135,
       decoration: BoxDecoration(
         color: ColorStyles.saeraWhite,
         borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
         boxShadow:[
           BoxShadow(
-            color: Color(0xff663E68A8).withOpacity(0.3),
+            color: const Color(0xff663e68a8).withOpacity(0.3),
             spreadRadius: 0.1,
             blurRadius: 8,
             offset: const Offset(0, 0), // changes position of shadow
           ),
         ],
       ),
+      child: Container(
+        padding: const EdgeInsets.all(25),
+        child: const AccentLineChart(),
+      ),
     );
   }
 
   Widget exampleSection(){
     return Container(
-      margin: EdgeInsets.only(top: 28),
+      margin: const EdgeInsets.only(top: 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -151,7 +154,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         ),
         const SizedBox(width: 9,),
         Text(
-          "현재 ${userName}님의 억양이에요.",
+          "현재 $userName님의 억양이에요.",
           style: TextStyles.medium00BoldTextStyle,
         )
 
@@ -167,21 +170,21 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         });
       },
       child: Container(
-          margin: EdgeInsets.only(top: 19),
+          margin: const EdgeInsets.only(top: 19),
           height: 135,
           decoration: BoxDecoration(
             color: ColorStyles.primary,
             borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
             boxShadow:[
               BoxShadow(
-                color: Color(0xff663E68A8).withOpacity(0.3),
+                color: const Color(0xff663e68a8).withOpacity(0.3),
                 spreadRadius: 0.1,
                 blurRadius: 8,
-                offset: Offset(0, 0), // changes position of shadow
+                offset: const Offset(0, 0), // changes position of shadow
               ),
             ],
           ),
-          child: Center(
+          child: const Center(
             child: Text(
               "여기를 눌러 녹음을 시작하세요.",
               style: TextStyles.mediumWhiteTextStyle,
@@ -199,17 +202,17 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         });
       },
       child: Container(
-          margin: EdgeInsets.only(top: 19),
+          margin: const EdgeInsets.only(top: 19),
           height: 135,
           decoration: BoxDecoration(
             color: ColorStyles.saeraBlue,
             borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
             boxShadow:[
               BoxShadow(
-                color: Color(0xff663E68A8).withOpacity(0.3),
+                color: const Color(0xff663e68a8).withOpacity(0.3),
                 spreadRadius: 0.1,
                 blurRadius: 8,
-                offset: Offset(0, 0), // changes position of shadow
+                offset: const Offset(0, 0), // changes position of shadow
               ),
             ],
           ),
@@ -222,8 +225,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                     fit: BoxFit.scaleDown
                 ),
                 Container(
-                  margin: EdgeInsets.only(top:11),
-                  child: Text(
+                  margin: const EdgeInsets.only(top:11),
+                  child: const Text(
                     "녹음 중이에요...\n여기를 다시 눌러 녹음을 완료할 수 있어요.",
                     style: TextStyles.small25TextStyle,
                     textAlign: TextAlign.center,
@@ -244,17 +247,17 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         });
       },
       child: Container(
-          margin: EdgeInsets.only(top: 19),
+          margin: const EdgeInsets.only(top: 19),
           height: 135,
           decoration: BoxDecoration(
             color: ColorStyles.saeraBlue,
             borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
             boxShadow:[
               BoxShadow(
-                color: Color(0xff663E68A8).withOpacity(0.3),
+                color: const Color(0xff663e68a8).withOpacity(0.3),
                 spreadRadius: 0.1,
                 blurRadius: 8,
-                offset: Offset(0, 0), // changes position of shadow
+                offset: const Offset(0, 0), // changes position of shadow
               ),
             ],
           ),
@@ -267,7 +270,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                       fit: BoxFit.scaleDown
                   ),
                   Container(
-                    margin: EdgeInsets.only(top:15),
+                    margin: const EdgeInsets.only(top:15),
                     child: const Text(
                       "억양을 분석하고 있습니다...\n거의 다 되었어요!",
                       style: TextStyles.small25TextStyle,
@@ -285,39 +288,24 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     return Stack(
       children: [
         Container(
-            margin: EdgeInsets.only(top: 19),
+            margin: const EdgeInsets.only(top: 19),
             height: 135,
             decoration: BoxDecoration(
               color: ColorStyles.saeraWhite,
               borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
               boxShadow:[
                 BoxShadow(
-                  color: Color(0xff663E68A8).withOpacity(0.3),
+                  color: const Color(0xff663E68A8).withOpacity(0.3),
                   spreadRadius: 0.1,
                   blurRadius: 8,
-                  offset: Offset(0, 0), // changes position of shadow
+                  offset: const Offset(0, 0), // changes position of shadow
                 ),
               ],
             ),
-            child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                        'assets/icons/headphones.svg',
-                        fit: BoxFit.scaleDown
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top:15),
-                      child: const Text(
-                        "억양을 분석하고 있습니다...\n거의 다 되었어요!",
-                        style: TextStyles.small25TextStyle,
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-                  ],
-                )
-            )
+            child: Container(
+              padding: const EdgeInsets.all(25),
+              child: const AccentLineChart(),
+            ),
         ),
 
         Row(
@@ -345,15 +333,15 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget expSection() {
     return Container(
-        margin: EdgeInsets.only(top: 13, bottom: 25),
-        padding: EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        margin: const EdgeInsets.only(top: 13, bottom: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         height: 80,
         decoration: BoxDecoration(
           color: ColorStyles.saeraWhite,
           borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
           boxShadow:[
             BoxShadow(
-              color: Color(0xff663E68A8).withOpacity(0.3),
+              color: const Color(0xff663e68a8).withOpacity(0.3),
               spreadRadius: 0.1,
               blurRadius: 8,
               offset: const Offset(0, 0), // changes position of shadow
@@ -372,12 +360,12 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                 Container(
                   width: 250,
                   height: 14,
-                  margin: EdgeInsets.only(right: 5),
+                  margin: const EdgeInsets.only(right: 5),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                     child: LinearProgressIndicator(
                       value: accuracyRate/100.0,
-                      valueColor: AlwaysStoppedAnimation<Color>(ColorStyles.saeraBlue),
+                      valueColor: const AlwaysStoppedAnimation<Color>(ColorStyles.saeraBlue),
                       backgroundColor: ColorStyles.expFillGray,
                     ),
                   ),
@@ -396,8 +384,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               ],
             ),
             Container(
-              margin: EdgeInsets.only(top: 10),
-              child: Text("완벽합니다! 학습 완료 경험치 +120xp",
+              margin: const EdgeInsets.only(top: 10),
+              child: const Text("완벽합니다! 학습 완료 경험치 +120xp",
                 style: TextStyles.small66TextStyle,
               ),
             )
@@ -409,7 +397,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget practiceSection(){
     return Container(
-      margin: EdgeInsets.only(top:31),
+      margin: const EdgeInsets.only(top:31),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -439,7 +427,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        AccentPracticeBackgroundImage(key: null,),
+        const AccentPracticeBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
               backgroundColor: Colors.transparent,
@@ -448,7 +436,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                 children: [
                   appBarSection(),
                   Container(
-                    margin: EdgeInsets.only(left: 14, right: 14),
+                    margin: const EdgeInsets.only(left: 14, right: 14),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
