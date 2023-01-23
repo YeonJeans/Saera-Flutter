@@ -16,31 +16,58 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   double _currentSliderValue = 20;
   String userName = "수연";
 
-  double accuracyRate = 90;
+  int accuracyRate = 90;
 
-  Widget appBarSection = Container(
-    //padding: const EdgeInsets.symmetric(vertical: 10),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        IconButton(
-          onPressed: () {
-            print ("pressed");
-          },
-          icon: SvgPicture.asset('assets/icons/back.svg',
-              fit: BoxFit.scaleDown
+  int recordingState = 1;
+
+  bool _isBookmarked = false;
+  bool _isPlaying = false;
+
+  Widget appBarSection (){
+    return Container(
+      //padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            child: TextButton.icon(
+                onPressed: () {
+                  print("뒤로!");
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
+                icon: SvgPicture.asset(
+                  'assets/icons/back.svg',
+                  fit: BoxFit.scaleDown,
+                ),
+                label: const Text(' 뒤로',
+                    style: TextStyles.backBtnTextStyle
+                )
+            ),
           ),
-          iconSize: 32,
-        ),
 
-        Text("뒤로",
-          style: TextStyles.backBtnTextStyle,
-        )
+          IconButton(
+              onPressed: (){
+                setState(() {
+                  _isBookmarked = !_isBookmarked;
+                });
+              },
+              icon: _isBookmarked ?
+              SvgPicture.asset(
+                'assets/icons/star_fill.svg',
+                fit: BoxFit.scaleDown,
+              )
+                  :
+              SvgPicture.asset(
+                'assets/icons/star_unfill.svg',
+                fit: BoxFit.scaleDown,
+              )
+          )
 
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 
   Widget practiceSentenceSection() {
     return Container(
@@ -86,11 +113,19 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         children: [
           IconButton(
             onPressed: () {
-              print ("pressed");
+              setState(() {
+                _isPlaying = !_isPlaying;
+              });
+
             },
-            icon: SvgPicture.asset('assets/icons/play.svg',
-                fit: BoxFit.scaleDown
-            ),
+            icon: _isPlaying ?
+                SvgPicture.asset('assets/icons/stop.svg',
+                    fit: BoxFit.scaleDown
+                )
+                :
+                SvgPicture.asset('assets/icons/play.svg',
+                  fit: BoxFit.scaleDown
+                ),
             iconSize: 32,
           ),
           // SizedBox(
@@ -189,10 +224,12 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     );
   }
 
-  Widget practiceGraph(){
+  Widget recordingStart(){
     return GestureDetector(
       onTap: (){
-        print("clicked!");
+        setState(() {
+          recordingState = 2;
+        });
       },
       child: Container(
           margin: EdgeInsets.only(top: 19),
@@ -219,20 +256,172 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     );
   }
 
+  Widget recordingWidget(){
+    return GestureDetector(
+      onTap: (){
+        setState(() {
+          recordingState = 3;
+        });
+      },
+      child: Container(
+          margin: EdgeInsets.only(top: 19),
+          height: 135,
+          decoration: BoxDecoration(
+            color: ColorStyles.saeraBlue,
+            borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+            boxShadow:[
+              BoxShadow(
+                color: Color(0xff663E68A8).withOpacity(0.3),
+                spreadRadius: 0.1,
+                blurRadius: 8,
+                offset: Offset(0, 0), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/record.svg',
+                    fit: BoxFit.scaleDown
+                ),
+                Container(
+                  margin: EdgeInsets.only(top:11),
+                  child: Text(
+                    "녹음 중이에요...\n여기를 다시 눌러 녹음을 완료할 수 있어요.",
+                    style: TextStyles.small25TextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              ],
+            )
+          )
+      ),
+    );
+  }
+
+  Widget analysisAccent(){
+    return GestureDetector(
+      onTap: (){
+        setState(() {
+          recordingState = 4;
+        });
+      },
+      child: Container(
+          margin: EdgeInsets.only(top: 19),
+          height: 135,
+          decoration: BoxDecoration(
+            color: ColorStyles.saeraBlue,
+            borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+            boxShadow:[
+              BoxShadow(
+                color: Color(0xff663E68A8).withOpacity(0.3),
+                spreadRadius: 0.1,
+                blurRadius: 8,
+                offset: Offset(0, 0), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                      'assets/icons/headphones.svg',
+                      fit: BoxFit.scaleDown
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top:15),
+                    child: const Text(
+                      "억양을 분석하고 있습니다...\n거의 다 되었어요!",
+                      style: TextStyles.small25TextStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              )
+          )
+      ),
+    );
+  }
+
+  Widget practiceGraph(){
+    return Stack(
+      children: [
+        Container(
+            margin: EdgeInsets.only(top: 19),
+            height: 135,
+            decoration: BoxDecoration(
+              color: ColorStyles.saeraWhite,
+              borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+              boxShadow:[
+                BoxShadow(
+                  color: Color(0xff663E68A8).withOpacity(0.3),
+                  spreadRadius: 0.1,
+                  blurRadius: 8,
+                  offset: Offset(0, 0), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                        'assets/icons/headphones.svg',
+                        fit: BoxFit.scaleDown
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top:15),
+                      child: const Text(
+                        "억양을 분석하고 있습니다...\n거의 다 되었어요!",
+                        style: TextStyles.small25TextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  ],
+                )
+            )
+        ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 18, right: 3),
+              child: IconButton(
+                  onPressed: (){
+                    setState(() {
+                      recordingState = 1;
+                    });
+                  },
+                  icon: SvgPicture.asset(
+                    'assets/icons/refresh.svg',
+                    fit: BoxFit.scaleDown,
+                  )
+              ),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget expSection() {
     return Container(
         margin: EdgeInsets.only(top: 13, bottom: 25),
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         height: 80,
         decoration: BoxDecoration(
-          color: Color(0xffFFFFFF),
+          color: ColorStyles.saeraWhite,
           borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
           boxShadow:[
             BoxShadow(
               color: Color(0xff663E68A8).withOpacity(0.3),
               spreadRadius: 0.1,
               blurRadius: 8,
-              offset: Offset(0, 0), // changes position of shadow
+              offset: const Offset(0, 0), // changes position of shadow
             ),
           ],
         ),
@@ -242,28 +431,33 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
 
                 Container(
                   width: 250,
                   height: 14,
-                  margin: EdgeInsets.only(right: 10),
+                  margin: EdgeInsets.only(right: 5),
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     child: LinearProgressIndicator(
-                      value: accuracyRate/100,
+                      value: accuracyRate/100.0,
                       valueColor: AlwaysStoppedAnimation<Color>(ColorStyles.saeraBlue),
                       backgroundColor: ColorStyles.expFillGray,
                     ),
                   ),
                 ),
 
-                Text("정확도 ",
-                  style: TextStyles.regular25BoldTextStyle,
-                ),
-                Text("90%",
-                  style: TextStyles.regularHighlightBlueBoldTextStyle,
-                ),
+                Row(
+                  children: [
+                    const Text("정확도 ",
+                      style: TextStyles.regular25BoldTextStyle,
+                    ),
+                    Text("$accuracyRate%",
+                      style: TextStyles.regularHighlightBlueBoldTextStyle,
+                    ),
+                  ],
+                )
               ],
             ),
             Container(
@@ -286,7 +480,18 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         children: [
           practiceSectionText(),
           exampleRecordBar(),
-          practiceGraph(),
+          (){
+            if(recordingState == 1){
+              return recordingStart();
+            }
+            else if(recordingState == 2){
+              return recordingWidget();
+            }
+            else if(recordingState == 3){
+              return analysisAccent();
+            }
+            return practiceGraph();
+          }(),
           expSection()
 
 
@@ -306,7 +511,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               resizeToAvoidBottomInset: false,
               body: ListView(
                 children: [
-                  appBarSection,
+                  appBarSection(),
                   Container(
                     margin: EdgeInsets.only(left: 14, right: 14),
                     child: Column(
