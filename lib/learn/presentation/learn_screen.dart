@@ -19,7 +19,7 @@ class _LearnPageState extends State<LearnPage> {
     Widget textSection = const Padding(
       padding: EdgeInsets.only(top: 70.0, left: 10.0, right: 10.0),
       child: Text(
-        '어떤 상황에\n사용하실 건가요?',
+        '태그로 빠르게\n학습할 문장을 선택해 보세요.',
         style: TextStyles.large00TextStyle,
       ),
     );
