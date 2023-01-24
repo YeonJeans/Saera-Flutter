@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:saera/learn/presentation/widgets/learn_category_list_tile.dart';
 import 'package:saera/learn/presentation/widgets/learn_screen_background_image.dart';
 import 'package:saera/style/font.dart';
 
@@ -53,6 +54,18 @@ class _LearnPageState extends State<LearnPage> {
         ],
       ),
     );
+
+    Widget categorySection = Container(
+      padding: const EdgeInsets.only(top: 20),
+      //color: ColorStyles.saeraBeige,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            CategoryListTile(),
+          ],
+        ),
+      )
+    );
     
     return Stack(
       children: [
@@ -65,7 +78,8 @@ class _LearnPageState extends State<LearnPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 children: <Widget>[
                   textSection,
-                  searchSection
+                  searchSection,
+                  categorySection
                 ],
               )
             )
