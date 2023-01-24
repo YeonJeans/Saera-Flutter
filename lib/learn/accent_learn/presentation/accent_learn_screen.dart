@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_line_chart.dart';
-import 'package:saera/learn/accent_learn/presentation/widgets/record_bar.dart';
+import 'package:saera/learn/accent_learn/presentation/widgets/audio_bar.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -24,10 +24,11 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   int recordingState = 1;
 
   bool _isBookmarked = false;
+  bool _isRecording = false;
 
   AudioPlayer audioPlayer = AudioPlayer();
 
-  String audioPath = "https://www.youtube.com/watch?v=_LXp1Lgfdk0";
+  String audioPath = "mp3/ex.wav";
 
   Widget appBarSection (){
     return Container(
@@ -139,7 +140,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           exampleSectionText(),
-          RecordBar(recordPath: audioPath),
+          AudioBar(recordPath: audioPath),
           exampleGraph(),
         ]
       ),
@@ -199,6 +200,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       onTap: (){
         setState(() {
           recordingState = 3;
+          _isRecording = true;
         });
       },
       child: Container(
@@ -317,6 +319,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                   onPressed: (){
                     setState(() {
                       recordingState = 1;
+                      _isRecording = false;
                     });
                   },
                   icon: SvgPicture.asset(
@@ -358,7 +361,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               children: [
 
                 Container(
-                  width: 250,
+                  width: MediaQuery.of(context).size.width - 160,
                   height: 14,
                   margin: const EdgeInsets.only(right: 5),
                   child: ClipRRect(
@@ -394,6 +397,63 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     );
   }
 
+  Widget before_audio_bar() {
+    return Container(
+      margin: const EdgeInsets.only(left: 2.0, right: 16.0, top: 13.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          IconButton(
+            onPressed: () async {
+              //
+            },
+            icon: SvgPicture.asset('assets/icons/play.svg',
+                fit: BoxFit.scaleDown
+            ),
+            iconSize: 32,
+          ),
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 5.0),
+                child: Text(formatTime(Duration.zero),
+                  style: TextStyles.small66TextStyle,
+                ),
+              ),
+              SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 0),
+                    trackHeight: 5.0,
+                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 5.0),
+                  ),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 200,
+                    child: Slider(
+                      min: 0,
+                      max: 0,
+                      value: 0,
+                      activeColor: ColorStyles.primary.withOpacity(0.4),
+                      inactiveColor: Color(0xffE7E7E7),
+                      onChanged: (value) async {
+                        final position = Duration(seconds: value.toInt());
+                      },
+                    ),
+                  )
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 5.0),
+                child: Text(formatTime(Duration.zero),
+                  style: TextStyles.small66TextStyle,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget practiceSection(){
     return Container(
@@ -402,7 +462,15 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           practiceSectionText(),
-          RecordBar(recordPath: audioPath),
+          (){
+            if(!_isRecording){
+              return before_audio_bar();
+            }
+            else{
+              print("here come!!");
+              return AudioBar(recordPath: "mp3/omg.mp3");
+            }
+          }(),
           (){
             if(recordingState == 1){
               return recordingStart();
@@ -416,7 +484,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             return practiceGraph();
           }(),
           expSection()
-
 
         ],
       ),

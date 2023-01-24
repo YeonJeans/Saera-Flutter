@@ -5,17 +5,29 @@ import 'package:flutter_svg/svg.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
-class RecordBar extends StatefulWidget {
+class AudioBar extends StatefulWidget {
 
   final String recordPath;
 
-  const RecordBar({Key? key, required this.recordPath}) : super(key: key);
+  const AudioBar({Key? key, required this.recordPath}) : super(key: key);
 
   @override
-  State<RecordBar> createState() => _RecordBarState();
+  State<AudioBar> createState() => _AudioBarState();
 }
 
-class _RecordBarState extends State<RecordBar> {
+String formatTime(Duration duration){
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+
+  final minutes = twoDigits(duration.inMinutes.remainder(60));
+  final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+  return [
+    minutes,
+    seconds,
+  ].join(":");
+}
+
+class _AudioBarState extends State<AudioBar> {
 
   bool _isPlaying = false;
 
@@ -25,18 +37,6 @@ class _RecordBarState extends State<RecordBar> {
   Duration position = Duration.zero;
 
   String url = 'mp3/omg.mp3';
-
-  String formatTime(Duration duration){
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-    return [
-      minutes,
-      seconds,
-    ].join(":");
-  }
 
   @override
   void initState(){
@@ -68,7 +68,7 @@ class _RecordBarState extends State<RecordBar> {
   }
 
   Future setAudio() async {
-    audioPlayer.setSource(AssetSource(url));
+    audioPlayer.setSource(AssetSource(widget.recordPath));
   }
 
   @override
