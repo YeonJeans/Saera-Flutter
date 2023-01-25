@@ -56,9 +56,10 @@ class _LearnPageState extends State<LearnPage> {
     );
 
     Widget categorySection = Container(
-      padding: const EdgeInsets.only(top: 20),
-      //color: ColorStyles.saeraBeige,
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        //physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
             CategoryListTile(),
@@ -76,6 +77,7 @@ class _LearnPageState extends State<LearnPage> {
               resizeToAvoidBottomInset: false,
               body: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
+                //physics: const NeverScrollableScrollPhysics(),
                 children: <Widget>[
                   textSection,
                   searchSection,
