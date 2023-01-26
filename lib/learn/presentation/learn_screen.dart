@@ -18,7 +18,7 @@ class _LearnPageState extends State<LearnPage> {
   @override
   Widget build(BuildContext context) {
     Widget textSection = const Padding(
-      padding: EdgeInsets.only(top: 70.0, left: 10.0, right: 10.0),
+      padding: EdgeInsets.only(top: 70.0, left: 20.0, right: 20.0),
       child: Text(
         '태그로 빠르게\n학습할 문장을 선택해 보세요.',
         style: TextStyles.large00TextStyle,
@@ -26,7 +26,7 @@ class _LearnPageState extends State<LearnPage> {
     );
 
     Widget searchSection = Container(
-      padding: const EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+      padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
       child: Row(
         children: <Widget>[
           Flexible(
@@ -56,10 +56,8 @@ class _LearnPageState extends State<LearnPage> {
     );
 
     Widget categorySection = Container(
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        //physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
             CategoryListTile(),
@@ -75,15 +73,22 @@ class _LearnPageState extends State<LearnPage> {
             child: Scaffold(
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
-              body: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                //physics: const NeverScrollableScrollPhysics(),
-                children: <Widget>[
-                  textSection,
-                  searchSection,
-                  categorySection
-                ],
-              )
+                appBar: PreferredSize(
+                  preferredSize: Size.fromHeight(MediaQuery.of(context).size.height/4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      textSection,
+                      searchSection,
+                    ],
+                  ),
+                ),
+                body: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  children: <Widget>[
+                    categorySection
+                  ],
+                )
             )
         )
       ],
