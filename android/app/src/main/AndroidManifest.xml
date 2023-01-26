@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.saera">
+    package="com.yeonjeans.saera">
    <application
         android:label="saera"
         android:name="${applicationName}"
