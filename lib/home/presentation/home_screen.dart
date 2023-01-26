@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart';
 import 'package:saera/home/presentation/widgets/home_screen_background_image.dart';
 import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 import 'package:saera/style/color.dart';
@@ -53,7 +52,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget searchSection = Container(
-      padding: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.only(top: 50.0),
       child: Row(
         children: <Widget>[
           Flexible(
