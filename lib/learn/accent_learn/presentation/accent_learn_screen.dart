@@ -30,6 +30,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   String audioPath = "mp3/ex.wav";
 
+
+
   Widget appBarSection (){
     return Container(
       //padding: const EdgeInsets.symmetric(vertical: 10),

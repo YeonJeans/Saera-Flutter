@@ -20,10 +20,12 @@ String formatTime(Duration duration){
 
   final minutes = twoDigits(duration.inMinutes.remainder(60));
   final seconds = twoDigits(duration.inSeconds.remainder(60));
+  // final miliseconds = twoDigits(duration.inMilliseconds.remainder(100));
 
   return [
     minutes,
     seconds,
+    // miliseconds
   ].join(":");
 }
 
@@ -123,8 +125,8 @@ class _AudioBarState extends State<AudioBar> {
                     width: MediaQuery.of(context).size.width - 200,
                     child: Slider(
                       min: 0,
-                      max: duration.inSeconds.toDouble(),
-                      value: position.inSeconds.toDouble(),
+                      max: duration.inMilliseconds.toDouble(),
+                      value: position.inMilliseconds.toDouble(),
                       activeColor: ColorStyles.primary.withOpacity(0.4),
                       inactiveColor: Color(0xffE7E7E7),
                       label: position.inSeconds.round().toString(),
