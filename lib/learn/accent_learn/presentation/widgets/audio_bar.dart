@@ -129,9 +129,10 @@ class _AudioBarState extends State<AudioBar> {
                       value: position.inMilliseconds.toDouble(),
                       activeColor: ColorStyles.primary.withOpacity(0.4),
                       inactiveColor: Color(0xffE7E7E7),
-                      label: position.inSeconds.round().toString(),
+                      //label: position.inSeconds.round().toString(),
                       onChanged: (value) async {
-                        final position = Duration(seconds: value.toInt());
+                        final position = Duration(milliseconds: value.toInt());
+                        await audioPlayer.seek(position);
                         await audioPlayer.seek(position);
 
                         //optional: play audio if was paused
