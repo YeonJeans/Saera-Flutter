@@ -82,43 +82,6 @@ class _SearchPageState extends State<SearchPage> {
         ],
     );
 
-    Widget filterSection = Container(
-      padding: const EdgeInsets.only(top: 5.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Wrap(
-                spacing: 10.0,
-                children: [
-                  Chip(
-                    label: Text(
-                        '질문',
-                      style: TextStyles.regular00TextStyle,
-                    ),
-                    backgroundColor: ColorStyles.saeraYellow,
-                    deleteIcon: const Icon(
-                      Icons.cancel_rounded,
-                      color: ColorStyles.deleteGray,
-                      size: 20.0,
-                    ),
-                    onDeleted: () {
-                      print("deleted");
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-          IconButton(
-              onPressed: null,
-              icon: SvgPicture.asset('assets/icons/filter.svg')
-          )
-        ],
-      ),
-    );
-
     List<BookmarkListData> statement = [
       BookmarkListData('화장실은 어디에 있나요?', '질문'),
       BookmarkListData('아이스 아메리카노 한 잔 주세요.', '주문')
@@ -149,7 +112,6 @@ class _SearchPageState extends State<SearchPage> {
                   children: <Widget>[
                     appBarSection,
                     searchSection,
-                    filterSection,
                     statementSection
                   ],
                 ),
