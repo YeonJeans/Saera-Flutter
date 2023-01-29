@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_line_chart.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/audio_bar.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'dart:typed_data';
+
+
 
 
 class AccentPracticePage extends StatefulWidget {
@@ -29,7 +34,59 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   AudioPlayer audioPlayer = AudioPlayer();
 
   String audioPath = "mp3/ex.wav";
+  String recordingPath = "";
+  String _fileName = "record.wav";
 
+  final _recorder = FlutterSoundRecorder();
+  bool isRecorderReady = false;
+
+  @override
+  void initState(){
+    super.initState();
+
+    initRecorder();
+  }
+
+  @override
+  void dispose(){
+    _recorder.closeRecorder();
+    super.dispose();
+  }
+
+  Future initRecorder() async {
+    final status = await Permission.microphone.request();
+
+    if(status != PermissionStatus.granted){
+      throw 'Microphone permission not granted';
+    }else{
+      await _recorder.openRecorder();
+      isRecorderReady = true;
+      // _recorder.setSubscriptionDuration(
+      //     const Duration(milliseconds: 500)
+      // );
+    }
+
+  }
+
+  Future startRecording() async {
+    if(!isRecorderReady){
+      return;
+    }
+    await _recorder.startRecorder(toFile: 'audio.wav');
+  }
+
+  Future stopRecording() async {
+    if(!isRecorderReady){
+      return;
+    }
+    // await _recorder.stopRecorder();
+
+    recordingPath  = (await _recorder.stopRecorder())!;
+    print("여기까지 성공 : $recordingPath");
+    // final audioFile = File();
+    //
+    // print('Recorded audio: $audioFile');
+  }
 
 
   Widget appBarSection (){
@@ -142,7 +199,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           exampleSectionText(),
-          AudioBar(recordPath: audioPath),
+          AudioBar(recordPath: audioPath, isRecording: false,),
           exampleGraph(),
         ]
       ),
@@ -167,7 +224,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget recordingStart(){
     return GestureDetector(
-      onTap: (){
+      onTap: () async {
+        await startRecording();
         setState(() {
           recordingState = 2;
         });
@@ -199,7 +257,9 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget recordingWidget(){
     return GestureDetector(
-      onTap: (){
+      onTap: () async {
+        await stopRecording();
+
         setState(() {
           recordingState = 3;
           _isRecording = true;
@@ -469,8 +529,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               return before_audio_bar();
             }
             else{
-              print("here come!!");
-              return AudioBar(recordPath: "mp3/omg.mp3");
+              print("here come!! recordPath ${recordingPath}/audio.wav");
+              return AudioBar(recordPath: recordingPath, isRecording: true,);
             }
           }(),
           (){

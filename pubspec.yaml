@@ -38,6 +38,9 @@ dependencies:
   flutter_svg: ^1.1.6
   audioplayers: ^2.0.0
   fl_chart: ^0.55.2
+  permission_handler: ^10.2.0
+  path_provider: ^2.0.12
+  flutter_sound: ^9.2.13
 
 
 dev_dependencies:

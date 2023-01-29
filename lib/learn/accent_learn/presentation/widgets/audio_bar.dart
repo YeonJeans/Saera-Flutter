@@ -8,8 +8,9 @@ import 'package:saera/style/font.dart';
 class AudioBar extends StatefulWidget {
 
   final String recordPath;
+  final bool isRecording;
 
-  const AudioBar({Key? key, required this.recordPath}) : super(key: key);
+  const AudioBar({Key? key, required this.recordPath, required this.isRecording}) : super(key: key);
 
   @override
   State<AudioBar> createState() => _AudioBarState();
@@ -70,7 +71,11 @@ class _AudioBarState extends State<AudioBar> {
   }
 
   Future setAudio() async {
-    audioPlayer.setSource(AssetSource(widget.recordPath));
+    if(widget.isRecording){
+      audioPlayer.setSource(DeviceFileSource(widget.recordPath));
+    }else{
+      audioPlayer.setSource(AssetSource(widget.recordPath));
+    }
   }
 
   @override

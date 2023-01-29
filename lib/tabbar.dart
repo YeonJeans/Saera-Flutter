@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:saera/home/presentation/home_screen.dart';
-import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
 import 'package:saera/learn/presentation/learn_screen.dart';
 import 'package:saera/mypage/presentation/mypage_screen.dart';
 
@@ -53,8 +52,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
   List<Widget> _widgetOptions = [
     HomePage(),
     LearnPaage(),
-    // MyPage(),
-    AccentPracticePage()
+    MyPage(),
   ];
 
   @override
