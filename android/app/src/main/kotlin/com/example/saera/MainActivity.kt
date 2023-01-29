@@ -1,4 +1,4 @@
-package com.example.saera
+package com.yeonjeans.saera
 
 import io.flutter.embedding.android.FlutterActivity
 
