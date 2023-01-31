@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'login/presentation/login_screen.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     home: const SplashScreen(),
     routes: <String, WidgetBuilder>{
