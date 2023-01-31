@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:saera/home/presentation/widgets/home_screen_background_image.dart';
 import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage> {
               child: TextField(
                 maxLines: 1,
                 readOnly: true,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage())),
+                onTap: () => Get.to(SearchPage()),
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                   hintText: '어떤 문장을 학습할까요?',
