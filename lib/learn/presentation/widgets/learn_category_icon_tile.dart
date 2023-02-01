@@ -18,7 +18,7 @@ class CategoryIconTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconButton(
-              onPressed: () => Get.to(SearchPage()),
+              onPressed: () => Get.to(SearchPage(), arguments: _data.text),
               icon: Icon(
                 _data.icon,
                 size: 40,
