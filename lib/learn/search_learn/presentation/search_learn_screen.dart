@@ -14,12 +14,34 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final List<ChipData> _chipList = [];
+  List<String> placeList = ["병원", "회사", "편의점", "카페", "은행", "옷가게", "음식점"];
+
   late TextEditingController _textEditingController;
+  var value = Get.arguments;
+
+  void _addChip(var chipText) {
+    setState(() {
+      value != null
+      ? _chipList.add(ChipData(
+          id: DateTime.now().toString(),
+          name: chipText,
+          color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
+      )) : Container();
+    });
+  }
+
+  void _deleteChip(String id) {
+    setState(() {
+      _chipList.removeWhere((element) => element.id == id);
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
+    _addChip(value);
   }
 
   @override
@@ -44,9 +66,9 @@ class _SearchPageState extends State<SearchPage> {
                 icon: SvgPicture.asset(
                   'assets/icons/back.svg',
                 ),
-                label: Padding(
-                  padding: EdgeInsets.only(bottom: 2),
-                  child: const Text(' 뒤로',
+                label: const Padding(
+                  padding: EdgeInsets.only(bottom: 2.0),
+                  child: Text(' 뒤로',
                     style: TextStyles.backBtnTextStyle,
                     textAlign: TextAlign.center,
                   ),
@@ -56,7 +78,9 @@ class _SearchPageState extends State<SearchPage> {
         ),
     );
 
-    Widget searchSection = Row(
+    Widget searchSection = Container(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Row(
         children: <Widget>[
           Flexible(
               child: TextField(
@@ -81,6 +105,20 @@ class _SearchPageState extends State<SearchPage> {
               )
           )
         ],
+      ),
+    );
+
+    Widget chipSection = Wrap(
+        spacing: 8.0,
+        children: _chipList.map((chip) => Chip(
+          labelPadding: const EdgeInsets.only(left: 8.0, right: 4.0, bottom: 2.0),
+          labelStyle: TextStyles.small00TextStyle,
+          label: Text(
+            chip.name,
+          ),
+          backgroundColor: chip.color.first,
+          onDeleted: () => _deleteChip(chip.id),
+        )).toList()
     );
 
     List<BookmarkListData> statement = [
@@ -89,7 +127,7 @@ class _SearchPageState extends State<SearchPage> {
     ];
     Widget statementSection = ListView.separated(
         shrinkWrap: true,
-        padding: EdgeInsets.only(top: 10),
+        padding: EdgeInsets.only(top: 10.0),
         itemBuilder: (BuildContext context, int index) {
           return BookmarkListTile(statement[index]);
         },
@@ -109,10 +147,11 @@ class _SearchPageState extends State<SearchPage> {
               body: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 21),
+                  padding: const EdgeInsets.symmetric(horizontal: 21.0),
                   children: <Widget>[
                     appBarSection,
                     searchSection,
+                    chipSection,
                     statementSection
                   ],
                 ),
@@ -121,6 +160,12 @@ class _SearchPageState extends State<SearchPage> {
         )
       ],
     );
-
   }
+}
+
+class ChipData {
+  final String id;
+  final String name;
+  final Set<Color> color;
+  ChipData({required this.id, required this.name, required this.color});
 }
