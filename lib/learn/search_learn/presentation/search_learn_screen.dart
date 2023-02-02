@@ -20,20 +20,30 @@ class _SearchPageState extends State<SearchPage> {
   late TextEditingController _textEditingController;
   var value = Get.arguments;
 
+  bool _visibility = false;
+
+  void _setVisibility() {
+    setState(() {
+      _chipList.isNotEmpty ? _visibility = true : _visibility = false;
+    });
+}
+
   void _addChip(var chipText) {
     setState(() {
       value != null
       ? _chipList.add(ChipData(
           id: DateTime.now().toString(),
           name: chipText,
-          color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
+          color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige},
       )) : Container();
+      _setVisibility();
     });
   }
 
   void _deleteChip(String id) {
     setState(() {
       _chipList.removeWhere((element) => element.id == id);
+      _setVisibility();
     });
   }
 
@@ -108,17 +118,29 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
 
-    Widget chipSection = Wrap(
-        spacing: 8.0,
-        children: _chipList.map((chip) => Chip(
-          labelPadding: const EdgeInsets.only(left: 8.0, right: 4.0, bottom: 2.0),
-          labelStyle: TextStyles.small00TextStyle,
-          label: Text(
-            chip.name,
+    Widget chipSection = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Wrap(
+            spacing: 8.0,
+            children: _chipList.map((chip) => Chip(
+              labelPadding: const EdgeInsets.only(left: 8.0, right: 4.0, bottom: 2.0),
+              labelStyle: TextStyles.small00TextStyle,
+              label: Text(
+                chip.name,
+              ),
+              backgroundColor: chip.color.first,
+              onDeleted: () => _deleteChip(chip.id),
+            )).toList()
+        ),
+        Visibility(
+          visible: _visibility,
+          child: IconButton(
+            onPressed: () => {_chipList.isNotEmpty ? _chipList.forEach((chip) { _deleteChip(chip.id); }) : Container()},
+            icon: SvgPicture.asset('assets/icons/refresh.svg', color: ColorStyles.totalGray,),
           ),
-          backgroundColor: chip.color.first,
-          onDeleted: () => _deleteChip(chip.id),
-        )).toList()
+        )
+      ],
     );
 
     List<BookmarkListData> statement = [
