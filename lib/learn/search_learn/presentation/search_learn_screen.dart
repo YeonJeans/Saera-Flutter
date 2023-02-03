@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
 
@@ -13,12 +14,54 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final List<ChipData> _chipList = [];
+  List<String> placeList = ["병원", "회사", "편의점", "카페", "은행", "옷가게", "음식점"];
+
   late TextEditingController _textEditingController;
+  var value = Get.arguments;
+
+  bool _visibility = false;
+
+  void _setVisibility() {
+    setState(() {
+      _chipList.isNotEmpty ? _visibility = true : _visibility = false;
+    });
+  }
+
+  void _addChip(var chipText) {
+    setState(() {
+      value != null
+      ? _chipList.add(ChipData(
+          id: DateTime.now().toString(),
+          name: chipText,
+          color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige},
+      )) : Container();
+      _setVisibility();
+    });
+  }
+
+  void _deleteChip(String id) {
+    setState(() {
+      _chipList.removeWhere((element) => element.id == id);
+      _setVisibility();
+    });
+  }
+
+  void _deleteAllChip() {
+    for(ChipData data in _chipList) {
+      var index = _chipList.indexOf(data);
+      for (int i = 0; i <= index; i++) {
+        _deleteChip(data.id);
+      }
+      break;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
+    _addChip(value);
   }
 
   @override
@@ -36,16 +79,16 @@ class _SearchPageState extends State<SearchPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextButton.icon(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Get.back(),
                 style: TextButton.styleFrom(
                     backgroundColor: Colors.transparent
                 ),
                 icon: SvgPicture.asset(
                   'assets/icons/back.svg',
                 ),
-                label: Padding(
-                  padding: EdgeInsets.only(bottom: 2),
-                  child: const Text(' 뒤로',
+                label: const Padding(
+                  padding: EdgeInsets.only(bottom: 2.0),
+                  child: Text(' 뒤로',
                     style: TextStyles.backBtnTextStyle,
                     textAlign: TextAlign.center,
                   ),
@@ -55,7 +98,9 @@ class _SearchPageState extends State<SearchPage> {
         ),
     );
 
-    Widget searchSection = Row(
+    Widget searchSection = Container(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Row(
         children: <Widget>[
           Flexible(
               child: TextField(
@@ -80,43 +125,33 @@ class _SearchPageState extends State<SearchPage> {
               )
           )
         ],
+      ),
     );
 
-    Widget filterSection = Container(
-      padding: const EdgeInsets.only(top: 5.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Wrap(
-                spacing: 10.0,
-                children: [
-                  Chip(
-                    label: Text(
-                        '질문',
-                      style: TextStyles.regular00TextStyle,
-                    ),
-                    backgroundColor: ColorStyles.saeraYellow,
-                    deleteIcon: const Icon(
-                      Icons.cancel_rounded,
-                      color: ColorStyles.deleteGray,
-                      size: 20.0,
-                    ),
-                    onDeleted: () {
-                      print("deleted");
-                    },
-                  ),
-                ],
-              )
-            ],
+
+    Widget chipSection = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Wrap(
+            spacing: 8.0,
+            children: _chipList.map((chip) => Chip(
+              labelPadding: const EdgeInsets.only(left: 8.0, right: 4.0, bottom: 2.0),
+              labelStyle: TextStyles.small00TextStyle,
+              label: Text(
+                chip.name,
+              ),
+              backgroundColor: chip.color.first,
+              onDeleted: () => _deleteChip(chip.id),
+            )).toList()
+        ),
+        Visibility(
+          visible: _visibility,
+          child: IconButton(
+            onPressed: () => { _chipList.isNotEmpty ? _deleteAllChip() : Container()},
+            icon: SvgPicture.asset('assets/icons/refresh.svg', color: ColorStyles.totalGray,),
           ),
-          IconButton(
-              onPressed: null,
-              icon: SvgPicture.asset('assets/icons/filter.svg')
-          )
-        ],
-      ),
+        )
+      ],
     );
 
     List<BookmarkListData> statement = [
@@ -125,7 +160,7 @@ class _SearchPageState extends State<SearchPage> {
     ];
     Widget statementSection = ListView.separated(
         shrinkWrap: true,
-        padding: EdgeInsets.only(top: 10),
+        padding: EdgeInsets.only(top: 10.0),
         itemBuilder: (BuildContext context, int index) {
           return BookmarkListTile(statement[index]);
         },
@@ -145,11 +180,11 @@ class _SearchPageState extends State<SearchPage> {
               body: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 21),
+                  padding: const EdgeInsets.symmetric(horizontal: 21.0),
                   children: <Widget>[
                     appBarSection,
                     searchSection,
-                    filterSection,
+                    chipSection,
                     statementSection
                   ],
                 ),
@@ -158,6 +193,12 @@ class _SearchPageState extends State<SearchPage> {
         )
       ],
     );
-
   }
+}
+
+class ChipData {
+  final String id;
+  final String name;
+  final Set<Color> color;
+  ChipData({required this.id, required this.name, required this.color});
 }
