@@ -26,7 +26,7 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _chipList.isNotEmpty ? _visibility = true : _visibility = false;
     });
-}
+  }
 
   void _addChip(var chipText) {
     setState(() {
@@ -45,6 +45,16 @@ class _SearchPageState extends State<SearchPage> {
       _chipList.removeWhere((element) => element.id == id);
       _setVisibility();
     });
+  }
+
+  void _deleteAllChip() {
+    for(ChipData data in _chipList) {
+      var index = _chipList.indexOf(data);
+      for (int i = 0; i <= index; i++) {
+        _deleteChip(data.id);
+      }
+      break;
+    }
   }
 
   @override
@@ -118,6 +128,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
 
+
     Widget chipSection = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -136,7 +147,7 @@ class _SearchPageState extends State<SearchPage> {
         Visibility(
           visible: _visibility,
           child: IconButton(
-            onPressed: () => {_chipList.isNotEmpty ? _chipList.forEach((chip) { _deleteChip(chip.id); }) : Container()},
+            onPressed: () => { _chipList.isNotEmpty ? _deleteAllChip() : Container()},
             icon: SvgPicture.asset('assets/icons/refresh.svg', color: ColorStyles.totalGray,),
           ),
         )
