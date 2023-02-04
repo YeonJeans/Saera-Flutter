@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 
 import '../../../style/color.dart';
 import '../../../style/font.dart';
@@ -16,7 +18,7 @@ class CategoryIconTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconButton(
-              onPressed: null,
+              onPressed: () => Get.to(SearchPage(), arguments: _data.text),
               icon: Icon(
                 _data.icon,
                 size: 40,

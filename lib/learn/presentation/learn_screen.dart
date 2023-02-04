@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/presentation/widgets/learn_category_list_tile.dart';
 import 'package:saera/learn/presentation/widgets/learn_screen_background_image.dart';
@@ -33,7 +34,7 @@ class _LearnPageState extends State<LearnPage> {
               child: TextField(
                 maxLines: 1,
                 readOnly: true,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage())),
+                onTap: () => Get.to(SearchPage()),
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                   hintText: '직접 검색해보세요.',

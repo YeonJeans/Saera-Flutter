@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:saera/home/bookmark_home/presentation/widgets/bookmark_home_background_image.dart';
 import 'package:saera/home/bookmark_home/presentation/widgets/bookmark_list_tile.dart';
-import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
 class BookmarkPage extends StatefulWidget {
