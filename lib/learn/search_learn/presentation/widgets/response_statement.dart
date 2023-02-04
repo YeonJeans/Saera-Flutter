@@ -2,7 +2,7 @@ class Statement {
   final int id;
   final String content;
   final List<String> tags;
-  final bool bookmarked;
+  bool bookmarked;
 
   Statement(
       {required this.id,

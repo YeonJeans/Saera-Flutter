@@ -87,6 +87,18 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  createBookmark (int id) async {
+    var url = Uri.parse('${serverHttp}/statements/${id}/bookmark');
+    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+    print("create : $response");
+  }
+
+  void deleteBookmark (int id) async {
+    var url = Uri.parse('${serverHttp}/statements/bookmark/${id}');
+    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+    print("delete : $response");
+  }
+
   @override
   void initState() {
     super.initState();
@@ -204,6 +216,7 @@ class _SearchPageState extends State<SearchPage> {
             } else {
               List<Statement> statements = snapshot.data;
               return Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 height: MediaQuery.of(context).size.height,
                 child: ListView.separated(
                     itemBuilder: ((context, index) {
@@ -236,8 +249,30 @@ class _SearchPageState extends State<SearchPage> {
                                   ],
                                 ),
                                 IconButton(
-                                    onPressed: null,
-                                    icon: SvgPicture.asset('assets/icons/star_fill.svg')
+                                    onPressed: (){
+                                      if(statement.bookmarked){
+                                        setState(() {
+                                          statement.bookmarked = false;
+                                        });
+                                        deleteBookmark(statement.id);
+                                      }
+                                      else{
+                                        setState(() {
+                                          statement.bookmarked = true;
+                                        });
+                                        createBookmark(statement.id);
+                                      }
+                                    },
+                                    icon: statement.bookmarked?
+                                    SvgPicture.asset(
+                                      'assets/icons/star_fill.svg',
+                                      fit: BoxFit.scaleDown,
+                                    )
+                                        :
+                                    SvgPicture.asset(
+                                      'assets/icons/star_unfill.svg',
+                                      fit: BoxFit.scaleDown,
+                                    )
                                 )
                               ],
                             ),
