@@ -159,7 +159,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
       setState(() {
         recordingState = 4;
-        accuracyRate = body["accuracy"];
+        accuracyRate = body["score"];
       });
 
       x2.clear();
@@ -343,10 +343,14 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미
               if (snapshot.hasData == false) {
-                return const SizedBox(
-                  width: 5,
-                  height: 5,
-                  child: CircularProgressIndicator(),
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(),
+                )]
                 );
               }
               //error가 발생하게 될 경우 반환하게 되는 부분
@@ -759,11 +763,16 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         const AccentPracticeBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
+              appBar: AppBar(
+                title: appBarSection(),
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+              ),
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               body: ListView(
                 children: [
-                  appBarSection(),
+                  // appBarSection(),
                   Container(
                     margin: const EdgeInsets.only(left: 14, right: 14),
                     child: Column(
