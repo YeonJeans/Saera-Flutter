@@ -35,6 +35,7 @@ class TextStyles {
 
 
   static const large00TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff000000));
+  static const large00NormalTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.normal, color: Color(0xff000000));
   static const large33TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff333333));
   static const largeBlueColoredTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff3E68A8));
   static const largeHighlightBlueTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff86C4CC));
