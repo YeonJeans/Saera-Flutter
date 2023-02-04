@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,12 +12,19 @@ import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
+import 'package:saera/server.dart';
 
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:http_parser/http_parser.dart';
 
 
 class AccentPracticePage extends StatefulWidget {
-  const AccentPracticePage({Key? key}) : super(key: key);
+
+  final int id;
+
+  const AccentPracticePage({Key? key, required this.id}) : super(key: key);
 
   @override
   State<AccentPracticePage> createState() => _AccentPracticePageState();
@@ -22,29 +32,177 @@ class AccentPracticePage extends StatefulWidget {
 
 class _AccentPracticePageState extends State<AccentPracticePage> with TickerProviderStateMixin {
 
-
+  String content = "";
   String userName = "수연";
 
-  int accuracyRate = 90;
+  double accuracyRate = 0;
   int recordingState = 1;
+
 
   bool _isBookmarked = false;
   bool _isRecording = false;
+  late Future <dynamic> _isAudioReady;
 
   AudioPlayer audioPlayer = AudioPlayer();
 
-  String audioPath = "mp3/ex.wav";
+  // String audioPath = "mp3/ex.wav";
+  String audioPath = "";
   String recordingPath = "";
   String _fileName = "record.wav";
 
   final _recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
 
+  late List<double> x = [];
+  late List<double> y = [];
+
+  late List<double> x2 = [];
+  late List<double> y2 = [];
+
+  getExampleAccent() async {
+
+    var url = Uri.parse('${serverHttp}/statements/${widget.id}');
+
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      x.clear();
+      y.clear();
+
+      setState(() {
+        content = body["content"];
+      });
+
+      setState(() {
+        _isBookmarked = body["bookmarked"];
+      });
+
+      for(int i in body["pitch_x"]){
+        double pitch  = i.toDouble();
+        x.add(pitch);
+      }
+
+      y = List.from(body["pitch_y"]);
+
+    }
+  }
+
+
+
+  Future<dynamic> getTTS() async {
+
+    var url = Uri.parse('${serverHttp}/statements/record/${widget.id}');
+
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav" });
+
+    if (response.statusCode == 200) {
+
+      Uint8List audioInUnit8List = response.bodyBytes;
+      final tempDir = await getTemporaryDirectory();
+
+      File file = await File('${tempDir.path}/exampleAudio${widget.id}.wav').create();
+      file.writeAsBytesSync(audioInUnit8List);
+
+      setState(() {
+        audioPath = file.path;
+      });
+
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  createBookmark (int id) async {
+
+    var url = Uri.parse('${serverHttp}/statements/${id}/bookmark');
+
+
+    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _isBookmarked = !_isBookmarked;
+      });
+    }
+  }
+
+  void deleteBookmark () async {
+    var url = Uri.parse('${serverHttp}/statements/bookmark/${widget.id}');
+
+    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _isBookmarked = !_isBookmarked;
+      });
+    }
+  }
+
+  getAccentEvaluation() async {
+    var url = Uri.parse('${serverHttp}/practiced');
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" });
+    request.files.add(await http.MultipartFile.fromPath('record', recordingPath));
+
+    request.fields['id'] = widget.id.toString();
+
+    var responsed = await request.send();
+    var response = await http.Response.fromStream(responsed);
+
+    if (responsed.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      setState(() {
+        recordingState = 4;
+        accuracyRate = body["score"];
+      });
+
+      x2.clear();
+      y2.clear();
+
+      for(int i in body["pitch_x"]){
+        double pitch  = i.toDouble();
+        x2.add(pitch);
+      }
+
+      y2 = List.from(body["pitch_y"]);
+
+      return true;
+    }
+  }
+
+  String accuracyComment(double score){
+    if(score == 0){
+      return "녹음하여 정확도를 측정해 보세요!";
+    }
+    else if(score > 0 && score < 30){
+      return "할 수 있어요!";
+    }
+    else if (score >= 30 && score < 60) {
+      return "좀 더 노력해 봅시다!";
+    }
+    else if(score >= 60 && score < 80) {
+      return "거의 완벽했어요!";
+    }
+    else{
+      return "완벽합니다!!";
+    }
+
+  }
+
+
   @override
   void initState(){
-    super.initState();
-
     initRecorder();
+    getExampleAccent();
+    _isAudioReady = getTTS();
+
+    super.initState();
   }
 
   @override
@@ -79,13 +237,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     if(!isRecorderReady){
       return;
     }
-    // await _recorder.stopRecorder();
 
     recordingPath  = (await _recorder.stopRecorder())!;
-    print("여기까지 성공 : $recordingPath");
-    // final audioFile = File();
-    //
-    // print('Recorded audio: $audioFile');
   }
 
 
@@ -98,7 +251,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         children: [
           TextButton.icon(
               onPressed: () {
-                //print("뒤로!");
+                print("뒤로!");
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
               icon: SvgPicture.asset(
@@ -112,9 +265,12 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
           IconButton(
               onPressed: (){
-                setState(() {
-                  _isBookmarked = !_isBookmarked;
-                });
+                if(_isBookmarked){
+                  deleteBookmark();
+                }
+                else{
+                  createBookmark(widget.id);
+                }
               },
               icon: _isBookmarked ?
               SvgPicture.asset(
@@ -141,14 +297,10 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
           color: ColorStyles.etcYellow,
           borderRadius: BorderRadius.circular(10)
       ),
-      child: const Center(
+      child: Center(
         child: Text(
-          "화장실은 어디에 있나요?",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Color(0xff333333),
-          ),
+          content,
+          style: TextStyles.large33TextStyle,
         ),
       ),
     );
@@ -186,7 +338,36 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       ),
       child: Container(
         padding: const EdgeInsets.all(25),
-        child: const AccentLineChart(),
+        child: FutureBuilder(
+            future: _isAudioReady,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미
+              if (snapshot.hasData == false) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(),
+                )]
+                );
+              }
+              //error가 발생하게 될 경우 반환하게 되는 부분
+              else if (snapshot.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                );
+              }
+              // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
+              else {
+                return AccentLineChart(x: x, y: y);
+              }
+            }),
       ),
     );
   }
@@ -199,7 +380,29 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           exampleSectionText(),
-          AudioBar(recordPath: audioPath, isRecording: false,),
+        FutureBuilder(
+            future: _isAudioReady,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미
+              if (snapshot.hasData == false) {
+                // return CircularProgressIndicator();
+                return before_audio_bar();
+              }
+              //error가 발생하게 될 경우 반환하게 되는 부분
+              else if (snapshot.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                );
+              }
+              // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
+              else {
+                return AudioBar(recordPath: audioPath, isRecording: false,);
+              }
+            }),
           exampleGraph(),
         ]
       ),
@@ -259,10 +462,11 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     return GestureDetector(
       onTap: () async {
         await stopRecording();
+        getAccentEvaluation();
 
         setState(() {
-          recordingState = 3;
           _isRecording = true;
+          recordingState = 3;
         });
       },
       child: Container(
@@ -306,9 +510,9 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   Widget analysisAccent(){
     return GestureDetector(
       onTap: (){
-        setState(() {
-          recordingState = 4;
-        });
+        // setState(() {
+        //
+        // });
       },
       child: Container(
           margin: const EdgeInsets.only(top: 19),
@@ -368,7 +572,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             ),
             child: Container(
               padding: const EdgeInsets.all(25),
-              child: const AccentLineChart(),
+              child: AccentLineChart(x: x2, y: y2),
             ),
         ),
 
@@ -432,6 +636,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                       value: accuracyRate/100.0,
                       valueColor: const AlwaysStoppedAnimation<Color>(ColorStyles.saeraBlue),
                       backgroundColor: ColorStyles.expFillGray,
+
                     ),
                   ),
                 ),
@@ -441,7 +646,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                     const Text("정확도 ",
                       style: TextStyles.regular25BoldTextStyle,
                     ),
-                    Text("$accuracyRate%",
+                    Text("${accuracyRate.round()}%",
                       style: TextStyles.regularHighlightBlueBoldTextStyle,
                     ),
                   ],
@@ -450,7 +655,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             ),
             Container(
               margin: const EdgeInsets.only(top: 10),
-              child: const Text("완벽합니다! 학습 완료 경험치 +120xp",
+              child: Text(accuracyComment(accuracyRate),
                 style: TextStyles.small66TextStyle,
               ),
             )
@@ -529,7 +734,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               return before_audio_bar();
             }
             else{
-              print("here come!! recordPath ${recordingPath}/audio.wav");
               return AudioBar(recordPath: recordingPath, isRecording: true,);
             }
           }(),
@@ -559,11 +763,16 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         const AccentPracticeBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
+              appBar: AppBar(
+                title: appBarSection(),
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+              ),
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               body: ListView(
                 children: [
-                  appBarSection(),
+                  // appBarSection(),
                   Container(
                     margin: const EdgeInsets.only(left: 14, right: 14),
                     child: Column(

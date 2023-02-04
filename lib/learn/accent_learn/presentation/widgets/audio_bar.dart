@@ -21,12 +21,10 @@ String formatTime(Duration duration){
 
   final minutes = twoDigits(duration.inMinutes.remainder(60));
   final seconds = twoDigits(duration.inSeconds.remainder(60));
-  // final miliseconds = twoDigits(duration.inMilliseconds.remainder(100));
 
   return [
     minutes,
     seconds,
-    // miliseconds
   ].join(":");
 }
 
@@ -39,7 +37,7 @@ class _AudioBarState extends State<AudioBar> {
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
 
-  String url = 'mp3/omg.mp3';
+  String url = '';
 
   @override
   void initState(){
@@ -74,14 +72,13 @@ class _AudioBarState extends State<AudioBar> {
     if(widget.isRecording){
       audioPlayer.setSource(DeviceFileSource(widget.recordPath));
     }else{
-      audioPlayer.setSource(AssetSource(widget.recordPath));
+      audioPlayer.setSource(DeviceFileSource(widget.recordPath));
     }
   }
 
   @override
   void dispose(){
     audioPlayer.dispose();
-
     super.dispose();
   }
 
@@ -134,13 +131,10 @@ class _AudioBarState extends State<AudioBar> {
                       value: position.inMilliseconds.toDouble(),
                       activeColor: ColorStyles.primary.withOpacity(0.4),
                       inactiveColor: Color(0xffE7E7E7),
-                      //label: position.inSeconds.round().toString(),
                       onChanged: (value) async {
                         final position = Duration(milliseconds: value.toInt());
                         await audioPlayer.seek(position);
                         await audioPlayer.seek(position);
-
-                        //optional: play audio if was paused
                         await audioPlayer.resume();
                       },
                     ),
