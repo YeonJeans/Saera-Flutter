@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
+import 'package:http/http.dart' as http;
 
-import '../../../home/bookmark_home/presentation/widgets/bookmark_list_tile.dart';
+import '../../../server.dart';
 import '../../../style/color.dart';
 import '../../../style/font.dart';
 
@@ -14,6 +19,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  Future<dynamic>? statement;
   final List<ChipData> _chipList = [];
   List<String> placeList = ["병원", "회사", "편의점", "카페", "은행", "옷가게", "음식점"];
 
@@ -48,13 +54,60 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _deleteAllChip() {
-    for(ChipData data in _chipList) {
+    for (ChipData data in _chipList) {
       var index = _chipList.indexOf(data);
       for (int i = 0; i <= index; i++) {
         _deleteChip(data.id);
       }
       break;
     }
+  }
+
+  Color selectTagColor(String tag) {
+    if (tag == '질문') {
+      return ColorStyles.saeraYellow;
+    } else if (tag == '업무') {
+      return ColorStyles.saeraKhaki;
+    } else if (tag == '은행') {
+      return ColorStyles.saeraBlue;
+    } else {
+      return ColorStyles.saeraBeige;
+    }
+  }
+
+  Future<List<Statement>> searchStatement(String input) async {
+    List<Statement> _list = [];
+    var url = Uri.parse('$serverHttp/statements?content=$input');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (_list.isEmpty) {
+        for (dynamic i in body) {
+          int id = i["id"];
+          String content = i["content"];
+          List<String> tags = List.from(i["tags"]);
+          bool bookmarked = i["bookmarked"];
+          _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked));
+        }
+      }
+      return _list;
+    } else {
+      throw Exception("데이터를 불러오는데 실패했습니다.");
+    }
+  }
+
+  createBookmark (int id) async {
+    var url = Uri.parse('${serverHttp}/statements/${id}/bookmark');
+    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+    print("create : $response");
+  }
+
+  void deleteBookmark (int id) async {
+    var url = Uri.parse('${serverHttp}/statements/bookmark/${id}');
+    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+    print("delete : $response");
   }
 
   @override
@@ -106,7 +159,15 @@ class _SearchPageState extends State<SearchPage> {
               child: TextField(
                 autofocus: true,
                 controller: _textEditingController,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-z|A-Z|0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ᆞ|ᆢ|ㆍ|ᆢ|ᄀᆞ|ᄂᆞ|ᄃᆞ|ᄅᆞ|ᄆᆞ|ᄇᆞ|ᄉᆞ|ᄋᆞ|ᄌᆞ|ᄎᆞ|ᄏᆞ|ᄐᆞ|ᄑᆞ|ᄒᆞ]'))
+                ],
                 maxLines: 1,
+                onSubmitted: (s) {
+                  setState(() {
+                    statement = searchStatement(s);
+                  });
+                },
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                   hintText: '어떤 문장을 학습할까요?',
@@ -154,20 +215,92 @@ class _SearchPageState extends State<SearchPage> {
       ],
     );
 
-    List<BookmarkListData> statement = [
-      BookmarkListData('화장실은 어디에 있나요?', '질문'),
-      BookmarkListData('아이스 아메리카노 한 잔 주세요.', '주문')
-    ];
-    Widget statementSection = ListView.separated(
-        shrinkWrap: true,
-        padding: EdgeInsets.only(top: 10.0),
-        itemBuilder: (BuildContext context, int index) {
-          return BookmarkListTile(statement[index]);
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Divider(thickness: 1,);
-        },
-        itemCount: statement.length
+    Widget statementSection = FutureBuilder(
+        future: statement,
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
+            } else {
+              List<Statement> statements = snapshot.data;
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                height: MediaQuery.of(context).size.height,
+                child: ListView.separated(
+                    itemBuilder: ((context, index) {
+                      Statement statement = statements[index];
+                      return ListTile(
+                          contentPadding: EdgeInsets.only(left: 11),
+                          title: Transform.translate(
+                            offset: const Offset(0, 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        statement.content,
+                                        style: TextStyles.regular00TextStyle
+                                    ),
+                                    Row(
+                                      children: statement.tags.map((tag) {
+                                        return Container(
+                                          margin: EdgeInsets.only(right: 4),
+                                          child: Chip(
+                                            label: Text(tag),
+                                            labelStyle: TextStyles.small00TextStyle,
+                                            backgroundColor: selectTagColor(tag)
+                                          ),
+                                        );
+                                      }).toList(),
+                                    )
+                                  ],
+                                ),
+                                IconButton(
+                                    onPressed: (){
+                                      if(statement.bookmarked){
+                                        setState(() {
+                                          statement.bookmarked = false;
+                                        });
+                                        deleteBookmark(statement.id);
+                                      }
+                                      else{
+                                        setState(() {
+                                          statement.bookmarked = true;
+                                        });
+                                        createBookmark(statement.id);
+                                      }
+                                    },
+                                    icon: statement.bookmarked?
+                                    SvgPicture.asset(
+                                      'assets/icons/star_fill.svg',
+                                      fit: BoxFit.scaleDown,
+                                    )
+                                        :
+                                    SvgPicture.asset(
+                                      'assets/icons/star_unfill.svg',
+                                      fit: BoxFit.scaleDown,
+                                    )
+                                )
+                              ],
+                            ),
+                          )
+                      );
+                    }),
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(thickness: 1,);
+                    },
+                    itemCount: statements.length
+                ),
+              );
+            }
+          } else {
+            return Container();
+          }
+        })
     );
 
     return Stack(
