@@ -63,6 +63,18 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  Color selectTagColor(String tag) {
+    if (tag == '질문') {
+      return ColorStyles.saeraYellow;
+    } else if (tag == '업무') {
+      return ColorStyles.saeraKhaki;
+    } else if (tag == '은행') {
+      return ColorStyles.saeraBlue;
+    } else {
+      return ColorStyles.saeraBeige;
+    }
+  }
+
   Future<List<Statement>> searchStatement(String input) async {
     List<Statement> _list = [];
     var url = Uri.parse('$serverHttp/statements?content=$input');
@@ -80,7 +92,6 @@ class _SearchPageState extends State<SearchPage> {
           _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked));
         }
       }
-
       return _list;
     } else {
       throw Exception("데이터를 불러오는데 실패했습니다.");
@@ -156,7 +167,6 @@ class _SearchPageState extends State<SearchPage> {
                   setState(() {
                     statement = searchStatement(s);
                   });
-                  debugPrint(s);
                 },
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
@@ -236,15 +246,16 @@ class _SearchPageState extends State<SearchPage> {
                                         style: TextStyles.regular00TextStyle
                                     ),
                                     Row(
-                                      children: [
-                                        Chip(
-                                          backgroundColor: ColorStyles.saeraBeige,
-                                          label: Text(
-                                              "a",
-                                              style: TextStyles.small00TextStyle
+                                      children: statement.tags.map((tag) {
+                                        return Container(
+                                          margin: EdgeInsets.only(right: 4),
+                                          child: Chip(
+                                            label: Text(tag),
+                                            labelStyle: TextStyles.small00TextStyle,
+                                            backgroundColor: selectTagColor(tag)
                                           ),
-                                        ),
-                                      ],
+                                        );
+                                      }).toList(),
                                     )
                                   ],
                                 ),
