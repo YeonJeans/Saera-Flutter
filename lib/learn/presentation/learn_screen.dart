@@ -75,7 +75,7 @@ class _LearnPageState extends State<LearnPage> {
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
                 appBar: PreferredSize(
-                  preferredSize: Size.fromHeight(MediaQuery.of(context).size.height/4),
+                  preferredSize: Size.fromHeight(230),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
