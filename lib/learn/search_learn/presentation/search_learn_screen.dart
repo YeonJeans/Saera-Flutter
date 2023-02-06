@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
 import 'package:http/http.dart' as http;
@@ -233,6 +234,7 @@ class _SearchPageState extends State<SearchPage> {
                       Statement statement = statements[index];
                       return ListTile(
                           contentPadding: EdgeInsets.only(left: 11),
+                          onTap: () => Get.to(AccentPracticePage(id: statement.id)),
                           title: Transform.translate(
                             offset: const Offset(0, 5.0),
                             child: Row(
