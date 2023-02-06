@@ -47,23 +47,38 @@ class _AudioBarState extends State<AudioBar> {
 
     //listen to states
     audioPlayer.onPlayerStateChanged.listen((state) {
-      setState(() {
-        _isPlaying = state == PlayerState.playing;
-      });
+      if(this.mounted){
+        setState(() {
+          _isPlaying = state == PlayerState.playing;
+        });
+      }
     });
 
     // listen to audio duration
     audioPlayer.onDurationChanged.listen((newDuration) {
-      setState(() {
-        duration = newDuration;
-      });
+      if(this.mounted){
+        setState(() {
+          duration = newDuration;
+        });
+      }
     });
 
     //listen to audio position
     audioPlayer.onPositionChanged.listen((newPosition) {
-      setState(() {
-        position = newPosition;
-      });
+      if(this.mounted){
+        setState(() {
+          position = newPosition;
+        });
+      }
+    });
+
+    audioPlayer.onPlayerComplete.listen((event) {
+      if(this.mounted){
+        setState(() {
+          position = Duration.zero;
+          setAudio();
+        });
+      }
     });
 
   }
@@ -78,8 +93,9 @@ class _AudioBarState extends State<AudioBar> {
 
   @override
   void dispose(){
-    audioPlayer.dispose();
     super.dispose();
+    audioPlayer.dispose();
+    // audioPlayer.release();
   }
 
   @override
@@ -127,13 +143,12 @@ class _AudioBarState extends State<AudioBar> {
                     width: MediaQuery.of(context).size.width - 200,
                     child: Slider(
                       min: 0,
-                      max: duration.inMilliseconds.toDouble(),
-                      value: position.inMilliseconds.toDouble(),
+                      max: duration.inMicroseconds.toDouble(),
+                      value: position.inMicroseconds.toDouble(),
                       activeColor: ColorStyles.primary.withOpacity(0.4),
                       inactiveColor: Color(0xffE7E7E7),
                       onChanged: (value) async {
-                        final position = Duration(milliseconds: value.toInt());
-                        await audioPlayer.seek(position);
+                        final position = Duration(microseconds: value.toInt());
                         await audioPlayer.seek(position);
                         await audioPlayer.resume();
                       },
