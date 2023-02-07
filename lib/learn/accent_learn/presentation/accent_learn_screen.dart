@@ -214,11 +214,17 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   Future initRecorder() async {
     final status = await Permission.microphone.request();
 
+
+
     if(status != PermissionStatus.granted){
       throw 'Microphone permission not granted';
     }else{
-      await _recorder.openRecorder();
-      isRecorderReady = true;
+      if (await Permission.storage.request().isGranted){
+        await _recorder.openRecorder();
+        isRecorderReady = true;
+      }
+
+
       // _recorder.setSubscriptionDuration(
       //     const Duration(milliseconds: 500)
       // );
@@ -239,6 +245,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     }
 
     recordingPath  = (await _recorder.stopRecorder())!;
+    final audioFile = File(recordingPath!);
+    print("녹음이 완료되었습니다. ${audioFile.path}");
   }
 
 
@@ -411,10 +419,11 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget practiceSectionText(){
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SvgPicture.asset('assets/icons/profile_image.svg',
-          color: ColorStyles.saeraBlue
-        ),
+        const Image(
+          width: 22,
+          image: AssetImage('assets/icons/user_profile.png'),),
         const SizedBox(width: 9,),
         Text(
           "현재 $userName님의 억양이에요.",
@@ -654,7 +663,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               ],
             ),
             Container(
-              margin: const EdgeInsets.only(top: 10),
+              margin: const EdgeInsets.only(top: 7),
               child: Text(accuracyComment(accuracyRate),
                 style: TextStyles.small66TextStyle,
               ),
@@ -764,6 +773,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         SafeArea(
             child: Scaffold(
               appBar: AppBar(
+                automaticallyImplyLeading: false,
                 title: appBarSection(),
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
