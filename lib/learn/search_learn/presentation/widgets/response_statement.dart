@@ -12,7 +12,7 @@ class Statement {
 
   factory Statement.fromJSON(Map<String, dynamic> json) {
     return Statement(
-        id: json['id'],
+        id: json['statement_id'],
         content: json['content'],
         tags: json['tags'],
         bookmarked: json['bookmarked'],
