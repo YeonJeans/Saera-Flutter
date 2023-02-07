@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_line_chart.dart';
@@ -258,9 +260,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TextButton.icon(
-              onPressed: () {
-                print("뒤로!");
-              },
+              onPressed: () => Get.back(),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
               icon: SvgPicture.asset(
                 'assets/icons/back.svg',

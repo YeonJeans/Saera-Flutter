@@ -86,7 +86,7 @@ class _SearchPageState extends State<SearchPage> {
 
       if (_list.isEmpty) {
         for (dynamic i in body) {
-          int id = i["id"];
+          int id = i["statement_id"];
           String content = i["content"];
           List<String> tags = List.from(i["tags"]);
           bool bookmarked = i["bookmarked"];
