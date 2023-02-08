@@ -81,23 +81,86 @@ class _BookmarkPageState extends State<BookmarkPage> {
   @override
   Widget build(BuildContext context) {
     Widget textSection = Container(
-      padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+      padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
       child: Text(
         "$userName님이 즐겨찾기한\n문장들이에요.",
         style: TextStyles.xLargeTextStyle
       )
     );
 
-    Widget bookmarkStatementSection = ListView.separated(
-        shrinkWrap: true,
-        padding: EdgeInsets.only(top: 20),
-        itemBuilder: (BuildContext context, int index) {
-          return BookmarkListTile(statement[index]);
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Divider(thickness: 1,);
-        },
-        itemCount: statement.length
+    Widget bookmarkStatementSection = FutureBuilder(
+        future: searchStatement(),
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
+            } else {
+              List<Statement>? statements = snapshot.data;
+              return Container(
+                padding: EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
+                height: MediaQuery.of(context).size.height,
+                child: ListView.separated(
+                    itemBuilder: ((context, index) {
+                      Statement statement = statements[index];
+                      return ListTile(
+                          contentPadding: EdgeInsets.only(left: 11),
+                          onTap: () => Get.to(AccentPracticePage(id: statement.id)),
+                          title: Transform.translate(
+                            offset: const Offset(0, 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        statement.content,
+                                        style: TextStyles.regular00TextStyle
+                                    ),
+                                    Row(
+                                      children: statement.tags.map((tag) {
+                                        return Container(
+                                          margin: EdgeInsets.only(right: 4),
+                                          child: Chip(
+                                              label: Text(tag),
+                                              labelStyle: TextStyles.small00TextStyle,
+                                              backgroundColor: selectTagColor(tag)
+                                          ),
+                                        );
+                                      }).toList(),
+                                    )
+                                  ],
+                                ),
+                                IconButton(
+                                    onPressed: (){
+                                      setState(() {
+                                        statement.bookmarked = false;
+                                      });
+                                      deleteBookmark(statement.id);
+                                    },
+                                    icon: SvgPicture.asset(
+                                      'assets/icons/star_fill.svg',
+                                      fit: BoxFit.scaleDown,
+                                    )
+                                )
+                              ],
+                            ),
+                          )
+                      );
+                    }),
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(thickness: 1,);
+                    },
+                    itemCount: statements!.length
+                ),
+              );
+            }
+          } else {
+            return Container();
+          }
+        })
     );
 
     return Stack(
