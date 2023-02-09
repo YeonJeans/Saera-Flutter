@@ -37,12 +37,16 @@ class _SearchPageState extends State<SearchPage> {
 
   void _addChip(var chipText) {
     setState(() {
-      value != null
-      ? _chipList.add(ChipData(
-          id: DateTime.now().toString(),
-          name: chipText,
-          color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige},
-      )) : Container();
+      if (value != null) {
+        _chipList.add(ChipData(
+            id: DateTime.now().toString(),
+            name: chipText,
+            color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
+        ));
+        statement = searchStatement(chipText.toString(), "tag");
+      } else {
+        Container();
+      }
       _setVisibility();
     });
   }
@@ -50,6 +54,7 @@ class _SearchPageState extends State<SearchPage> {
   void _deleteChip(String id) {
     setState(() {
       _chipList.removeWhere((element) => element.id == id);
+      //칩 리스트를 하나씩 불러와서 url에 태그를 넣는 방법을 찾아야함!!
       _setVisibility();
     });
   }
@@ -76,9 +81,17 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  Future<List<Statement>> searchStatement(String input) async {
+  Future<List<Statement>> searchStatement(String input, String choose) async {
     List<Statement> _list = [];
-    var url = Uri.parse('$serverHttp/statements?content=$input');
+    late var url;
+    if (choose == "content") {
+      url = Uri.parse('$serverHttp/statements?content=$input');
+    } else if (choose == "tag") {
+      url = Uri.parse('$serverHttp/statements?tags=$input');
+    } else {
+      throw Exception("태그 검색 오류");
+    }
+
     final response = await http.get(url);
     if (response.statusCode == 200) {
 
@@ -115,6 +128,7 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
+    statement = searchStatement("", "content");
     _addChip(value);
   }
 
@@ -166,7 +180,7 @@ class _SearchPageState extends State<SearchPage> {
                 maxLines: 1,
                 onSubmitted: (s) {
                   setState(() {
-                    statement = searchStatement(s);
+                    statement = searchStatement(s, "content");
                   });
                 },
                 decoration: InputDecoration(
@@ -209,7 +223,14 @@ class _SearchPageState extends State<SearchPage> {
         Visibility(
           visible: _visibility,
           child: IconButton(
-            onPressed: () => { _chipList.isNotEmpty ? _deleteAllChip() : Container()},
+            onPressed: () => {
+              if (_chipList.isNotEmpty) {
+                _deleteAllChip(),
+                statement = searchStatement("", "content"),
+              } else {
+                Container(),
+              }
+            },
             icon: SvgPicture.asset('assets/icons/refresh.svg', color: ColorStyles.totalGray,),
           ),
         )
