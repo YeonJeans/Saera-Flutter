@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
+import 'package:saera/learn/search_learn/presentation/widgets/choice_chip.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
 import 'package:http/http.dart' as http;
@@ -204,6 +205,17 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
 
+    Widget filterSection = Container(
+      padding: EdgeInsets.symmetric(vertical: 5),
+      child: Wrap(
+        spacing: 7.0,
+        children: <Widget> [
+          ChoiceChipWidget("장소"),
+          ChoiceChipWidget("상황"),
+          ChoiceChipWidget("문장 유형")
+        ],
+      ),
+    );
 
     Widget chipSection = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -340,6 +352,7 @@ class _SearchPageState extends State<SearchPage> {
                   children: <Widget>[
                     appBarSection,
                     searchSection,
+                    filterSection,
                     chipSection,
                     statementSection
                   ],
