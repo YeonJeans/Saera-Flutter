@@ -4,6 +4,7 @@ import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart'
 import 'package:saera/home/presentation/home_screen.dart';
 import 'package:saera/learn/presentation/learn_screen.dart';
 import 'package:saera/mypage/presentation/mypage_screen.dart';
+import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
 class TabBarMainPage extends StatelessWidget {
@@ -68,7 +69,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
             controller: _tabController,
             tabs: <Widget>[
               Tab(
-                icon: _seletedIndex == 0 ? Icon(Icons.home, color: Color(0xff4478FF)) : Icon(Icons.home_outlined, color: Color(0xff4478FF)),
+                icon: _seletedIndex == 0 ? Icon(Icons.home, color: ColorStyles.primary) : Icon(Icons.home_outlined, color: ColorStyles.primary),
                 iconMargin: EdgeInsets.only(bottom: 5.0),
                 child: Text(
                   '홈',
@@ -76,7 +77,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
                 ),
               ),
               Tab(
-                icon: _seletedIndex == 1 ? Icon(Icons.list_alt, color: Color(0xff4478FF)) : Icon(Icons.list_alt_outlined, color: Color(0xff4478FF)),
+                icon: _seletedIndex == 1 ? Icon(Icons.view_list, color: ColorStyles.primary) : Icon(Icons.view_list_outlined, color: ColorStyles.primary),
                 iconMargin: EdgeInsets.only(bottom: 5.0),
                 child: Text(
                   '학습',
@@ -84,7 +85,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
                 ),
               ),
               Tab(
-                icon: _seletedIndex == 2? Icon(Icons.star, color: Color(0xff4478FF)) : Icon(Icons.star_border, color: Color(0xff4478FF)),
+                icon: _seletedIndex == 2? Icon(Icons.star, color: ColorStyles.primary) : Icon(Icons.star_border, color: ColorStyles.primary),
                 iconMargin: EdgeInsets.only(bottom: 5.0),
                 child: Text(
                   '북마크',
@@ -92,7 +93,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
                 ),
               ),
               Tab(
-                icon: _seletedIndex == 3? Icon(Icons.person, color: Color(0xff4478FF),) : Icon(Icons.person_2_outlined, color: Color(0xff4478FF)),
+                icon: _seletedIndex == 3? Icon(Icons.person, color: ColorStyles.primary) : Icon(Icons.person_2_outlined, color: ColorStyles.primary),
                 iconMargin: EdgeInsets.only(bottom: 5.0),
                 child: Text(
                   '내 정보',
