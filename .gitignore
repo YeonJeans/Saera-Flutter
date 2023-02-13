@@ -43,6 +43,9 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+/ios/Runner/GoogleService-Info.plist
+/android/app/google-services.json
+
 ./lib/server.dart
 /lib/server.dart
 pubspec.lock
