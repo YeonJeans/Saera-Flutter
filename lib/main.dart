@@ -43,10 +43,12 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
         body: Container(
-            color: const Color(0xfff0f8ff),
-            child: Center(
-              child: Image.asset('assets/images/splash_bg.png'),
-            )
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/splash_bg.png',),
+                fit: BoxFit.fill
+              ),
+            ),
         )
     );
   }
