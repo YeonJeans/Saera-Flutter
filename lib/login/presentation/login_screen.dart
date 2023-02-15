@@ -1,8 +1,13 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:saera/login/data/login_platform.dart';
+import 'package:saera/server.dart';
 import 'package:saera/style/font.dart';
 import 'package:saera/tabbar.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../style/color.dart';
 
@@ -15,9 +20,57 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
+  LoginPlatform _loginPlatform = LoginPlatform.none;
+
+  void signInWithGoogle() async {
+    if(Platform.isAndroid){
+      setState(() {
+        Get.to(() => TabBarMainPage());
+      });
+    }
+    else{
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+          clientId: googleClientId
+      ).signIn();
+
+      if (googleUser != null) {
+        print('google User: ${googleUser}');
+        print('name = ${googleUser.displayName}');
+        print('email = ${googleUser.email}');
+        print('id = ${googleUser.id}');
+
+        setState(() {
+          _loginPlatform = LoginPlatform.google;
+          Get.to(() => TabBarMainPage());
+        });
+      }
+    }
+
+  }
+
+  void signOut() async {
+    switch (_loginPlatform) {
+      case LoginPlatform.google:
+        await GoogleSignIn().signOut();
+        break;
+      case LoginPlatform.apple:
+        break;
+      case LoginPlatform.none:
+        break;
+    }
+
+    setState(() {
+      _loginPlatform = LoginPlatform.none;
+    });
+  }
+
+
+
   Widget googleLoginBtn (){
     return GestureDetector(
-      onTap: () => Get.to(TabBarMainPage()),
+      onTap: () {
+        signInWithGoogle();
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
