@@ -1,7 +1,10 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:saera/login/data/login_platform.dart';
+import 'package:saera/server.dart';
 import 'package:saera/style/font.dart';
 import 'package:saera/tabbar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -20,21 +23,29 @@ class _LoginPageState extends State<LoginPage> {
   LoginPlatform _loginPlatform = LoginPlatform.none;
 
   void signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn(
-      clientId: "689494178989-r3agivvmni6v8b0ciqad3ecf0lgq3j9t.apps.googleusercontent.com"
-    ).signIn();
-
-    if (googleUser != null) {
-      print('google User: ${googleUser}');
-      print('name = ${googleUser.displayName}');
-      print('email = ${googleUser.email}');
-      print('id = ${googleUser.id}');
-
+    if(Platform.isAndroid){
       setState(() {
-        _loginPlatform = LoginPlatform.google;
-        Get.to(TabBarMainPage());
+        Get.to(() => TabBarMainPage());
       });
     }
+    else{
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+          clientId: googleClientId
+      ).signIn();
+
+      if (googleUser != null) {
+        print('google User: ${googleUser}');
+        print('name = ${googleUser.displayName}');
+        print('email = ${googleUser.email}');
+        print('id = ${googleUser.id}');
+
+        setState(() {
+          _loginPlatform = LoginPlatform.google;
+          Get.to(() => TabBarMainPage());
+        });
+      }
+    }
+
   }
 
   void signOut() async {
