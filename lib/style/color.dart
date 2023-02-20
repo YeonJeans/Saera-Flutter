@@ -17,9 +17,9 @@ class ColorStyles {
   static const Color digitGray = Color(0xff666666);
   static const Color totalGray = Color(0xff555555);
   static const Color deleteGray = Color(0xffBDBDBD);
+  static const Color filterGray = Color(0xffDDDDDD);
 
   static const Color textBlack = Color(0xff333333);
 
   static const Color etcYellow = Color(0xffE5DDD2);
-
 }
