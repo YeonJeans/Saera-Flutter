@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import '../../../server.dart';
 import '../../../style/color.dart';
 import '../../../style/font.dart';
+import '../../presentation/widgets/learn_category_icon_tile.dart';
 
 class SearchPage extends StatefulWidget {
 
@@ -217,6 +218,55 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
 
+    int? _selectedIndex;
+    List<String> _options = ['장소', '상황', '문장 유형'];
+
+    Widget filterSection1 = Container(
+      padding: EdgeInsets.only(bottom: 7),
+      child: Wrap(
+          spacing: 7,
+          children: List.generate(_options.length, (index) {
+            return ChoiceChip(
+              label: Text('${_options[index]}'),
+              labelStyle: TextStyles.small25TextStyle,
+              avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
+              selectedColor: _options[index] == "장소" ? ColorStyles.saeraBlue : ColorStyles.saeraBeige,
+              backgroundColor: Colors.white,
+              side: BorderSide(color: ColorStyles.filterGray),
+              selected: _selectedIndex == index,
+              onSelected: (bool selected) {
+                setState(() {
+                  _selectedIndex = selected ? index : 0;
+                  print("_selectedIndex : $_selectedIndex");
+                  print("index : $index");
+                });
+              },
+            );
+          }).toList()
+      ),
+    );
+
+    Widget selectSection = Container(
+      padding: EdgeInsets.only(bottom: 6.0),
+      color: ColorStyles.searchFillGray,
+      child: Visibility(
+          visible: true,
+          child: Wrap(
+            //이부분 3개로 분리해서 파일 따로따로 넣어놓고 if 문으로 selectedIndex 검사해서 넣기
+            direction: Axis.horizontal,
+            children: [
+              CategoryIconTile(CategoryData(Icons.local_hospital_outlined, "병원", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.corporate_fare_outlined, "회사", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.local_convenience_store_outlined, "편의점", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.local_cafe_outlined, "카페", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.account_balance_outlined, "은행", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.checkroom_outlined, "옷가게", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.food_bank_outlined, "음식점", ColorStyles.totalGray, 12))
+            ],
+          ),
+      ),
+    );
+
     Widget chipSection = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -260,7 +310,7 @@ class _SearchPageState extends State<SearchPage> {
             } else {
               List<Statement> statements = snapshot.data;
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                 height: MediaQuery.of(context).size.height,
                 child: ListView.separated(
                     itemBuilder: ((context, index) {
@@ -352,7 +402,8 @@ class _SearchPageState extends State<SearchPage> {
                   children: <Widget>[
                     appBarSection,
                     searchSection,
-                    filterSection,
+                    filterSection1,
+                    selectSection,
                     chipSection,
                     statementSection
                   ],
