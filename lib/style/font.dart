@@ -31,6 +31,8 @@ class TextStyles {
   static const medium55TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xff555555));
   static const mediumAATextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xffAAAAAA));
   static const mediumWhiteTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xffFFFFFF));
+  static const mediumWhiteBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xffFFFFFF));
+  static const mediumBlueBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xff00539C));
 
 
   static const backBtnTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 18, fontWeight: FontWeight.normal, color: Color(0xff3E68A8));
