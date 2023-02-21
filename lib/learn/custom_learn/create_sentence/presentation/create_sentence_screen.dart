@@ -124,14 +124,22 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   Widget createBtn(){
     return GestureDetector(
       onTap: (){
-        //
+        // TODO- 문장 생성 버튼 클릭시 진행될 내용을 이곳에 추가하면 됩니다!
       },
       child: Container(
           margin: const EdgeInsets.only(left: 14, right: 14, bottom: 15),
           height: 56,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: ColorStyles.primary
+              color: ColorStyles.primary,
+              boxShadow:[
+                BoxShadow(
+                  color: ColorStyles.primary.withOpacity(0.4),
+                  spreadRadius: 0.1,
+                  blurRadius: 12,
+                  offset: const Offset(0, -2), // changes position of shadow
+                ),
+              ],
           ),
           child: const Center(
             child: Text(
@@ -143,7 +151,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
     );
   }
 
-  Widget enterSection (){
+  Widget enterText (){
     RegExp hannum = new RegExp(r'^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|\s]*$');
     return Container(
       child: TextField(
@@ -224,7 +232,36 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
     });
   }
 
-  Widget enterTagSection(){
+  Widget enterTextSection(){
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: ColorStyles.searchFillGray
+      ),
+      child: enterText(),
+    );
+  }
+
+  Widget checkValidSection(){
+    return  Container(
+      height: 52,
+      padding: EdgeInsets.only(top: 10, bottom: 25),
+      child: (){
+        if(inputFieldInfo == 1){
+          return checkValidText(true, "생성 가능한 문장입니다.");
+        }
+        else if(inputFieldInfo == 2){
+          return checkValidText(false, "문장이 너무 깁니다. 50자 이내로 적어주세요.");
+        }
+        else if(inputFieldInfo == 3){
+          return checkValidText(false, "한글과 숫자만 입력 가능합니다.");
+        }
+      }(),
+    );
+  }
+
+  Widget enterTag(){
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -245,6 +282,8 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                         label: Text(tag),
                         onDeleted: () => _removeTag(tag),
                         backgroundColor: ColorStyles.saeraYellow,
+                        deleteIcon: SvgPicture.asset('assets/icons/delete.svg', fit: BoxFit.scaleDown),
+                        deleteIconColor: ColorStyles.deleteGray,
                       ),
                     ),
 
@@ -272,7 +311,6 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                               _addTag();
                             }
                           },
-                          //textAlign: TextAlign.center,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: _tags.length < 3 ? "추가할 태그를 입력해 주세요." : "",
@@ -306,6 +344,17 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
     );
   }
 
+  Widget enterTagSection(){
+    return Container(
+        height: 54,
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: ColorStyles.searchFillGray
+        ),
+        child: enterTag()
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -315,10 +364,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
         SafeArea(
             child: GestureDetector(
               onTap: () {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  //
-                });
+                  FocusScope.of(context).unfocus();
                 },
               child: Scaffold(
                   appBar: AppBar(
@@ -330,10 +376,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                   backgroundColor: Colors.transparent,
                   // resizeToAvoidBottomInset: true,
                   bottomSheet: Container(
-                    //child: Padding(
-                      //padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: isComplete ? createBtn() : disableCreateBtn(),
-                    //),
                   ),
                   body: SingleChildScrollView(
                     controller: _scrollController,
@@ -345,50 +388,11 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                           titleLabelSection(),
 
                           SubTitleSection(subtitle: "연습하고 싶은 문장을 입력하세요.", desc: "띄어쓰기와 맞춤법을 잘 지켜서 적어주세요."),
-
-                          Container(
-                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: ColorStyles.searchFillGray
-                              ),
-                              child: enterSection(),
-                          ),
-
-                          Container(
-                            height: 52,
-                            padding: EdgeInsets.only(top: 10, bottom: 25),
-                            child: (){
-                              if(inputFieldInfo == 1){
-                                return checkValidText(true, "생성 가능한 문장입니다.");
-                              }
-                              else if(inputFieldInfo == 2){
-                                return checkValidText(false, "문장이 너무 깁니다. 50자 이내로 적어주세요.");
-                              }
-                              else if(inputFieldInfo == 3){
-                                return checkValidText(false, "한글과 숫자만 입력 가능합니다.");
-                              }
-                            }(),
-                          ),
+                          enterTextSection(),
+                          checkValidSection(),
 
                           SubTitleSection(subtitle: "이 문장에 대한 태그를 추가해 주세요.", desc: "최대 3개의 태그를 달 수 있으며, 각각의 태그는 띄어쓰기로 구분됩니다."),
-
-                          Container(
-                              height: 54,
-                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: ColorStyles.searchFillGray
-                              ),
-                              child: enterTagSection()
-                          ),
-
-                          Container(
-                            height: MediaQuery.of(context).viewInsets.bottom + 80 ,
-                          )
-
-
-
+                          enterTagSection(),
                         ],
                       ),
                     ),
