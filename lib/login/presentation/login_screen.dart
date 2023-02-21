@@ -24,13 +24,26 @@ class _LoginPageState extends State<LoginPage> {
 
   void signInWithGoogle() async {
     if(Platform.isAndroid){
-      setState(() {
-        Get.to(() => TabBarMainPage());
-      });
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+          serverClientId: serverClientId
+      ).signIn();
+
+      if (googleUser != null) {
+        print('google User: ${googleUser}');
+        print('name = ${googleUser.displayName}');
+        print('email = ${googleUser.email}');
+        print('id = ${googleUser.id}');
+
+        setState(() {
+          _loginPlatform = LoginPlatform.google;
+          Get.to(() => TabBarMainPage());
+        });
+      }
     }
     else{
       final GoogleSignInAccount? googleUser = await GoogleSignIn(
-          clientId: googleClientId
+          clientId: googleClientId,
+          serverClientId: serverClientId
       ).signIn();
 
       if (googleUser != null) {
@@ -47,24 +60,6 @@ class _LoginPageState extends State<LoginPage> {
     }
 
   }
-
-  void signOut() async {
-    switch (_loginPlatform) {
-      case LoginPlatform.google:
-        await GoogleSignIn().signOut();
-        break;
-      case LoginPlatform.apple:
-        break;
-      case LoginPlatform.none:
-        break;
-    }
-
-    setState(() {
-      _loginPlatform = LoginPlatform.none;
-    });
-  }
-
-
 
   Widget googleLoginBtn (){
     return GestureDetector(
