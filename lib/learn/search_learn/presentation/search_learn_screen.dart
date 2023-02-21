@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
+import 'package:saera/learn/search_learn/presentation/widgets/choice_chip.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +13,7 @@ import 'package:http/http.dart' as http;
 import '../../../server.dart';
 import '../../../style/color.dart';
 import '../../../style/font.dart';
+import '../../presentation/widgets/learn_category_icon_tile.dart';
 
 class SearchPage extends StatefulWidget {
 
@@ -37,12 +39,16 @@ class _SearchPageState extends State<SearchPage> {
 
   void _addChip(var chipText) {
     setState(() {
-      value != null
-      ? _chipList.add(ChipData(
-          id: DateTime.now().toString(),
-          name: chipText,
-          color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige},
-      )) : Container();
+      if (value != null) {
+        _chipList.add(ChipData(
+            id: DateTime.now().toString(),
+            name: chipText,
+            color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
+        ));
+        statement = searchStatement(chipText.toString(), "tag");
+      } else {
+        Container();
+      }
       _setVisibility();
     });
   }
@@ -50,6 +56,7 @@ class _SearchPageState extends State<SearchPage> {
   void _deleteChip(String id) {
     setState(() {
       _chipList.removeWhere((element) => element.id == id);
+      //칩 리스트를 하나씩 불러와서 url에 태그를 넣는 방법을 찾아야함!!
       _setVisibility();
     });
   }
@@ -76,9 +83,17 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  Future<List<Statement>> searchStatement(String input) async {
+  Future<List<Statement>> searchStatement(String input, String choose) async {
     List<Statement> _list = [];
-    var url = Uri.parse('$serverHttp/statements?content=$input');
+    late var url;
+    if (choose == "content") {
+      url = Uri.parse('$serverHttp/statements?content=$input');
+    } else if (choose == "tag") {
+      url = Uri.parse('$serverHttp/statements?tags=$input');
+    } else {
+      throw Exception("태그 검색 오류");
+    }
+
     final response = await http.get(url);
     if (response.statusCode == 200) {
 
@@ -115,6 +130,7 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
+    statement = searchStatement("", "content");
     _addChip(value);
   }
 
@@ -166,7 +182,7 @@ class _SearchPageState extends State<SearchPage> {
                 maxLines: 1,
                 onSubmitted: (s) {
                   setState(() {
-                    statement = searchStatement(s);
+                    statement = searchStatement(s, "content");
                   });
                 },
                 decoration: InputDecoration(
@@ -190,6 +206,66 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
 
+    Widget filterSection = Container(
+      padding: EdgeInsets.symmetric(vertical: 5),
+      child: Wrap(
+        spacing: 7.0,
+        children: <Widget> [
+          ChoiceChipWidget("장소"),
+          ChoiceChipWidget("상황"),
+          ChoiceChipWidget("문장 유형")
+        ],
+      ),
+    );
+
+    int? _selectedIndex;
+    List<String> _options = ['장소', '상황', '문장 유형'];
+
+    Widget filterSection1 = Container(
+      padding: EdgeInsets.only(bottom: 7),
+      child: Wrap(
+          spacing: 7,
+          children: List.generate(_options.length, (index) {
+            return ChoiceChip(
+              label: Text('${_options[index]}'),
+              labelStyle: TextStyles.small25TextStyle,
+              avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
+              selectedColor: _options[index] == "장소" ? ColorStyles.saeraBlue : ColorStyles.saeraBeige,
+              backgroundColor: Colors.white,
+              side: BorderSide(color: ColorStyles.filterGray),
+              selected: _selectedIndex == index,
+              onSelected: (bool selected) {
+                setState(() {
+                  _selectedIndex = selected ? index : 0;
+                  print("_selectedIndex : $_selectedIndex");
+                  print("index : $index");
+                });
+              },
+            );
+          }).toList()
+      ),
+    );
+
+    Widget selectSection = Container(
+      padding: EdgeInsets.only(bottom: 6.0),
+      color: ColorStyles.searchFillGray,
+      child: Visibility(
+          visible: true,
+          child: Wrap(
+            //이부분 3개로 분리해서 파일 따로따로 넣어놓고 if 문으로 selectedIndex 검사해서 넣기
+            direction: Axis.horizontal,
+            children: [
+              CategoryIconTile(CategoryData(Icons.local_hospital_outlined, "병원", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.corporate_fare_outlined, "회사", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.local_convenience_store_outlined, "편의점", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.local_cafe_outlined, "카페", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.account_balance_outlined, "은행", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.checkroom_outlined, "옷가게", ColorStyles.totalGray, 12)),
+              CategoryIconTile(CategoryData(Icons.food_bank_outlined, "음식점", ColorStyles.totalGray, 12))
+            ],
+          ),
+      ),
+    );
 
     Widget chipSection = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,7 +285,14 @@ class _SearchPageState extends State<SearchPage> {
         Visibility(
           visible: _visibility,
           child: IconButton(
-            onPressed: () => { _chipList.isNotEmpty ? _deleteAllChip() : Container()},
+            onPressed: () => {
+              if (_chipList.isNotEmpty) {
+                _deleteAllChip(),
+                statement = searchStatement("", "content"),
+              } else {
+                Container(),
+              }
+            },
             icon: SvgPicture.asset('assets/icons/refresh.svg', color: ColorStyles.totalGray,),
           ),
         )
@@ -227,7 +310,7 @@ class _SearchPageState extends State<SearchPage> {
             } else {
               List<Statement> statements = snapshot.data;
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                 height: MediaQuery.of(context).size.height,
                 child: ListView.separated(
                     itemBuilder: ((context, index) {
@@ -319,6 +402,8 @@ class _SearchPageState extends State<SearchPage> {
                   children: <Widget>[
                     appBarSection,
                     searchSection,
+                    filterSection1,
+                    selectSection,
                     chipSection,
                     statementSection
                   ],

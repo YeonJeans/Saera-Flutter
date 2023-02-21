@@ -13,7 +13,7 @@ class CategoryIconTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+      padding: EdgeInsets.all(_data.padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -22,12 +22,13 @@ class CategoryIconTile extends StatelessWidget {
               icon: Icon(
                 _data.icon,
                 size: 40,
-                color: ColorStyles.primary,
+                color: _data.iconColor,
               )
           ),
           Text(
             "  ${_data.text}",
             style: TextStyles.regularBlueTextStyle,
+            //글씨는 어떻게 할지.. 고민
             textAlign: TextAlign.center,
           )
         ],
@@ -39,6 +40,8 @@ class CategoryIconTile extends StatelessWidget {
 class CategoryData {
   final IconData icon;
   final String text;
+  final Color iconColor;
+  final double padding;
 
-  CategoryData(this.icon, this.text);
+  CategoryData(this.icon, this.text, this.iconColor, this.padding);
 }
