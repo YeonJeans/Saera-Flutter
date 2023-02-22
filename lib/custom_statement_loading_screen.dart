@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
 
@@ -10,7 +12,11 @@ class CustomLoadingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget loadingSpinnerSection = Container(
         padding: EdgeInsets.only(top: 300.0),
-        child: SvgPicture.asset('assets/icons/three_dots.svg', fit: BoxFit.scaleDown,)
+        margin: EdgeInsets.symmetric(horizontal: 175),
+        child: LoadingAnimationWidget.stretchedDots(
+            color: Color(0xffD9D9D9),
+            size: 50.0
+        )
     );
 
     Widget waitingSection = Container(
