@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -13,9 +11,9 @@ class CustomLoadingPage extends StatelessWidget {
     Widget loadingSpinnerSection = Container(
         padding: EdgeInsets.only(top: 300.0),
         margin: EdgeInsets.symmetric(horizontal: 175),
-        child: LoadingAnimationWidget.stretchedDots(
-            color: Color(0xffD9D9D9),
-            size: 50.0
+        child: LoadingAnimationWidget.staggeredDotsWave(
+            color: Color(0xff2D2D2D),
+            size: 45.0
         )
     );
 
