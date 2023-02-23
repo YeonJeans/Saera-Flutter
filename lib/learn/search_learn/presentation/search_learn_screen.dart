@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
-import 'package:saera/learn/search_learn/presentation/widgets/choice_chip.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
 import 'package:http/http.dart' as http;
@@ -25,6 +24,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<dynamic>? statement;
   final List<ChipData> _chipList = [];
   List<String> placeList = ["병원", "회사", "편의점", "카페", "은행", "옷가게", "음식점"];
+  int? _selectedIndex;
 
   late TextEditingController _textEditingController;
   var value = Get.arguments;
@@ -56,7 +56,7 @@ class _SearchPageState extends State<SearchPage> {
   void _deleteChip(String id) {
     setState(() {
       _chipList.removeWhere((element) => element.id == id);
-      //칩 리스트를 하나씩 불러와서 url에 태그를 넣는 방법을 찾아야함!!
+      statement = searchStatement("", "content");
       _setVisibility();
     });
   }
@@ -206,39 +206,23 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
 
+    List<String> filterList = ['상황', '문장 유형'];
     Widget filterSection = Container(
-      padding: EdgeInsets.symmetric(vertical: 5),
-      child: Wrap(
-        spacing: 7.0,
-        children: <Widget> [
-          ChoiceChipWidget("장소"),
-          ChoiceChipWidget("상황"),
-          ChoiceChipWidget("문장 유형")
-        ],
-      ),
-    );
-
-    int? _selectedIndex;
-    List<String> _options = ['장소', '상황', '문장 유형'];
-
-    Widget filterSection1 = Container(
       padding: EdgeInsets.only(bottom: 7),
       child: Wrap(
           spacing: 7,
-          children: List.generate(_options.length, (index) {
+          children: List.generate(filterList.length, (index) {
             return ChoiceChip(
-              label: Text('${_options[index]}'),
+              label: Text(filterList[index]),
               labelStyle: TextStyles.small25TextStyle,
               avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
-              selectedColor: _options[index] == "장소" ? ColorStyles.saeraBlue : ColorStyles.saeraBeige,
+              selectedColor: filterList[index] == "상황" ? ColorStyles.saeraBlue : ColorStyles.saeraBeige,
               backgroundColor: Colors.white,
               side: BorderSide(color: ColorStyles.filterGray),
               selected: _selectedIndex == index,
               onSelected: (bool selected) {
                 setState(() {
-                  _selectedIndex = selected ? index : 0;
-                  print("_selectedIndex : $_selectedIndex");
-                  print("index : $index");
+                  _selectedIndex = selected ? index : null;
                 });
               },
             );
@@ -402,7 +386,7 @@ class _SearchPageState extends State<SearchPage> {
                   children: <Widget>[
                     appBarSection,
                     searchSection,
-                    filterSection1,
+                    filterSection,
                     selectSection,
                     chipSection,
                     statementSection
