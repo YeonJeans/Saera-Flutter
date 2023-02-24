@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ColorStyles {
-  static const Color primary=Color(0xff3E68A8);
+  static const Color primary=Color(0xff00539C);
   static const Color saeraBlue=Color(0xff86C4CC);
   static const Color saeraYellow=Color(0xffF9DA88);
   static const Color saeraBeige=Color(0xffE5DDD2);
