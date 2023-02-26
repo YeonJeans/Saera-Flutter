@@ -47,6 +47,8 @@ class TextStyles {
   static const largeBlueColoredTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff3E68A8));
   static const largeHighlightBlueTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff86C4CC));
 
-  static const xLargeTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xff000000));
+  static const xLarge25TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xff252525));
+
+  static const xxLargeTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xff000000));
 
 }
