@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:io' show Platform;
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
@@ -238,7 +240,20 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     if(!isRecorderReady){
       return;
     }
-    await _recorder.startRecorder(toFile: 'audio.wav');
+    if(Platform.isAndroid){
+      Directory appDocDirectory = await getApplicationDocumentsDirectory();
+
+      new Directory(appDocDirectory.path+'/'+'dir').create(recursive: true)
+          .then((Directory directory) async {
+        print('Path of New Dir: '+directory.path);
+      });
+      await _recorder.startRecorder(toFile: '${appDocDirectory.path}/dir/audio.wav');
+
+    }
+    else{
+      await _recorder.startRecorder(toFile: 'audio.wav');
+
+    }
   }
 
   Future stopRecording() async {
