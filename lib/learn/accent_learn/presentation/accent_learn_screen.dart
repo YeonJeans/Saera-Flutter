@@ -125,11 +125,10 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   createBookmark (int id) async {
 
-    var url = Uri.parse('${serverHttp}/statements/${id}/bookmark');
+    var url = Uri.parse('${serverHttp}/bookmark/${id}');
 
 
     final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
-
 
     if (response.statusCode == 200) {
       setState(() {
@@ -139,7 +138,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   }
 
   void deleteBookmark () async {
-    var url = Uri.parse('${serverHttp}/statements/bookmark/${widget.id}');
+    var url = Uri.parse('${serverHttp}/bookmark/${widget.id}');
 
     final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
 
