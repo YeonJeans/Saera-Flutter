@@ -1,8 +1,8 @@
+import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:saera/login/data/login_platform.dart';
 import 'package:saera/server.dart';
 import 'package:saera/style/font.dart';
@@ -10,6 +10,9 @@ import 'package:saera/tabbar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../style/color.dart';
+import '../data/authentication_manager.dart';
+import 'package:http/http.dart' as http;
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,8 +22,36 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
+  late final AuthenticationManager _authManager;
   LoginPlatform _loginPlatform = LoginPlatform.none;
+
+  Future<dynamic> getToken(String ?serverAuthCode) async {
+
+    var url = Uri.parse('$serverHttp/auth/google/callback?code=$serverAuthCode');
+
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json"});
+
+    if (response.statusCode == 200) {
+
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      String accessToken = body["accessToken"];
+      String refreshToken = body["refreshToken"];
+
+      _authManager.login(accessToken, refreshToken);
+
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    _authManager = Get.find();
+  }
 
   void signInWithGoogle() async {
     if(Platform.isAndroid){
@@ -29,10 +60,7 @@ class _LoginPageState extends State<LoginPage> {
       ).signIn();
 
       if (googleUser != null) {
-        print('google User: ${googleUser}');
-        print('name = ${googleUser.displayName}');
-        print('email = ${googleUser.email}');
-        print('id = ${googleUser.id}');
+        getToken(googleUser.serverAuthCode);
 
         setState(() {
           _loginPlatform = LoginPlatform.google;
@@ -47,10 +75,7 @@ class _LoginPageState extends State<LoginPage> {
       ).signIn();
 
       if (googleUser != null) {
-        print('google User: ${googleUser}');
-        print('name = ${googleUser.displayName}');
-        print('email = ${googleUser.email}');
-        print('id = ${googleUser.id}');
+        getToken(googleUser.serverAuthCode);
 
         setState(() {
           _loginPlatform = LoginPlatform.google;
@@ -138,21 +163,23 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/splash_bg.png'),
-          fit: BoxFit.fill
-        )
+    return Scaffold(
+      body: Container(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/splash_bg.png'),
+                  fit: BoxFit.fill
+              )
+          ),
+          padding: const EdgeInsets.only(left: 21, right: 21, bottom: 180),
+          child: Column(
+            children: [
+              const Spacer(),
+              googleLoginBtn(),
+              // appleLoginBtn()
+            ],
+          )
       ),
-      padding: const EdgeInsets.only(left: 21, right: 21, bottom: 180),
-      child: Column(
-        children: [
-          const Spacer(),
-          googleLoginBtn(),
-          // appleLoginBtn()
-        ],
-      )
     );
   }
 }

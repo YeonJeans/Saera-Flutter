@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:io' show Platform;
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
@@ -21,6 +23,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:http_parser/http_parser.dart';
 
+import '../../../login/data/authentication_manager.dart';
+
 
 class AccentPracticePage extends StatefulWidget {
 
@@ -33,9 +37,10 @@ class AccentPracticePage extends StatefulWidget {
 }
 
 class _AccentPracticePageState extends State<AccentPracticePage> with TickerProviderStateMixin {
+  final AuthenticationManager _authManager = Get.find();
 
   String content = "";
-  String userName = "수연";
+  String userName = "";
 
   double accuracyRate = 0;
   int recordingState = 1;
@@ -64,9 +69,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   getExampleAccent() async {
 
     var url = Uri.parse('${serverHttp}/statements/${widget.id}');
-
-    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json" });
-
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
 
@@ -79,6 +82,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
       setState(() {
         _isBookmarked = body["bookmarked"];
+        userName = body["nickname"];
       });
 
       for(int i in body["pitch_x"]){
@@ -97,7 +101,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
     var url = Uri.parse('${serverHttp}/statements/record/${widget.id}');
 
-    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav" });
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
 
     if (response.statusCode == 200) {
 
@@ -120,11 +124,10 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   createBookmark (int id) async {
 
-    var url = Uri.parse('${serverHttp}/statements/${id}/bookmark');
+    var url = Uri.parse('${serverHttp}/bookmark/${id}');
 
 
-    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json" });
-
+    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
 
     if (response.statusCode == 200) {
       setState(() {
@@ -134,9 +137,9 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   }
 
   void deleteBookmark () async {
-    var url = Uri.parse('${serverHttp}/statements/bookmark/${widget.id}');
+    var url = Uri.parse('${serverHttp}/bookmark/${widget.id}');
 
-    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
 
     if (response.statusCode == 200) {
       setState(() {
@@ -148,7 +151,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   getAccentEvaluation() async {
     var url = Uri.parse('${serverHttp}/practiced');
     var request = http.MultipartRequest('POST', url);
-    request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" });
+    request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}"});
     request.files.add(await http.MultipartFile.fromPath('record', recordingPath));
 
     request.fields['id'] = widget.id.toString();
@@ -238,7 +241,20 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     if(!isRecorderReady){
       return;
     }
-    await _recorder.startRecorder(toFile: 'audio.wav');
+    if(Platform.isAndroid){
+      Directory appDocDirectory = await getApplicationDocumentsDirectory();
+
+      new Directory(appDocDirectory.path+'/'+'dir').create(recursive: true)
+          .then((Directory directory) async {
+        print('Path of New Dir: '+directory.path);
+      });
+      await _recorder.startRecorder(toFile: '${appDocDirectory.path}/dir/audio.wav');
+
+    }
+    else{
+      await _recorder.startRecorder(toFile: 'audio.wav');
+
+    }
   }
 
   Future stopRecording() async {
