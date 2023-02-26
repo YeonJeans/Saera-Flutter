@@ -40,7 +40,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   final AuthenticationManager _authManager = Get.find();
 
   String content = "";
-  String userName = "수연";
+  String userName = "";
 
   double accuracyRate = 0;
   int recordingState = 1;
@@ -70,8 +70,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
     var url = Uri.parse('${serverHttp}/statements/${widget.id}');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
-    print(response.statusCode);
-    print(utf8.decode(response.bodyBytes));
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
 
@@ -84,6 +82,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
       setState(() {
         _isBookmarked = body["bookmarked"];
+        userName = body["nickname"];
       });
 
       for(int i in body["pitch_x"]){
