@@ -18,6 +18,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 import 'package:saera/server.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -38,6 +40,7 @@ class AccentPracticePage extends StatefulWidget {
 
 class _AccentPracticePageState extends State<AccentPracticePage> with TickerProviderStateMixin {
   final AuthenticationManager _authManager = Get.find();
+  late FToast fToast;
 
   String content = "";
   String userName = "";
@@ -65,6 +68,41 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   late List<double> x2 = [];
   late List<double> y2 = [];
+
+  showCustomToast() {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        color: ColorStyles.black00.withOpacity(0.6),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+              "음성 인식에 실패했습니다.\n목소리가 잘 들리도록 다시 녹음해 주세요!",
+              style: TextStyles.smallFFTextStyle,
+          ),
+
+          IconButton(
+              onPressed: (){
+                fToast.removeCustomToast();
+              },
+              icon: SvgPicture.asset(
+                'assets/icons/close_toast.svg',
+                fit: BoxFit.scaleDown,
+              )
+          )
+        ],
+      )
+    );
+
+    fToast.showToast(
+      child: toast,
+      toastDuration: const Duration(seconds: 3),
+    );
+  }
 
   getExampleAccent() async {
 
@@ -179,6 +217,13 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
       return true;
     }
+    else{
+      showCustomToast();
+      setState(() {
+        recordingState = 1;
+        _isRecording = false;
+      });
+    }
   }
 
   String accuracyComment(double score){
@@ -206,6 +251,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     initRecorder();
     getExampleAccent();
     _isAudioReady = getTTS();
+    fToast = FToast();
+    fToast.init(context);
 
     super.initState();
   }
@@ -240,10 +287,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         isRecorderReady = true;
       }
 
-
-      // _recorder.setSubscriptionDuration(
-      //     const Duration(milliseconds: 500)
-      // );
     }
 
   }
