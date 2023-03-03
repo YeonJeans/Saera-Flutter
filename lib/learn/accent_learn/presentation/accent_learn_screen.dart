@@ -18,6 +18,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 import 'package:saera/server.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -38,6 +40,7 @@ class AccentPracticePage extends StatefulWidget {
 
 class _AccentPracticePageState extends State<AccentPracticePage> with TickerProviderStateMixin {
   final AuthenticationManager _authManager = Get.find();
+  late FToast fToast;
 
   String content = "";
   String userName = "";
@@ -65,6 +68,41 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   late List<double> x2 = [];
   late List<double> y2 = [];
+
+  showCustomToast() {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        color: ColorStyles.black00.withOpacity(0.6),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+              "음성 인식에 실패했습니다.\n목소리가 잘 들리도록 다시 녹음해 주세요!",
+              style: TextStyles.smallFFTextStyle,
+          ),
+
+          IconButton(
+              onPressed: (){
+                fToast.removeCustomToast();
+              },
+              icon: SvgPicture.asset(
+                'assets/icons/close_toast.svg',
+                fit: BoxFit.scaleDown,
+              )
+          )
+        ],
+      )
+    );
+
+    fToast.showToast(
+      child: toast,
+      toastDuration: const Duration(seconds: 3),
+    );
+  }
 
   getExampleAccent() async {
 
@@ -179,25 +217,109 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
       return true;
     }
+    else{
+      showCustomToast();
+      setState(() {
+        recordingState = 1;
+        _isRecording = false;
+      });
+    }
   }
 
   String accuracyComment(double score){
-    if(score == 0){
-      return "녹음하여 정확도를 측정해 보세요!";
+    if (score > 5 ) {
+      return "조금 더 노력해 봅시다!";
     }
-    else if(score > 0 && score < 30){
-      return "할 수 있어요!";
-    }
-    else if (score >= 30 && score < 60) {
-      return "좀 더 노력해 봅시다!";
-    }
-    else if(score >= 60 && score < 80) {
+    else if(score > 3 && score <= 5) {
       return "거의 완벽했어요!";
     }
     else{
       return "완벽합니다!!";
     }
+  }
 
+  Widget accuracyRank(double score){
+    if (score > 5 ) {
+      return const Text(
+        "B ",
+        style: TextStyles.mediumBTextStyle,
+      );
+    }
+    else if(score > 3 && score <= 5) {
+      return const Text(
+        "A ",
+        style: TextStyles.mediumATextStyle,
+      );
+    }
+    else{
+      return const Text(
+        "S ",
+        style: TextStyles.mediumSTextStyle,
+      );
+    }
+  }
+
+  Widget rankIcon(double score){
+    if (score > 5 ) {
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/flower.svg',
+            color: ColorStyles.saeraYellow2,
+            fit: BoxFit.scaleDown,
+          ),
+          const Text(
+            "B",
+            style: TextStyles.largeWhiteTextStyle,
+          )
+        ],
+      );
+    }
+    else if(score > 3 && score <= 5) {
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/flower.svg',
+            color: ColorStyles.saeraPink,
+            fit: BoxFit.scaleDown,
+          ),
+          const Text(
+            "A",
+            style: TextStyles.largeWhiteTextStyle,
+          )
+        ],
+      );
+    }
+    else if(score == 0){
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/flower.svg',
+            color: ColorStyles.searchFillGray,
+            fit: BoxFit.scaleDown,
+          ),
+        ],
+      );
+    }
+    else{
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/flower.svg',
+            color: ColorStyles.saeraRed,
+            fit: BoxFit.scaleDown,
+          ),
+          const Text(
+            "S",
+            style: TextStyles.largeWhiteTextStyle,
+          )
+        ],
+      );
+    }
   }
 
 
@@ -206,6 +328,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     initRecorder();
     getExampleAccent();
     _isAudioReady = getTTS();
+    fToast = FToast();
+    fToast.init(context);
 
     super.initState();
   }
@@ -225,14 +349,21 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       throw 'Microphone permission not granted';
     }else{
       if (await Permission.storage.request().isGranted){
+
+        if(Platform.isAndroid){
+          Directory appFolder = Directory("/storage/emulated/0/saera");
+          bool appFolderExists = await appFolder.exists();
+
+          if (!appFolderExists) {
+            final created = await appFolder.create(recursive: true);
+            print(created.path);
+          }
+        }
+
         await _recorder.openRecorder();
         isRecorderReady = true;
       }
 
-
-      // _recorder.setSubscriptionDuration(
-      //     const Duration(milliseconds: 500)
-      // );
     }
 
   }
@@ -242,14 +373,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       return;
     }
     if(Platform.isAndroid){
-      Directory appDocDirectory = await getApplicationDocumentsDirectory();
-
-      new Directory(appDocDirectory.path+'/'+'dir').create(recursive: true)
-          .then((Directory directory) async {
-        print('Path of New Dir: '+directory.path);
-      });
-      await _recorder.startRecorder(toFile: '${appDocDirectory.path}/dir/audio.wav');
-
+      await _recorder.startRecorder(toFile: '/storage/emulated/0/saera/practiceAudio.wav');
     }
     else{
       await _recorder.startRecorder(toFile: 'audio.wav');
@@ -265,6 +389,10 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     recordingPath  = (await _recorder.stopRecorder())!;
     final audioFile = File(recordingPath!);
     print("녹음이 완료되었습니다. ${audioFile.path}");
+
+    if(Platform.isAndroid){
+      recordingPath = '/storage/emulated/0/saera/practiceAudio.wav';
+    }
   }
 
 
@@ -365,7 +493,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         child: FutureBuilder(
             future: _isAudioReady,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미
               if (snapshot.hasData == false) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -377,17 +504,15 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                 )]
                 );
               }
-              //error가 발생하게 될 경우 반환하게 되는 부분
               else if (snapshot.hasError) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Error: ${snapshot.error}',
-                    style: TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 15),
                   ),
                 );
               }
-              // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
               else {
                 return AccentLineChart(x: x, y: y);
               }
@@ -611,6 +736,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                     setState(() {
                       recordingState = 1;
                       _isRecording = false;
+                      accuracyRate = 0;
                     });
                   },
                   icon: SvgPicture.asset(
@@ -642,47 +768,91 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                Container(
-                  width: MediaQuery.of(context).size.width - 160,
-                  height: 14,
-                  margin: const EdgeInsets.only(right: 5),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    child: LinearProgressIndicator(
-                      value: accuracyRate/100.0,
-                      valueColor: const AlwaysStoppedAnimation<Color>(ColorStyles.saeraBlue),
-                      backgroundColor: ColorStyles.expFillGray,
-
-                    ),
-                  ),
-                ),
 
                 Row(
                   children: [
                     const Text("정확도 ",
-                      style: TextStyles.regular25BoldTextStyle,
+                      style: TextStyles.medium25TextStyle,
                     ),
-                    Text("${accuracyRate.round()}%",
-                      style: TextStyles.regularHighlightBlueBoldTextStyle,
+                    accuracyRank(accuracyRate),
+                    const Text(
+                      " | ",
+                    style: TextStyles.mediumEFTextStyle,
                     ),
+                    Text(
+                      accuracyComment(accuracyRate),
+                      style: TextStyles.medium25TextStyle,
+                    )
                   ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 7),
+                  child: const Text("학습 완료 경험치 +100xp",
+                    style: TextStyles.small99TextStyle,
+                  ),
                 )
+
+
               ],
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 7),
-              child: Text(accuracyComment(accuracyRate),
-                style: TextStyles.small66TextStyle,
-              ),
+
+            Row(
+              children: [
+                rankIcon(accuracyRate),
+                const SizedBox(
+                  width: 16,
+                )
+              ],
+            )
+          ],
+        )
+    );
+  }
+
+  Widget expInitSection() {
+    return Container(
+        margin: const EdgeInsets.only(top: 13, bottom: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        height: 80,
+        decoration: BoxDecoration(
+          color: ColorStyles.saeraWhite,
+          borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+          boxShadow:[
+            BoxShadow(
+              color: const Color(0xff663e68a8).withOpacity(0.3),
+              spreadRadius: 0.1,
+              blurRadius: 8,
+              offset: const Offset(0, 0), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("녹음을 완료하면\n$userName님의 억양 정확도를 알 수 있어요.",
+                  style: TextStyles.regular99TextStyle,
+                ),
+              ],
+            ),
+
+            Row(
+              children: [
+                rankIcon(accuracyRate),
+                const SizedBox(
+                  width: 16,
+                )
+              ],
             )
           ],
         )
@@ -774,7 +944,15 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             }
             return practiceGraph();
           }(),
-          expSection()
+
+          (){
+            if(accuracyRate  == 0){
+              return expInitSection();
+            }
+            else{
+              return expSection();
+            }
+          }(),
 
         ],
       ),
