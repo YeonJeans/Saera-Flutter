@@ -266,7 +266,6 @@ class _HomePageState extends State<HomePage> {
           children: [
             searchSection,
             mostLearnTextSection,
-            //mostLearnListSection,
             top5StatementSection,
             todayRecommandSection,
             todayRecommandTextSection,
