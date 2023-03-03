@@ -227,22 +227,99 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   }
 
   String accuracyComment(double score){
-    if(score == 0){
-      return "녹음하여 정확도를 측정해 보세요!";
+    if (score > 5 ) {
+      return "조금 더 노력해 봅시다!";
     }
-    else if(score > 0 && score < 30){
-      return "할 수 있어요!";
-    }
-    else if (score >= 30 && score < 60) {
-      return "좀 더 노력해 봅시다!";
-    }
-    else if(score >= 60 && score < 80) {
+    else if(score > 3 && score <= 5) {
       return "거의 완벽했어요!";
     }
     else{
       return "완벽합니다!!";
     }
+  }
 
+  Widget accuracyRank(double score){
+    if (score > 5 ) {
+      return const Text(
+        "B ",
+        style: TextStyles.mediumBTextStyle,
+      );
+    }
+    else if(score > 3 && score <= 5) {
+      return const Text(
+        "A ",
+        style: TextStyles.mediumATextStyle,
+      );
+    }
+    else{
+      return const Text(
+        "S ",
+        style: TextStyles.mediumSTextStyle,
+      );
+    }
+  }
+
+  Widget rankIcon(double score){
+    if (score > 5 ) {
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/flower.svg',
+            color: ColorStyles.saeraYellow2,
+            fit: BoxFit.scaleDown,
+          ),
+          const Text(
+            "B",
+            style: TextStyles.largeWhiteTextStyle,
+          )
+        ],
+      );
+    }
+    else if(score > 3 && score <= 5) {
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/flower.svg',
+            color: ColorStyles.saeraPink,
+            fit: BoxFit.scaleDown,
+          ),
+          const Text(
+            "A",
+            style: TextStyles.largeWhiteTextStyle,
+          )
+        ],
+      );
+    }
+    else if(score == 0){
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/flower.svg',
+            color: ColorStyles.searchFillGray,
+            fit: BoxFit.scaleDown,
+          ),
+        ],
+      );
+    }
+    else{
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/flower.svg',
+            color: ColorStyles.saeraRed,
+            fit: BoxFit.scaleDown,
+          ),
+          const Text(
+            "S",
+            style: TextStyles.largeWhiteTextStyle,
+          )
+        ],
+      );
+    }
   }
 
 
@@ -659,6 +736,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                     setState(() {
                       recordingState = 1;
                       _isRecording = false;
+                      accuracyRate = 0;
                     });
                   },
                   icon: SvgPicture.asset(
@@ -690,47 +768,91 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                Container(
-                  width: MediaQuery.of(context).size.width - 160,
-                  height: 14,
-                  margin: const EdgeInsets.only(right: 5),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    child: LinearProgressIndicator(
-                      value: accuracyRate/100.0,
-                      valueColor: const AlwaysStoppedAnimation<Color>(ColorStyles.saeraBlue),
-                      backgroundColor: ColorStyles.expFillGray,
-
-                    ),
-                  ),
-                ),
 
                 Row(
                   children: [
                     const Text("정확도 ",
-                      style: TextStyles.regular25BoldTextStyle,
+                      style: TextStyles.medium25TextStyle,
                     ),
-                    Text("${accuracyRate.round()}%",
-                      style: TextStyles.regularHighlightBlueBoldTextStyle,
+                    accuracyRank(accuracyRate),
+                    const Text(
+                      " | ",
+                    style: TextStyles.mediumEFTextStyle,
                     ),
+                    Text(
+                      accuracyComment(accuracyRate),
+                      style: TextStyles.medium25TextStyle,
+                    )
                   ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 7),
+                  child: const Text("학습 완료 경험치 +100xp",
+                    style: TextStyles.small99TextStyle,
+                  ),
                 )
+
+
               ],
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 7),
-              child: Text(accuracyComment(accuracyRate),
-                style: TextStyles.small66TextStyle,
-              ),
+
+            Row(
+              children: [
+                rankIcon(accuracyRate),
+                const SizedBox(
+                  width: 16,
+                )
+              ],
+            )
+          ],
+        )
+    );
+  }
+
+  Widget expInitSection() {
+    return Container(
+        margin: const EdgeInsets.only(top: 13, bottom: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        height: 80,
+        decoration: BoxDecoration(
+          color: ColorStyles.saeraWhite,
+          borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+          boxShadow:[
+            BoxShadow(
+              color: const Color(0xff663e68a8).withOpacity(0.3),
+              spreadRadius: 0.1,
+              blurRadius: 8,
+              offset: const Offset(0, 0), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("녹음을 완료하면\n$userName님의 억양 정확도를 알 수 있어요.",
+                  style: TextStyles.regular99TextStyle,
+                ),
+              ],
+            ),
+
+            Row(
+              children: [
+                rankIcon(accuracyRate),
+                const SizedBox(
+                  width: 16,
+                )
+              ],
             )
           ],
         )
@@ -822,7 +944,15 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             }
             return practiceGraph();
           }(),
-          expSection()
+
+          (){
+            if(accuracyRate  == 0){
+              return expInitSection();
+            }
+            else{
+              return expSection();
+            }
+          }(),
 
         ],
       ),
