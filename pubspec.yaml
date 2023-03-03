@@ -47,6 +47,7 @@ dependencies:
   google_sign_in: ^5.4.4
   http: ^0.13.5
   loading_animation_widget:
+  carousel_slider: ^4.2.1
 
 flutter_icons:
   android: "launcher_icon"

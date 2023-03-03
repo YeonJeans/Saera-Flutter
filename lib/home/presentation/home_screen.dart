@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -93,45 +94,64 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    ElevatedButton statementSection(String statement) {
-      return ElevatedButton(
-        onPressed: null,
-        style: ButtonStyle(
-          elevation: MaterialStateProperty.all(8),
-          backgroundColor: MaterialStateProperty.all(Colors.white),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            )
-          )
-        ),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                statement,
-                style: TextStyles.regular25TextStyle,
+    Container statementSection(String statement) {
+      return Container(
+        margin: EdgeInsets.only(bottom: MediaQuery.sizeOf(context).height*0.03),
+        child: ElevatedButton(
+            onPressed: null,
+            style: ButtonStyle(
+                elevation: MaterialStateProperty.all(8),
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    )
+                )
+            ),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    statement,
+                    style: TextStyles.regular25TextStyle,
+                  ),
+                  SvgPicture.asset('assets/icons/expand_right.svg'),
+                ],
               ),
-              SvgPicture.asset('assets/icons/expand_right.svg'),
-            ],
-          ),
-        )
+            )
+        ),
       );
     }
 
-    Widget mostLearnListSection = Container(
+    List<String> top5StatementList = [
+      '화장실은 어디에 있나요?',
+      '이건 얼마인가요?',
+      '혹시 연세가 어떻게 되세요?',
+      '아이스 아메리카노 한 잔 주세요.',
+      '가게 마감시간은 언제인가요?'
+    ];
+
+    Widget top5StatementSection = Container(
       margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.02),
-      child: Stack(
-        children: [
-          statementSection('화장실은 어디에 있나요?')
-        ],
+      child: CarouselSlider.builder(
+        itemCount: 5,
+        options: CarouselOptions(
+          height: MediaQuery.sizeOf(context).height*0.09,
+          initialPage: 0,
+          aspectRatio: 6.0,
+          enlargeCenterPage: true,
+          autoPlay: true
+        ),
+        itemBuilder: (BuildContext context, int index, int realIndex) {
+          return statementSection(top5StatementList[index]);
+        },
       ),
     );
 
     Widget todayRecommandSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.07),
+      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.01),
       child: const Text(
         '오늘의 추천 학습',
         style: TextStyles.medium25BoldTextStyle,
@@ -246,7 +266,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             searchSection,
             mostLearnTextSection,
-            mostLearnListSection,
+            //mostLearnListSection,
+            top5StatementSection,
             todayRecommandSection,
             todayRecommandTextSection,
             todayLearnSection,
@@ -257,9 +278,12 @@ class _HomePageState extends State<HomePage> {
 
     return Stack(
       children: [
+        Container(
+          color: Color(0xffBBE0CE),
+        ),
         SafeArea(
             child: Scaffold(
-              backgroundColor: Color(0xffBBE0CE),
+              backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               body: Stack(
                 children: [
