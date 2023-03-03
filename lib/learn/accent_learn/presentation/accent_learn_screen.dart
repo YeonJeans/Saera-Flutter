@@ -225,6 +225,17 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       throw 'Microphone permission not granted';
     }else{
       if (await Permission.storage.request().isGranted){
+
+        if(Platform.isAndroid){
+          Directory appFolder = Directory("/storage/emulated/0/saera");
+          bool appFolderExists = await appFolder.exists();
+
+          if (!appFolderExists) {
+            final created = await appFolder.create(recursive: true);
+            print(created.path);
+          }
+        }
+
         await _recorder.openRecorder();
         isRecorderReady = true;
       }
@@ -242,14 +253,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       return;
     }
     if(Platform.isAndroid){
-      Directory appDocDirectory = await getApplicationDocumentsDirectory();
-
-      new Directory(appDocDirectory.path+'/'+'dir').create(recursive: true)
-          .then((Directory directory) async {
-        print('Path of New Dir: '+directory.path);
-      });
-      await _recorder.startRecorder(toFile: '${appDocDirectory.path}/dir/audio.wav');
-
+      await _recorder.startRecorder(toFile: '/storage/emulated/0/saera/practiceAudio.wav');
     }
     else{
       await _recorder.startRecorder(toFile: 'audio.wav');
@@ -265,6 +269,10 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     recordingPath  = (await _recorder.stopRecorder())!;
     final audioFile = File(recordingPath!);
     print("녹음이 완료되었습니다. ${audioFile.path}");
+
+    if(Platform.isAndroid){
+      recordingPath = '/storage/emulated/0/saera/practiceAudio.wav';
+    }
   }
 
 
@@ -365,7 +373,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         child: FutureBuilder(
             future: _isAudioReady,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미
               if (snapshot.hasData == false) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -377,17 +384,15 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                 )]
                 );
               }
-              //error가 발생하게 될 경우 반환하게 되는 부분
               else if (snapshot.hasError) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Error: ${snapshot.error}',
-                    style: TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 15),
                   ),
                 );
               }
-              // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
               else {
                 return AccentLineChart(x: x, y: y);
               }
