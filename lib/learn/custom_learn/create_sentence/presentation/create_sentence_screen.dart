@@ -67,7 +67,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
       margin: const EdgeInsets.only(top: 20, bottom: 36),
       child: const Text(
         "학습할 문장 생성",
-        style: TextStyles.xLargeTextStyle,
+        style: TextStyles.xxLargeTextStyle,
       ),
     );
   }

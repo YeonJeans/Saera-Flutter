@@ -84,7 +84,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
       padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
       child: Text(
         "$userName님이 즐겨찾기한\n문장들이에요.",
-        style: TextStyles.xLargeTextStyle
+        style: TextStyles.xxLargeTextStyle
       )
     );
 

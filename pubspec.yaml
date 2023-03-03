@@ -48,6 +48,7 @@ dependencies:
   http: ^0.13.5
   get_storage: ^2.0.3
   loading_animation_widget:
+  carousel_slider: ^4.2.1
   fluttertoast: ^8.2.1
 
 flutter_icons:
