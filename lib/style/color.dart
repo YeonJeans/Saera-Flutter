@@ -7,6 +7,9 @@ class ColorStyles {
   static const Color saeraBeige=Color(0xffE5DDD2);
   static const Color saeraKhaki=Color(0xffA5AA68);
   static const Color saeraWhite=Color(0xffFFFFFF);
+  static const Color saeraRed=Color(0xffF1573F);
+  static const Color saeraPink=Color(0xffF7A08C);
+  static const Color saeraYellow2=Color(0xffF7C860);
 
   // Gray Color
   static const Color searchFillGray = Color(0xffEFEFEF);
@@ -19,6 +22,7 @@ class ColorStyles {
   static const Color deleteGray = Color(0xffBDBDBD);
   static const Color disableGray = Color(0xffDDDDDD);
   static const Color filterGray = Color(0xffDDDDDD);
+  static const Color black00 = Color(0xff000000);
 
   static const Color textBlack = Color(0xff333333);
 
