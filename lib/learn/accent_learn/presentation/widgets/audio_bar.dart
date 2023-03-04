@@ -9,8 +9,9 @@ class AudioBar extends StatefulWidget {
 
   final String recordPath;
   final bool isRecording;
+  final bool isAccent;
 
-  const AudioBar({Key? key, required this.recordPath, required this.isRecording}) : super(key: key);
+  const AudioBar({Key? key, required this.recordPath, required this.isRecording, required this.isAccent}) : super(key: key);
 
   @override
   State<AudioBar> createState() => _AudioBarState();
@@ -101,7 +102,7 @@ class _AudioBarState extends State<AudioBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 2.0, right: 16.0, top: 13.0),
+      margin: const EdgeInsets.only(left: 2.0, right: 16.0, top: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -116,12 +117,24 @@ class _AudioBarState extends State<AudioBar> {
               }
             },
             icon: _isPlaying ?
-            SvgPicture.asset('assets/icons/stop.svg',
-                fit: BoxFit.scaleDown
+            SvgPicture.asset(
+                (){
+                  if(widget.isAccent){
+                    return 'assets/icons/stop.svg';
+                  }
+                  return 'assets/icons/stop_pronounce.svg';
+                }(),
+                fit: BoxFit.scaleDown,
             )
                 :
-            SvgPicture.asset('assets/icons/play.svg',
-                fit: BoxFit.scaleDown
+            SvgPicture.asset(
+                  (){
+                if(widget.isAccent){
+                  return 'assets/icons/play.svg';
+                }
+                  return 'assets/icons/play_pronounce.svg';
+                }(),
+                fit: BoxFit.scaleDown,
             ),
             iconSize: 32,
           ),
