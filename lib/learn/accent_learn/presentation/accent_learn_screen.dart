@@ -638,9 +638,9 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  'assets/icons/record.svg',
-                    fit: BoxFit.scaleDown
+                LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.black,
+                  size: 30,
                 ),
                 Container(
                   margin: const EdgeInsets.only(top:11),
