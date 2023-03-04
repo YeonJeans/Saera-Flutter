@@ -8,6 +8,7 @@ import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_line_chart.dart';
@@ -408,6 +409,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
               icon: SvgPicture.asset(
                 'assets/icons/back.svg',
+                color: ColorStyles.saeraAppBar,
                 fit: BoxFit.scaleDown,
               ),
               label: const Text(' 뒤로',
@@ -432,6 +434,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                   :
               SvgPicture.asset(
                 'assets/icons/star_unfill.svg',
+                color: ColorStyles.saeraAppBar,
                 fit: BoxFit.scaleDown,
               )
           )
@@ -446,7 +449,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       margin: const EdgeInsets.only(top: 20.0),
       padding: const EdgeInsets.only(top:30.0, bottom: 24.0),
       decoration: BoxDecoration(
-          color: ColorStyles.etcYellow,
+          color: ColorStyles.searchFillGray,
           borderRadius: BorderRadius.circular(10)
       ),
       child: Center(
@@ -461,7 +464,10 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   Widget exampleSectionText(){
     return Row(
       children: [
-        SvgPicture.asset('assets/icons/flag.svg'),
+        SvgPicture.asset(
+            'assets/icons/flag.svg',
+          color: ColorStyles.saeraRed,
+        ),
         const SizedBox(width: 9,),
         const Text(
           "이 억양을 목표로 연습해 볼까요?",
@@ -474,17 +480,16 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget exampleGraph(){
     return Container(
-      margin: const EdgeInsets.only(top: 19),
+      margin: const EdgeInsets.only(top: 8),
       height: 135,
       decoration: BoxDecoration(
         color: ColorStyles.saeraWhite,
-        borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+        borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
         boxShadow:[
           BoxShadow(
-            color: const Color(0xff663e68a8).withOpacity(0.3),
-            spreadRadius: 0.1,
-            blurRadius: 8,
-            offset: const Offset(0, 0), // changes position of shadow
+            color: ColorStyles.black00.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 4), // changes position of shadow
           ),
         ],
       ),
@@ -584,17 +589,16 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         });
       },
       child: Container(
-          margin: const EdgeInsets.only(top: 19),
+          margin: const EdgeInsets.only(top: 8),
           height: 135,
           decoration: BoxDecoration(
-            color: ColorStyles.primary,
-            borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+            color: ColorStyles.saeraRed,
+            borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
             boxShadow:[
               BoxShadow(
-                color: const Color(0xff663e68a8).withOpacity(0.3),
-                spreadRadius: 0.1,
-                blurRadius: 8,
-                offset: const Offset(0, 0), // changes position of shadow
+                color: ColorStyles.saeraRed.withOpacity(0.2),
+                blurRadius: 16,
+                offset: const Offset(0, 4), // changes position of shadow
               ),
             ],
           ),
@@ -620,17 +624,16 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         });
       },
       child: Container(
-          margin: const EdgeInsets.only(top: 19),
+          margin: const EdgeInsets.only(top: 8),
           height: 135,
           decoration: BoxDecoration(
-            color: ColorStyles.saeraBlue,
-            borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+            color: ColorStyles.saeraPink,
+            borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
             boxShadow:[
               BoxShadow(
-                color: const Color(0xff663e68a8).withOpacity(0.3),
-                spreadRadius: 0.1,
-                blurRadius: 8,
-                offset: const Offset(0, 0), // changes position of shadow
+                color: ColorStyles.saeraPink.withOpacity(0.2),
+                blurRadius: 16,
+                offset: const Offset(0, 4), // changes position of shadow
               ),
             ],
           ),
@@ -665,17 +668,16 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         // });
       },
       child: Container(
-          margin: const EdgeInsets.only(top: 19),
+          margin: const EdgeInsets.only(top: 8),
           height: 135,
           decoration: BoxDecoration(
-            color: ColorStyles.saeraBlue,
-            borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+            color: ColorStyles.saeraPink2,
+            borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
             boxShadow:[
               BoxShadow(
-                color: const Color(0xff663e68a8).withOpacity(0.3),
-                spreadRadius: 0.1,
-                blurRadius: 8,
-                offset: const Offset(0, 0), // changes position of shadow
+                color: ColorStyles.saeraPink2.withOpacity(0.2),
+                blurRadius: 16,
+                offset: const Offset(0, 4), // changes position of shadow
               ),
             ],
           ),
@@ -706,17 +708,16 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     return Stack(
       children: [
         Container(
-            margin: const EdgeInsets.only(top: 19),
+            margin: const EdgeInsets.only(top: 8),
             height: 135,
             decoration: BoxDecoration(
               color: ColorStyles.saeraWhite,
-              borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
+              borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
               boxShadow:[
                 BoxShadow(
-                  color: const Color(0xff663E68A8).withOpacity(0.3),
-                  spreadRadius: 0.1,
-                  blurRadius: 8,
-                  offset: const Offset(0, 0), // changes position of shadow
+                  color: ColorStyles.saeraRed.withOpacity(0.2),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4), // changes position of shadow
                 ),
               ],
             ),
@@ -761,10 +762,9 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
           borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
           boxShadow:[
             BoxShadow(
-              color: const Color(0xff663e68a8).withOpacity(0.3),
-              spreadRadius: 0.1,
-              blurRadius: 8,
-              offset: const Offset(0, 0), // changes position of shadow
+              color: ColorStyles.saeraRed.withOpacity(0.2),
+              blurRadius: 16,
+              offset: const Offset(0, 4), // changes position of shadow
             ),
           ],
         ),
@@ -826,10 +826,9 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
           borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
           boxShadow:[
             BoxShadow(
-              color: const Color(0xff663e68a8).withOpacity(0.3),
-              spreadRadius: 0.1,
-              blurRadius: 8,
-              offset: const Offset(0, 0), // changes position of shadow
+              color: ColorStyles.saeraRed.withOpacity(0.2),
+              blurRadius: 16,
+              offset: const Offset(0, 4), // changes position of shadow
             ),
           ],
         ),
@@ -976,7 +975,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               resizeToAvoidBottomInset: false,
               body: ListView(
                 children: [
-                  // appBarSection(),
                   Container(
                     margin: const EdgeInsets.only(left: 14, right: 14),
                     child: Column(
