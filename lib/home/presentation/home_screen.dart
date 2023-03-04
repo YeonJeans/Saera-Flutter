@@ -21,9 +21,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 
     Widget imageSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.02),
-      width: MediaQuery.sizeOf(context).width*0.5,
-      height: MediaQuery.sizeOf(context).height*0.25,
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+      width: MediaQuery.of(context).size.width*0.5,
+      height: MediaQuery.of(context).size.height*0.25,
       decoration: const BoxDecoration(
           image: DecorationImage(
               image: AssetImage('assets/images/home_item_bg.png'),
@@ -34,8 +34,8 @@ class _HomePageState extends State<HomePage> {
 
     Widget greetingTextSection = Container(
       margin: EdgeInsets.only(
-          top: MediaQuery.sizeOf(context).height*0.10,
-          left: MediaQuery.sizeOf(context).width*0.63
+          top: MediaQuery.of(context).size.height*0.10,
+          left: MediaQuery.of(context).size.width*0.63
       ),
       child: Text(
         '$name 님,\n 어서 오세요!',
@@ -46,8 +46,8 @@ class _HomePageState extends State<HomePage> {
 
     Widget studyTextSection = Container(
       margin: EdgeInsets.only(
-          top: MediaQuery.sizeOf(context).height*0.185,
-          left: MediaQuery.sizeOf(context).width*0.60
+          top: MediaQuery.of(context).size.height*0.185,
+          left: MediaQuery.of(context).size.width*0.60
       ),
       child: const Text(
         '오늘은 무엇을 학습할까요?',
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget searchSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.04),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
       //padding: const EdgeInsets.symmetric(horizontal: 21),
       child: Row(
         children: <Widget>[
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget mostLearnTextSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.02),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
       child: const Text(
         '가장 많이 학습한 문장 Top 5',
         style: TextStyles.medium25BoldTextStyle,
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
 
     Container statementSection(String statement) {
       return Container(
-        margin: EdgeInsets.only(bottom: MediaQuery.sizeOf(context).height*0.03),
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.03),
         child: ElevatedButton(
             onPressed: null,
             style: ButtonStyle(
@@ -134,11 +134,11 @@ class _HomePageState extends State<HomePage> {
     ];
 
     Widget top5StatementSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.02),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
       child: CarouselSlider.builder(
         itemCount: 5,
         options: CarouselOptions(
-          height: MediaQuery.sizeOf(context).height*0.09,
+          height: MediaQuery.of(context).size.height*0.09,
           initialPage: 0,
           aspectRatio: 6.0,
           enlargeCenterPage: true,
@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget todayRecommandSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.01),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
       child: const Text(
         '오늘의 추천 학습',
         style: TextStyles.medium25BoldTextStyle,
@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget todayRecommandTextSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.015),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015),
       child: const Text(
         '매일 새롭게 추천하는 5개의 단어와 문장으로\n빠르게 발음과 억양을 학습해요.',
         style: TextStyles.small55TextStyle,
@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget todayLearnSection = Container(
-      padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.02),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -184,25 +184,25 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Container(
                 padding: EdgeInsets.only(
-                    left: MediaQuery.sizeOf(context).width*0.015,
-                    right: MediaQuery.sizeOf(context).width*0.17
+                    left: MediaQuery.of(context).size.width*0.015,
+                    right: MediaQuery.of(context).size.width*0.17
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.025)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
                     SvgPicture.asset('assets/icons/today_word.svg'),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.015)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015)),
                     const Text(
                       '오늘의\n단어 학습',
                       style: TextStyles.medium25TextStyle,
                     ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.010)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.010)),
                     const Text(
                       '약 3분 소요',
                       style: TextStyles.tiny82TextStyle,
                     ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.025)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
                   ],
                 ),
               )
@@ -220,25 +220,25 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Container(
                 padding: EdgeInsets.only(
-                    left: MediaQuery.sizeOf(context).width*0.015,
-                    right: MediaQuery.sizeOf(context).width*0.17
+                    left: MediaQuery.of(context).size.width*0.015,
+                    right: MediaQuery.of(context).size.width*0.17
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.025)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
                     SvgPicture.asset('assets/icons/today_statement.svg'),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.015)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015)),
                     const Text(
                       '오늘의\n문장 학습',
                       style: TextStyles.medium25TextStyle,
                     ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.010)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.010)),
                     const Text(
                       '약 5분 소요',
                       style: TextStyles.tiny82TextStyle,
                     ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.025)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
                   ],
                 ),
               )
@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget container = Container(
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.27),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.27),
       decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(32.0), topRight: Radius.circular(32.0)),
@@ -261,7 +261,7 @@ class _HomePageState extends State<HomePage> {
           ]
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.sizeOf(context).width*0.05),
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
         child: ListView(
           children: [
             searchSection,
