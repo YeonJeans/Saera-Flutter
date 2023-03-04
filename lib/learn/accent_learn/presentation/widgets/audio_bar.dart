@@ -158,7 +158,7 @@ class _AudioBarState extends State<AudioBar> {
                       min: 0,
                       max: duration.inMicroseconds.toDouble(),
                       value: position.inMicroseconds.toDouble(),
-                      activeColor: ColorStyles.primary.withOpacity(0.4),
+                      activeColor: widget.isAccent ? ColorStyles.saeraPink.withOpacity(0.4) : ColorStyles.saeraOlive2.withOpacity(0.4),
                       inactiveColor: Color(0xffE7E7E7),
                       onChanged: (value) async {
                         final position = Duration(microseconds: value.toInt());
