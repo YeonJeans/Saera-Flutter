@@ -27,4 +27,5 @@ class ColorStyles {
   static const Color textBlack = Color(0xff333333);
 
   static const Color etcYellow = Color(0xffE5DDD2);
+  static const Color backIconGreen=Color(0xffBBE0CE);
 }

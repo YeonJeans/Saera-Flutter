@@ -44,7 +44,7 @@ class TextStyles {
   static const mediumBTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xffF7C860), decoration: TextDecoration.none,);
 
 
-  static const backBtnTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 18, fontWeight: FontWeight.normal, color: Color(0xff3E68A8));
+  static const backBtnTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 18, fontWeight: FontWeight.normal, color: Color(0xff4DC6A9));
 
 
   static const large00TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff000000));
