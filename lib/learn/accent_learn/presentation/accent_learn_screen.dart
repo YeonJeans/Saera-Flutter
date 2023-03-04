@@ -71,7 +71,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   showCustomToast() {
     Widget toast = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         color: ColorStyles.black00.withOpacity(0.6),
@@ -549,7 +549,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               }
               // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
               else {
-                return AudioBar(recordPath: audioPath, isRecording: false,);
+                return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
               }
             }),
           exampleGraph(),
@@ -861,7 +861,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget before_audio_bar() {
     return Container(
-      margin: const EdgeInsets.only(left: 2.0, right: 16.0, top: 13.0),
+      margin: const EdgeInsets.only(left: 2.0, right: 16.0, top: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -929,7 +929,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               return before_audio_bar();
             }
             else{
-              return AudioBar(recordPath: recordingPath, isRecording: true,);
+              return AudioBar(recordPath: recordingPath, isRecording: true, isAccent: true);
             }
           }(),
           (){
