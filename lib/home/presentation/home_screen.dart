@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
 
     Container statementSection(String statement) {
       return Container(
-        margin: EdgeInsets.only(bottom: MediaQuery.sizeOf(context).height*0.03),
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.03),
         child: ElevatedButton(
             onPressed: null,
             style: ButtonStyle(
@@ -136,11 +136,11 @@ class _HomePageState extends State<HomePage> {
     ];
 
     Widget top5StatementSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.02),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
       child: CarouselSlider.builder(
         itemCount: 5,
         options: CarouselOptions(
-          height: MediaQuery.sizeOf(context).height*0.09,
+          height: MediaQuery.of(context).size.height*0.09,
           initialPage: 0,
           aspectRatio: 6.0,
           enlargeCenterPage: true,
@@ -189,25 +189,25 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Container(
                 padding: EdgeInsets.only(
-                    left: MediaQuery.sizeOf(context).width*0.015,
-                    right: MediaQuery.sizeOf(context).width*0.17
+                    left: MediaQuery.of(context).size.width*0.015,
+                    right: MediaQuery.of(context).size.width*0.17
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.025)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
                     SvgPicture.asset('assets/icons/today_word.svg'),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.015)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015)),
                     const Text(
                       '오늘의\n단어 학습',
                       style: TextStyles.medium25TextStyle,
                     ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.010)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.010)),
                     const Text(
                       '약 3분 소요',
                       style: TextStyles.tiny82TextStyle,
                     ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.025)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
                   ],
                 ),
               )
@@ -225,25 +225,25 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Container(
                 padding: EdgeInsets.only(
-                    left: MediaQuery.sizeOf(context).width*0.015,
-                    right: MediaQuery.sizeOf(context).width*0.17
+                    left: MediaQuery.of(context).size.width*0.015,
+                    right: MediaQuery.of(context).size.width*0.17
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.025)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
                     SvgPicture.asset('assets/icons/today_statement.svg'),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.015)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015)),
                     const Text(
                       '오늘의\n문장 학습',
                       style: TextStyles.medium25TextStyle,
                     ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.010)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.010)),
                     const Text(
                       '약 5분 소요',
                       style: TextStyles.tiny82TextStyle,
                     ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height*0.025)),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
                   ],
                 ),
               )
