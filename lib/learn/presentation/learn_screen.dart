@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/learn/presentation/pronunciation_main_screen.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
@@ -45,7 +46,7 @@ class _LearnPageState extends State<LearnPage> {
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: 10, right: 10),
       child: const Text(
         '발음 학습으로 올바른 남한 표준어 발음을,\n문장 학습으로 자주 사용하는 표현과 억양을 익힐 수 있어요.',
-        style: TextStyles.regular25TextStyle,
+        style: TextStyles.regular25TextStyleHeight,
       ),
     );
 
@@ -70,8 +71,9 @@ class _LearnPageState extends State<LearnPage> {
     }
 
     Widget goWordButtonSection = InkWell(
-      onTap: null,
+      onTap: () => Get.to(PronunciationMainPage()),
       child: Container(
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.035),
         decoration: const BoxDecoration(
           color: ColorStyles.saeraWord,
@@ -163,7 +165,7 @@ class _LearnPageState extends State<LearnPage> {
               )
             ),
             body: Container(
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: ListView(
                 physics: const NeverScrollableScrollPhysics(),
