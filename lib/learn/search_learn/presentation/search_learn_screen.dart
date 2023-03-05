@@ -218,7 +218,7 @@ class _SearchPageState extends State<SearchPage> {
               avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
               selectedColor: filterList[index] == "상황" ? ColorStyles.saeraBlue : ColorStyles.saeraBeige,
               backgroundColor: Colors.white,
-              side: BorderSide(color: ColorStyles.filterGray),
+              side: BorderSide(color: ColorStyles.disableGray),
               selected: _selectedIndex == index,
               onSelected: (bool selected) {
                 setState(() {

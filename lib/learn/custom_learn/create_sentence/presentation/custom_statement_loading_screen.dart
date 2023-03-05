@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saera/style/font.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import 'learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
+import '../../../accent_learn/presentation/widgets/accent_learn_background_image.dart';
 
 class CustomLoadingPage extends StatelessWidget {
 

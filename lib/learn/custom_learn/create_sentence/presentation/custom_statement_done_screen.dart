@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
-import 'learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
+import '../../../accent_learn/presentation/widgets/accent_learn_background_image.dart';
 
 class CustomDonePage extends StatelessWidget {
 
