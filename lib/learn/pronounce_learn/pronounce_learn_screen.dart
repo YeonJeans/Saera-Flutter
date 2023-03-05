@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_line_chart.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/audio_bar.dart';
+import 'package:saera/login/data/refresh_token.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -21,29 +22,29 @@ import 'package:path_provider/path_provider.dart';
 import 'package:saera/server.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:http_parser/http_parser.dart';
 
 import '../../../login/data/authentication_manager.dart';
 
 
-class AccentPracticePage extends StatefulWidget {
+class PronouncePracticePage extends StatefulWidget {
 
   final int id;
 
-  const AccentPracticePage({Key? key, required this.id}) : super(key: key);
+  const PronouncePracticePage({Key? key, required this.id}) : super(key: key);
 
   @override
-  State<AccentPracticePage> createState() => _AccentPracticePageState();
+  State<PronouncePracticePage> createState() => _PronouncePracticePageState();
 }
 
-class _AccentPracticePageState extends State<AccentPracticePage> with TickerProviderStateMixin {
+class _PronouncePracticePageState extends State<PronouncePracticePage> with TickerProviderStateMixin {
   final AuthenticationManager _authManager = Get.find();
   late FToast fToast;
 
   String content = "";
+  String contentPronounce = "공부";
+  String contentInfo = "학문이나 기술을 배우고 익힘.";
   String userName = "";
 
   double accuracyRate = 0;
@@ -59,7 +60,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   // String audioPath = "mp3/ex.wav";
   String audioPath = "";
   String recordingPath = "";
-  String _fileName = "record.wav";
+  String _fileName = "recordp.wav";
 
   final _recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
@@ -72,31 +73,31 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   showCustomToast() {
     Widget toast = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        color: ColorStyles.black00.withOpacity(0.6),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: ColorStyles.black00.withOpacity(0.6),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
               "음성 인식에 실패했습니다.\n목소리가 잘 들리도록 다시 녹음해 주세요!",
               style: TextStyles.smallFFTextStyle,
-          ),
+            ),
 
-          IconButton(
-              onPressed: (){
-                fToast.removeCustomToast();
-              },
-              icon: SvgPicture.asset(
-                'assets/icons/close_toast.svg',
-                fit: BoxFit.scaleDown,
-              )
-          )
-        ],
-      )
+            IconButton(
+                onPressed: (){
+                  fToast.removeCustomToast();
+                },
+                icon: SvgPicture.asset(
+                  'assets/icons/close_toast.svg',
+                  fit: BoxFit.scaleDown,
+                )
+            )
+          ],
+        )
     );
 
     fToast.showToast(
@@ -108,7 +109,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   getExampleAccent() async {
 
     var url = Uri.parse('${serverHttp}/statements/${widget.id}');
-    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
 
@@ -117,6 +118,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
       setState(() {
         content = body["content"];
+        content = "공부";
       });
 
       setState(() {
@@ -132,6 +134,16 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       y = List.from(body["pitch_y"]);
 
     }
+    else if(response.statusCode == 401){
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getExampleAccent();
+      }
+
+
+    }
   }
 
 
@@ -142,13 +154,17 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
 
+    print(response.body);
     if (response.statusCode == 200) {
 
       Uint8List audioInUnit8List = response.bodyBytes;
       final tempDir = await getTemporaryDirectory();
 
+      print("here!");
       File file = await File('${tempDir.path}/exampleAudio${widget.id}.wav').create();
       file.writeAsBytesSync(audioInUnit8List);
+
+      print("here!");
 
       setState(() {
         audioPath = file.path;
@@ -198,6 +214,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     var responsed = await request.send();
     var response = await http.Response.fromStream(responsed);
 
+    print(response.body);
     if (responsed.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
 
@@ -227,101 +244,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     }
   }
 
-  String accuracyComment(double score){
-    if (score > 5 ) {
-      return "조금 더 노력해 봅시다!";
-    }
-    else if(score > 3 && score <= 5) {
-      return "거의 완벽했어요!";
-    }
-    else{
-      return "완벽합니다!!";
-    }
-  }
-
-  Widget accuracyRank(double score){
-    if (score > 5 ) {
-      return const Text(
-        "B ",
-        style: TextStyles.mediumBTextStyle,
-      );
-    }
-    else if(score > 3 && score <= 5) {
-      return const Text(
-        "A ",
-        style: TextStyles.mediumATextStyle,
-      );
-    }
-    else{
-      return const Text(
-        "S ",
-        style: TextStyles.mediumSTextStyle,
-      );
-    }
-  }
-
-  Widget rankIcon(double score){
-    if (score > 5 ) {
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/icons/flower.svg',
-            color: ColorStyles.saeraYellow2,
-            fit: BoxFit.scaleDown,
-          ),
-          const Text(
-            "B",
-            style: TextStyles.largeWhiteTextStyle,
-          )
-        ],
-      );
-    }
-    else if(score > 3 && score <= 5) {
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/icons/flower.svg',
-            color: ColorStyles.saeraPink,
-            fit: BoxFit.scaleDown,
-          ),
-          const Text(
-            "A",
-            style: TextStyles.largeWhiteTextStyle,
-          )
-        ],
-      );
-    }
-    else if(score == 0){
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/icons/flower.svg',
-            color: ColorStyles.searchFillGray,
-            fit: BoxFit.scaleDown,
-          ),
-        ],
-      );
-    }
-    else{
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/icons/flower.svg',
-            color: ColorStyles.saeraRed,
-            fit: BoxFit.scaleDown,
-          ),
-          const Text(
-            "S",
-            style: TextStyles.largeWhiteTextStyle,
-          )
-        ],
-      );
-    }
-  }
 
 
   @override
@@ -343,8 +265,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Future initRecorder() async {
     final status = await Permission.microphone.request();
-
-
 
     if(status != PermissionStatus.granted){
       throw 'Microphone permission not granted';
@@ -394,6 +314,90 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     if(Platform.isAndroid){
       recordingPath = '/storage/emulated/0/saera/practiceAudio.wav';
     }
+  }
+
+  Widget topBarSection (){
+    return Stack(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: (){
+
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1,
+                        color: ColorStyles.saeraOlive1
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    color: Colors.white,
+                    boxShadow:[
+                      BoxShadow(
+                        color: ColorStyles.black00.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 0), // changes position of shadow
+                      ),
+                    ],
+                ),
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+                child: const Text(
+                  "이전",
+                  style: TextStyles.regularOliveTextStyle,
+                ),
+
+              ),
+            ),
+
+            GestureDetector(
+              onTap: (){
+
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: ColorStyles.saeraOlive1
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  color: ColorStyles.saeraOlive1,
+                  boxShadow:[
+                    BoxShadow(
+                      color: ColorStyles.black00.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 0), // changes position of shadow
+                    ),
+                  ],
+                ),
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+                child: const Text(
+                  "다음",
+                  style: TextStyles.regularWhiteTextStyle,
+                ),
+
+              ),
+            )
+          ],
+        ),
+
+        Center(
+          child: GestureDetector(
+            onTap: (){
+
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: const Text(
+                  "그만 학습하기",
+                  style: TextStyles.mediumGrayTextStyle
+              ),
+            )
+          ),
+        )
+      ],
+    );
   }
 
 
@@ -446,17 +450,81 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget practiceSentenceSection() {
     return Container(
-      margin: const EdgeInsets.only(top: 20.0),
-      padding: const EdgeInsets.only(top:30.0, bottom: 24.0),
+      margin: const EdgeInsets.only(top: 28.0),
+      padding: const EdgeInsets.only(top:24.0, bottom: 24.0),
       decoration: BoxDecoration(
           color: ColorStyles.searchFillGray,
           borderRadius: BorderRadius.circular(10)
       ),
       child: Center(
-        child: Text(
-          content,
-          style: TextStyles.large33TextStyle,
-        ),
+        child: Column(
+          children: [
+            Text(
+              content,
+              style: TextStyles.large00MediumTextStyle,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              contentInfo,
+              style: TextStyles.regular55TextStyle,
+            ),
+          ],
+        )
+      ),
+    );
+  }
+
+  Widget pronounceSection(){
+    return Container(
+      margin: const EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top:20.0, bottom: 20.0),
+      decoration: BoxDecoration(
+          color: ColorStyles.searchFillGray,
+          borderRadius: BorderRadius.circular(10)
+      ),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "$content ",
+              style: TextStyles.large00MediumTextStyle,
+            ),
+            Text(
+              "[$contentPronounce]",
+              style: TextStyles.largeGreenTextStyle,
+            ),
+          ],
+        )
+      ),
+    );
+  }
+
+  Widget pronounceMethodSection(){
+    return Container(
+      margin: const EdgeInsets.only(top: 12.0),
+      padding: const EdgeInsets.only(top:14.0, bottom: 14.0),
+      decoration: BoxDecoration(
+          color: ColorStyles.saeraOlive3,
+          borderRadius: BorderRadius.circular(10)
+      ),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/icons/light.png',
+              width: 20,
+              height: 20,
+            ),
+            SizedBox(width: 16,),
+            Text(
+              '\‘ㅗ\' 발음을 \‘ㅓ\' 처럼 발음하지 않도록 신경써야 합니다.',
+              style: TextStyles.small55TextStyle,
+            ),
+          ],
+        )
       ),
     );
   }
@@ -466,11 +534,11 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       children: [
         SvgPicture.asset(
             'assets/icons/flag.svg',
-          color: ColorStyles.saeraRed,
+            color: ColorStyles.saeraOlive1,
         ),
         const SizedBox(width: 9,),
         const Text(
-          "이 억양을 목표로 연습해 볼까요?",
+          "이 발음을 목표로 연습해 볼까요?",
           style: TextStyles.medium00BoldTextStyle,
         )
 
@@ -478,87 +546,41 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     );
   }
 
-  Widget exampleGraph(){
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      height: 135,
-      decoration: BoxDecoration(
-        color: ColorStyles.saeraWhite,
-        borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
-        boxShadow:[
-          BoxShadow(
-            color: ColorStyles.black00.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 4), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(25),
-        child: FutureBuilder(
-            future: _isAudioReady,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData == false) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CircularProgressIndicator(),
-                )]
-                );
-              }
-              else if (snapshot.hasError) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Error: ${snapshot.error}',
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                );
-              }
-              else {
-                return AccentLineChart(x: x, y: y);
-              }
-            }),
-      ),
-    );
-  }
-
   Widget exampleSection(){
     return Container(
       margin: const EdgeInsets.only(top: 28),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          exampleSectionText(),
-        FutureBuilder(
-            future: _isAudioReady,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미
-              if (snapshot.hasData == false) {
-                // return CircularProgressIndicator();
-                return before_audio_bar();
-              }
-              //error가 발생하게 될 경우 반환하게 되는 부분
-              else if (snapshot.hasError) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Error: ${snapshot.error}',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                );
-              }
-              // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
-              else {
-                return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
-              }
-            }),
-          exampleGraph(),
-        ]
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            exampleSectionText(),
+            FutureBuilder(
+                future: _isAudioReady,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData == false) {
+                    return before_audio_bar();
+                  }
+                  else if (snapshot.hasError) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    );
+                  }
+                  // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
+                  else {
+                    return Column(
+                      children: [
+                        AudioBar(recordPath: audioPath, isRecording: false, isAccent: false,),
+                        pronounceSection(),
+                        pronounceMethodSection(),
+                      ],
+                    );
+                  }
+                }),
+          ]
       ),
     );
   }
@@ -572,7 +594,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
           image: AssetImage('assets/icons/user_profile.png'),),
         const SizedBox(width: 9,),
         Text(
-          "현재 $userName님의 억양이에요.",
+          "현재 $userName님의 발음이에요.",
           style: TextStyles.medium00BoldTextStyle,
         )
 
@@ -590,17 +612,10 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       },
       child: Container(
           margin: const EdgeInsets.only(top: 8),
-          height: 135,
+          height: 64,
           decoration: BoxDecoration(
-            color: ColorStyles.saeraRed,
+            color: ColorStyles.saeraOlive1,
             borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
-            boxShadow:[
-              BoxShadow(
-                color: ColorStyles.saeraRed.withOpacity(0.2),
-                blurRadius: 16,
-                offset: const Offset(0, 4), // changes position of shadow
-              ),
-            ],
           ),
           child: const Center(
             child: Text(
@@ -616,7 +631,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     return GestureDetector(
       onTap: () async {
         await stopRecording();
-        getAccentEvaluation();
 
         setState(() {
           _isRecording = true;
@@ -625,57 +639,52 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       },
       child: Container(
           margin: const EdgeInsets.only(top: 8),
-          height: 135,
+          height: 64,
           decoration: BoxDecoration(
-            color: ColorStyles.saeraPink,
+            color: ColorStyles.saeraOlive2,
             borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
-            boxShadow:[
-              BoxShadow(
-                color: ColorStyles.saeraPink.withOpacity(0.2),
-                blurRadius: 16,
-                offset: const Offset(0, 4), // changes position of shadow
-              ),
-            ],
           ),
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LoadingAnimationWidget.staggeredDotsWave(
-                  color: Colors.black,
-                  size: 30,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top:11),
-                  child: const Text(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                  const SizedBox(width: 16),
+                  const Text(
                     "녹음 중이에요...\n여기를 다시 눌러 녹음을 완료할 수 있어요.",
                     style: TextStyles.small25TextStyle,
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              ],
-            )
+                    textAlign: TextAlign.start,
+                  )
+                ],
+              )
           )
       ),
     );
   }
 
-  Widget analysisAccent(){
+  Widget recordingCompleteWidget(){
     return GestureDetector(
-      onTap: (){
-        // setState(() {
-        //
-        // });
+      onTap: () async {
+        await stopRecording();
+        setState(() {
+          _isRecording = false;
+          recordingState = 1;
+        });
       },
       child: Container(
           margin: const EdgeInsets.only(top: 8),
-          height: 135,
+          height: 64,
           decoration: BoxDecoration(
-            color: ColorStyles.saeraPink2,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
             boxShadow:[
               BoxShadow(
-                color: ColorStyles.saeraPink2.withOpacity(0.2),
+                color: ColorStyles.saeraOlive1.withOpacity(0.2),
+                //spreadRadius: 0.1,
                 blurRadius: 16,
                 offset: const Offset(0, 4), // changes position of shadow
               ),
@@ -685,15 +694,10 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(
-                      'assets/icons/headphones.svg',
-                      fit: BoxFit.scaleDown
-                  ),
                   Container(
-                    margin: const EdgeInsets.only(top:15),
                     child: const Text(
-                      "억양을 분석하고 있습니다...\n거의 다 되었어요!",
-                      style: TextStyles.small25TextStyle,
+                      "학습 완료! 다시 녹음하려면 여기를 누르세요.",
+                      style: TextStyles.mediumRecordTextStyle,
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -704,157 +708,14 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     );
   }
 
-  Widget practiceGraph(){
-    return Stack(
-      children: [
-        Container(
-            margin: const EdgeInsets.only(top: 8),
-            height: 135,
-            decoration: BoxDecoration(
-              color: ColorStyles.saeraWhite,
-              borderRadius: BorderRadius.circular(16), //border radius exactly to ClipRRect
-              boxShadow:[
-                BoxShadow(
-                  color: ColorStyles.saeraRed.withOpacity(0.2),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(25),
-              child: AccentLineChart(x: x2, y: y2),
-            ),
-        ),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 18, right: 3),
-              child: IconButton(
-                  onPressed: (){
-                    setState(() {
-                      recordingState = 1;
-                      _isRecording = false;
-                      accuracyRate = 0;
-                    });
-                  },
-                  icon: SvgPicture.asset(
-                    'assets/icons/refresh.svg',
-                    fit: BoxFit.scaleDown,
-                  )
-              ),
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget expSection() {
+  Widget infoSection(){
     return Container(
-        margin: const EdgeInsets.only(top: 13, bottom: 25),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-        height: 80,
-        decoration: BoxDecoration(
-          color: ColorStyles.saeraWhite,
-          borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
-          boxShadow:[
-            BoxShadow(
-              color: ColorStyles.saeraRed.withOpacity(0.2),
-              blurRadius: 16,
-              offset: const Offset(0, 4), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-
-                Row(
-                  children: [
-                    const Text("정확도 ",
-                      style: TextStyles.medium25TextStyle,
-                    ),
-                    accuracyRank(accuracyRate),
-                    const Text(
-                      " | ",
-                    style: TextStyles.mediumEFTextStyle,
-                    ),
-                    Text(
-                      accuracyComment(accuracyRate),
-                      style: TextStyles.medium25TextStyle,
-                    )
-                  ],
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 7),
-                  child: const Text("학습 완료 경험치 +100xp",
-                    style: TextStyles.small99TextStyle,
-                  ),
-                )
-
-
-              ],
-            ),
-
-            Row(
-              children: [
-                rankIcon(accuracyRate),
-                const SizedBox(
-                  width: 16,
-                )
-              ],
-            )
-          ],
-        )
-    );
-  }
-
-  Widget expInitSection() {
-    return Container(
-        margin: const EdgeInsets.only(top: 13, bottom: 25),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-        height: 80,
-        decoration: BoxDecoration(
-          color: ColorStyles.saeraWhite,
-          borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
-          boxShadow:[
-            BoxShadow(
-              color: ColorStyles.saeraRed.withOpacity(0.2),
-              blurRadius: 16,
-              offset: const Offset(0, 4), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("녹음을 완료하면\n$userName님의 억양 정확도를 알 수 있어요.",
-                  style: TextStyles.regular99TextStyle,
-                ),
-              ],
-            ),
-
-            Row(
-              children: [
-                rankIcon(accuracyRate),
-                const SizedBox(
-                  width: 16,
-                )
-              ],
-            )
-          ],
-        )
+      margin: const EdgeInsets.only(top: 24),
+      child: const Text(
+        "단어 학습은 억양 그래프와 점수를 제공하지 않습니다.\n목표로 하는 발음이 나올 때까지 자유롭게 연습해 보세요!",
+        textAlign: TextAlign.center,
+        style: TextStyles.small82TextStyle,
+      ),
     );
   }
 
@@ -869,7 +730,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             onPressed: () async {
               //
             },
-            icon: SvgPicture.asset('assets/icons/play.svg',
+            icon: SvgPicture.asset('assets/icons/play_pronounce.svg',
                 fit: BoxFit.scaleDown
             ),
             iconSize: 32,
@@ -918,41 +779,29 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget practiceSection(){
     return Container(
-      margin: const EdgeInsets.only(top:31),
+      margin: const EdgeInsets.only(top:28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           practiceSectionText(),
-          (){
+              (){
             if(!_isRecording){
               return before_audio_bar();
             }
             else{
-              return AudioBar(recordPath: recordingPath, isRecording: true, isAccent: true);
+              return AudioBar(recordPath: recordingPath, isRecording: true, isAccent: false);
             }
           }(),
-          (){
+              (){
             if(recordingState == 1){
               return recordingStart();
             }
             else if(recordingState == 2){
               return recordingWidget();
             }
-            else if(recordingState == 3){
-              return analysisAccent();
-            }
-            return practiceGraph();
+            return recordingCompleteWidget();
           }(),
-
-          (){
-            if(accuracyRate  == 0){
-              return expInitSection();
-            }
-            else{
-              return expSection();
-            }
-          }(),
-
+          infoSection(),
         ],
       ),
     );
@@ -965,29 +814,31 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         const AccentPracticeBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading: false,
-                title: appBarSection(),
+                appBar: AppBar(
+                  automaticallyImplyLeading: false,
+                  title: appBarSection(),
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                ),
                 backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-              ),
-              backgroundColor: Colors.transparent,
-              resizeToAvoidBottomInset: false,
-              body: ListView(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 14, right: 14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        practiceSentenceSection(),
-                        exampleSection(),
-                        practiceSection(),
-                      ],
-                    ),
-                  )
-                ]
-              )
+                resizeToAvoidBottomInset: false,
+                body: ListView(
+                    children: [
+                      // appBarSection(),
+                      Container(
+                        margin: const EdgeInsets.only(left: 14, right: 14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            topBarSection(),
+                            practiceSentenceSection(),
+                            exampleSection(),
+                            practiceSection(),
+                          ],
+                        ),
+                      )
+                    ]
+                )
             )
         )
 
