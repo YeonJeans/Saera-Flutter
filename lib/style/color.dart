@@ -27,6 +27,6 @@ class ColorStyles {
 
   static const Color etcYellow = Color(0xffE5DDD2);
   static const Color backIconGreen=Color(0xffBBE0CE);
-  static const Color saeraWord=Color(0xffF3E58C);
-  static const Color saeraStatement=Color(0xffFEDCC1);
+  static const Color saeraPronunciation=Color(0xffF3E58C);
+  static const Color saeraAccent=Color(0xffFEDCC1);
 }
