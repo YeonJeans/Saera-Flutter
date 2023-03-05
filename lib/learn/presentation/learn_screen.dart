@@ -75,9 +75,17 @@ class _LearnPageState extends State<LearnPage> {
       child: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.035),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: ColorStyles.saeraWord,
-          borderRadius: BorderRadius.all(Radius.circular(16.0))
+          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            boxShadow: [
+              BoxShadow(
+                color: ColorStyles.saeraWord.withOpacity(0.2),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3),
+              )
+            ]
         ),
         child: Stack(
           children: [
@@ -107,9 +115,17 @@ class _LearnPageState extends State<LearnPage> {
       child: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.035),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
             color: ColorStyles.saeraStatement,
-            borderRadius: BorderRadius.all(Radius.circular(16.0))
+            borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            boxShadow: [
+              BoxShadow(
+                color: ColorStyles.saeraStatement.withOpacity(0.2),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3),
+              )
+            ]
         ),
         child: Stack(
           children: [
