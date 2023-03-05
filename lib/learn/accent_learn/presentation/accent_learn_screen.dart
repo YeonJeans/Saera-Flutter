@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:io' show Platform;
 
 
@@ -13,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/accent_line_chart.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/audio_bar.dart';
+import 'package:saera/login/data/refresh_token.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -24,8 +24,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:http_parser/http_parser.dart';
-
 import '../../../login/data/authentication_manager.dart';
 
 
@@ -108,7 +106,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   getExampleAccent() async {
 
     var url = Uri.parse('${serverHttp}/statements/${widget.id}');
-    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
 
@@ -132,6 +130,17 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
       y = List.from(body["pitch_y"]);
 
     }
+    else if(response.statusCode == 401){
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getExampleAccent();
+      }
+    }
+    else{
+      print(response.body);
+    }
   }
 
 
@@ -140,7 +149,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
     var url = Uri.parse('${serverHttp}/statements/record/${widget.id}');
 
-    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}"});
 
     if (response.statusCode == 200) {
 

@@ -13,6 +13,24 @@ mixin CacheManager {
     return true;
   }
 
+  Future<bool> saveName(String? name) async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.NAME.toString(), name);
+    return true;
+  }
+
+  Future<bool> saveEmail(String? email) async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.EMAIL.toString(), email);
+    return true;
+  }
+
+  Future<bool> savePhoto(String? photo) async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.PHOTO.toString(), photo);
+    return true;
+  }
+
   String? getToken() {
     final box = GetStorage();
     return box.read(CacheManagerKey.TOKEN.toString());
@@ -21,6 +39,21 @@ mixin CacheManager {
   String? getRefreshToken() {
     final box = GetStorage();
     return box.read(CacheManagerKey.REFRESHTOKEN.toString());
+  }
+
+  String? getName() {
+    final box = GetStorage();
+    return box.read(CacheManagerKey.NAME.toString());
+  }
+
+  String? getEmail() {
+    final box = GetStorage();
+    return box.read(CacheManagerKey.EMAIL.toString());
+  }
+
+  String? getPhoto() {
+    final box = GetStorage();
+    return box.read(CacheManagerKey.PHOTO.toString());
   }
 
   Future<void> removeToken() async {
@@ -36,5 +69,8 @@ mixin CacheManager {
 
 enum CacheManagerKey {
   TOKEN,
-  REFRESHTOKEN
+  REFRESHTOKEN,
+  NAME,
+  EMAIL,
+  PHOTO
 }

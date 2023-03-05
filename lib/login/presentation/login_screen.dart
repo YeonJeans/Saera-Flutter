@@ -39,7 +39,6 @@ class _LoginPageState extends State<LoginPage> {
       String refreshToken = body["refreshToken"];
 
       _authManager.login(accessToken, refreshToken);
-
       return true;
     }
     else{
@@ -60,6 +59,9 @@ class _LoginPageState extends State<LoginPage> {
       ).signIn();
 
       if (googleUser != null) {
+        _authManager.saveEmail(googleUser.email);
+        _authManager.saveName(googleUser.displayName);
+        _authManager.savePhoto(googleUser.photoUrl);
         getToken(googleUser.serverAuthCode);
 
         setState(() {
@@ -75,6 +77,9 @@ class _LoginPageState extends State<LoginPage> {
       ).signIn();
 
       if (googleUser != null) {
+        _authManager.saveEmail(googleUser.email);
+        _authManager.saveName(googleUser.displayName);
+        _authManager.savePhoto(googleUser.photoUrl);
         getToken(googleUser.serverAuthCode);
 
         setState(() {
