@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/learn/presentation/accent_main_screen.dart';
 import 'package:saera/learn/presentation/pronunciation_main_screen.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
@@ -70,17 +71,17 @@ class _LearnPageState extends State<LearnPage> {
       );
     }
 
-    Widget goWordButtonSection = InkWell(
+    Widget goPronunciationButtonSection = InkWell(
       onTap: () => Get.to(PronunciationMainPage()),
       child: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.035),
         decoration: BoxDecoration(
-          color: ColorStyles.saeraWord,
+          color: ColorStyles.saeraPronunciation,
           borderRadius: BorderRadius.all(Radius.circular(16.0)),
             boxShadow: [
               BoxShadow(
-                color: ColorStyles.saeraWord.withOpacity(0.2),
+                color: ColorStyles.saeraPronunciation.withOpacity(0.2),
                 spreadRadius: 5,
                 blurRadius: 7,
                 offset: Offset(0, 3),
@@ -110,17 +111,17 @@ class _LearnPageState extends State<LearnPage> {
       ),
     );
 
-    Widget goStatementButtonSection = InkWell(
-      onTap: null,
+    Widget goAccentButtonSection = InkWell(
+      onTap: () => Get.to(AccentMainPage()),
       child: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.035),
         decoration: BoxDecoration(
-            color: ColorStyles.saeraStatement,
+            color: ColorStyles.saeraAccent,
             borderRadius: BorderRadius.all(Radius.circular(16.0)),
             boxShadow: [
               BoxShadow(
-                color: ColorStyles.saeraStatement.withOpacity(0.2),
+                color: ColorStyles.saeraAccent.withOpacity(0.2),
                 spreadRadius: 5,
                 blurRadius: 7,
                 offset: Offset(0, 3),
@@ -186,8 +187,8 @@ class _LearnPageState extends State<LearnPage> {
               child: ListView(
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  goWordButtonSection,
-                  goStatementButtonSection
+                  goPronunciationButtonSection,
+                  goAccentButtonSection
                 ],
               ),
             ),
