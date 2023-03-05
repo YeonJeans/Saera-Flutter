@@ -21,11 +21,12 @@ class ColorStyles {
   static const Color totalGray = Color(0xff555555);
   static const Color deleteGray = Color(0xffBDBDBD);
   static const Color disableGray = Color(0xffDDDDDD);
-  static const Color filterGray = Color(0xffDDDDDD);
   static const Color black00 = Color(0xff000000);
 
   static const Color textBlack = Color(0xff333333);
 
   static const Color etcYellow = Color(0xffE5DDD2);
   static const Color backIconGreen=Color(0xffBBE0CE);
+  static const Color saeraWord=Color(0xffF3E58C);
+  static const Color saeraStatement=Color(0xffFEDCC1);
 }
