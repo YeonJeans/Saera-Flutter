@@ -24,7 +24,6 @@ class TextStyles {
   static const regular55TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff555555));
   static const regular99TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff999999));
   static const regular25BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xff252525));
-  static const regular55TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff555555), height: 1.7);
   static const regular82TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff828282));
   static const regularBlueTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff3E68A8));
   static const regularHighlightBlueTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff86C4CC));
@@ -60,7 +59,6 @@ class TextStyles {
   static const large00TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff000000));
   static const large00MediumTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.w500, color: Color(0xff000000));
   static const large00NormalTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.normal, color: Color(0xff000000));
-  static const large00MediumTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xff000000));
   static const large25TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.w500, color: Color(0xff252525));
   static const large33TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff333333));
   static const largeBlueColoredTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff3E68A8));
