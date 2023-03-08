@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 
 import '../../style/color.dart';
 import '../../style/font.dart';
@@ -98,48 +99,51 @@ class AccentMainPage extends StatelessWidget {
       ),
     );
 
-    Container situationButton(String icon, String situation) {
-      return Container(
-        margin: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.height*0.01,
-          horizontal: MediaQuery.of(context).size.width*0.02
-        ),
-        width: MediaQuery.of(context).size.width*0.26,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.13),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3),
-              )
-            ]
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height*0.017,
-                left: MediaQuery.of(context).size.width*0.025
-              ),
-              child: SvgPicture.asset(icon),
+    InkWell situationButton(String icon, String situation) {
+      return InkWell(
+        onTap: () => Get.to(SearchPage(), arguments: situation),
+        child: Container(
+            margin: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height*0.01,
+                horizontal: MediaQuery.of(context).size.width*0.02
             ),
-            Container(
-              margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height*0.02,
-                bottom: MediaQuery.of(context).size.height*0.02,
-                left: MediaQuery.of(context).size.width*0.025
-              ),
-              child: Text(
-                situation,
-                style: TextStyles.regular00BoldTextStyle,
-              ),
+            width: MediaQuery.of(context).size.width*0.26,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.13),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3),
+                  )
+                ]
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height*0.017,
+                      left: MediaQuery.of(context).size.width*0.025
+                  ),
+                  child: SvgPicture.asset(icon),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height*0.02,
+                      bottom: MediaQuery.of(context).size.height*0.02,
+                      left: MediaQuery.of(context).size.width*0.025
+                  ),
+                  child: Text(
+                    situation,
+                    style: TextStyles.regular00BoldTextStyle,
+                  ),
+                )
+              ],
             )
-          ],
-        )
+        ),
       );
     }
 

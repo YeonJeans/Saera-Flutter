@@ -215,7 +215,6 @@ class _SearchPageState extends State<SearchPage> {
 
     List<String> filterList = ['상황', '문장 유형'];
     Widget filterSection = Container(
-      padding: EdgeInsets.only(bottom: 7),
       child: Wrap(
           spacing: 7,
           children: List.generate(filterList.length, (index) {
@@ -268,6 +267,7 @@ class _SearchPageState extends State<SearchPage> {
             vertical: MediaQuery.of(context).size.height*0.01,
             horizontal: MediaQuery.of(context).size.width*0.038
         ),
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
         decoration: const BoxDecoration(
           color: ColorStyles.searchFillGray,
           borderRadius: BorderRadius.all(Radius.circular(16.0)),

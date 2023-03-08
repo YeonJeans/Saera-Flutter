@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 
 import '../../style/color.dart';
 import '../../style/font.dart';
@@ -46,7 +47,7 @@ class PronunciationMainPage extends StatelessWidget {
 
     InkWell pronunciationMenu(String word, String description) {
       return InkWell(
-        onTap: null,
+        onTap: () => Get.to(SearchPage(), arguments: word),
         child: Container(
           margin: EdgeInsets.symmetric(
             vertical: MediaQuery.of(context).size.height*0.01,
