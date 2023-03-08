@@ -5,6 +5,7 @@ class TextStyles {
   static const tabBarBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xff3E68A8));
   static const tabBarRegularTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.normal, color: Color(0xff3E68A8));
   static const tiny82TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.normal, color: Color(0xff828282));
+  static const tiny55TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.normal, color: Color(0xff555555));
 
   static const small00TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.normal, color: Color(0xff000000));
   static const small25TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.normal, color: Color(0xff252525));

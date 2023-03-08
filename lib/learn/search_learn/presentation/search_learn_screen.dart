@@ -12,7 +12,6 @@ import 'package:http/http.dart' as http;
 import '../../../server.dart';
 import '../../../style/color.dart';
 import '../../../style/font.dart';
-import '../../presentation/widgets/learn_category_icon_tile.dart';
 
 class SearchPage extends StatefulWidget {
 
@@ -23,17 +22,24 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   Future<dynamic>? statement;
   final List<ChipData> _chipList = [];
-  List<String> placeList = ["병원", "회사", "편의점", "카페", "은행", "옷가게", "음식점"];
+  List<String> situationList = ["일상", "주문", "쇼핑", "은행/공공기관", "회사", "기타"];
   int? _selectedIndex;
 
   late TextEditingController _textEditingController;
   var value = Get.arguments;
 
   bool _visibility = false;
+  bool _tagVisibility = false;
 
   void _setVisibility() {
     setState(() {
       _chipList.isNotEmpty ? _visibility = true : _visibility = false;
+    });
+  }
+
+  void _setTagVisibility() {
+    setState(() {
+      _selectedIndex != null ? _tagVisibility = true : _tagVisibility = false;
     });
   }
 
@@ -43,7 +49,7 @@ class _SearchPageState extends State<SearchPage> {
         _chipList.add(ChipData(
             id: DateTime.now().toString(),
             name: chipText,
-            color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
+            color: {situationList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
         ));
         statement = searchStatement(chipText.toString(), "tag");
       } else {
@@ -224,11 +230,69 @@ class _SearchPageState extends State<SearchPage> {
               onSelected: (bool selected) {
                 setState(() {
                   _selectedIndex = selected ? index : null;
+                  _setTagVisibility();
                 });
               },
             );
           }).toList()
       ),
+    );
+
+    InkWell selectCategory(String icon, String categoryName) {
+      return InkWell(
+        onTap: () => _addChip(categoryName),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.height*0.01,
+            horizontal: MediaQuery.of(context).size.width*0.02
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(icon),
+              Padding(padding: EdgeInsets.only(top: 3)),
+              Text(
+                categoryName,
+                style: TextStyles.tiny55TextStyle,
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget selectCategorySection = Visibility(
+      visible: _tagVisibility,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.height*0.01,
+            horizontal: MediaQuery.of(context).size.width*0.038
+        ),
+        decoration: const BoxDecoration(
+          color: ColorStyles.searchFillGray,
+          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+        ),
+        child: _selectedIndex == 0
+        ? Wrap(
+          children: [
+            selectCategory('assets/icons/conservation.svg', '일상'),
+            selectCategory('assets/icons/order.svg', '주문'),
+            selectCategory('assets/icons/shopping.svg', '쇼핑'),
+            //글자수 이슈
+            selectCategory('assets/icons/public.svg', '은행/공공기관'),
+            selectCategory('assets/icons/company.svg', '회사'),
+            selectCategory('assets/icons/etc.svg', '기타'),
+          ],
+        )
+        : Wrap(
+          children: [
+            selectCategory('assets/icons/question.svg', '의문문'),
+            selectCategory('assets/icons/honorific.svg', '존댓말'),
+            selectCategory('assets/icons/negative.svg', '부정문'),
+            selectCategory('assets/icons/feeling.svg', '감정 표현'),
+          ],
+        ),
+      )
     );
 
     Widget chipSection = Row(
@@ -367,6 +431,7 @@ class _SearchPageState extends State<SearchPage> {
                     appBarSection,
                     searchSection,
                     filterSection,
+                    selectCategorySection,
                     chipSection,
                     statementSection
                   ],
