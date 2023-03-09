@@ -30,6 +30,7 @@ class _SearchPageState extends State<SearchPage> {
 
   bool _visibility = false;
   bool _tagVisibility = false;
+  bool _checkVisibility = false;
 
   void _setVisibility() {
     setState(() {
@@ -260,6 +261,34 @@ class _SearchPageState extends State<SearchPage> {
       );
     }
 
+    InkWell selectStatementCategory(String categoryName) {
+      return InkWell(
+        onTap: () {
+          setState(() {
+            _checkVisibility = !_checkVisibility;
+          });
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width*0.18,
+          margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.2),
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
+          child: Row(
+            children: [
+              Text(
+                categoryName,
+                style: TextStyles.small00TextStyle,
+              ),
+              Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),),
+              Visibility(
+                  visible: _checkVisibility,
+                  child: SvgPicture.asset('assets/icons/click_check.svg')
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
     Widget selectCategorySection = Visibility(
       visible: _tagVisibility,
       child: Container(
@@ -295,36 +324,46 @@ class _SearchPageState extends State<SearchPage> {
       )
     );
 
-    Widget chipSection = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Wrap(
-            spacing: 8.0,
-            children: _chipList.map((chip) => Chip(
-              labelPadding: const EdgeInsets.only(left: 8.0, right: 4.0, bottom: 2.0),
-              labelStyle: TextStyles.small00TextStyle,
-              label: Text(
-                chip.name,
+    Widget chipSection = Visibility(
+      visible: _visibility,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width*0.75,
+              height: MediaQuery.of(context).size.height*0.05,
+              child: ListView(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                children: [
+                  Wrap(
+                      spacing: 8.0,
+                      children: _chipList.map((chip) => Chip(
+                        labelPadding: const EdgeInsets.only(left: 8.0, right: 4.0, bottom: 2.0),
+                        labelStyle: TextStyles.small00TextStyle,
+                        label: Text(
+                          chip.name,
+                        ),
+                        backgroundColor: chip.color.first,
+                        onDeleted: () => _deleteChip(chip.id),
+                      )).toList()
+                  )
+                ]
               ),
-              backgroundColor: chip.color.first,
-              onDeleted: () => _deleteChip(chip.id),
-            )).toList()
-        ),
-        Visibility(
-          visible: _visibility,
-          child: IconButton(
-            onPressed: () => {
-              if (_chipList.isNotEmpty) {
-                _deleteAllChip(),
-                statement = searchStatement("", "content"),
-              } else {
-                Container(),
-              }
-            },
-            icon: SvgPicture.asset('assets/icons/refresh.svg', color: ColorStyles.totalGray,),
-          ),
+            ),
+            IconButton(
+              onPressed: () => {
+                if (_chipList.isNotEmpty) {
+                  _deleteAllChip(),
+                  statement = searchStatement("", "content"),
+                } else {
+                  Container(),
+                }
+              },
+              icon: SvgPicture.asset('assets/icons/refresh.svg', color: ColorStyles.totalGray,),
+            ),
+          ],
         )
-      ],
     );
 
     Widget statementSection = FutureBuilder(
