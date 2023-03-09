@@ -69,12 +69,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _deleteAllChip() {
-    for (ChipData data in _chipList) {
-      var index = _chipList.indexOf(data);
-      for (int i = 0; i <= index; i++) {
-        _deleteChip(data.id);
-      }
-      break;
+    for (int i = _chipList.length-1; i >= 0; i--) {
+      _deleteChip(_chipList[i].id);
     }
   }
 
