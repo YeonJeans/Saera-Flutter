@@ -47,7 +47,7 @@ class PronunciationMainPage extends StatelessWidget {
 
     InkWell pronunciationMenu(String word, String description) {
       return InkWell(
-        onTap: () => Get.to(SearchPage(), arguments: word),
+        onTap: null,
         child: Container(
           margin: EdgeInsets.symmetric(
             vertical: MediaQuery.of(context).size.height*0.01,

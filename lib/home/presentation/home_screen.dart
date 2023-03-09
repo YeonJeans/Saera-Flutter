@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
           Flexible(
               child: TextField(
                 readOnly: true,
-                onTap: () => Get.to(SearchPage()),
+                onTap: () => Get.to(LearnPage()),
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                   hintText: '무엇을 학습할까요?',
