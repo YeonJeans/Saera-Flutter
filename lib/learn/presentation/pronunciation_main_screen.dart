@@ -119,12 +119,12 @@ class PronunciationMainPage extends StatelessWidget {
     );
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white
       ),
       child: SafeArea(
-        //아래 선이 너무 잘 보여서 없앨 지 고민 중
           child: Scaffold(
+            backgroundColor: Colors.transparent,
             appBar: PreferredSize(
                 preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.24),
                 child: Container(
