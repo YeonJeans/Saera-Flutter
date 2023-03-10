@@ -48,11 +48,12 @@ class _SearchPageState extends State<SearchPage> {
   void checkSituationCategorySelected(String categoryName) {
     bool isSituationCategorySelected = false;
     setState(() {
-      for (int i = _chipList.length-1; i >= 0; ) { // 이 코드가 왜 중복 처리를 하는지 이해할 수가 없네
-        if (_chipList[i].name == categoryName) {
-          return;
-        } else {
-          return;
+      for (int i = _chipList.length-1; i >= 0; i--) {
+        for (int j = 0; j < situationList.length; j++) {
+          if (_chipList[i].name == situationList[j]) {
+            isSituationCategorySelected = true;
+            break;
+          }
         }
       }
       if (isSituationCategorySelected == false) {
