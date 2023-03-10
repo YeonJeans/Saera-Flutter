@@ -25,6 +25,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../../login/data/authentication_manager.dart';
+import '../../../login/presentation/widget/profile_image_clipper.dart';
 
 
 class AccentPracticePage extends StatefulWidget {
@@ -119,7 +120,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
       setState(() {
         _isBookmarked = body["bookmarked"];
-        userName = body["nickname"];
       });
 
       for(int i in body["pitch_x"]){
@@ -172,7 +172,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   createBookmark (int id) async {
 
-    var url = Uri.parse('${serverHttp}/bookmark/${id}');
+    var url = Uri.parse('${serverHttp}/bookmark?type=STATEMENT&fk=${widget.id}');
 
 
     final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
@@ -185,7 +185,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   }
 
   void deleteBookmark () async {
-    var url = Uri.parse('${serverHttp}/bookmark/${widget.id}');
+    var url = Uri.parse('${serverHttp}/bookmark?type=STATEMENT&fk=${widget.id}');
 
     final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
 
@@ -563,9 +563,13 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               }
               // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
               else {
+                // AudioBar가 보이지 않는 문제
+                //return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
+
                 return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
               }
             }),
+
           exampleGraph(),
         ]
       ),
@@ -576,12 +580,18 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Image(
-          width: 22,
-          image: AssetImage('assets/icons/user_profile.png'),),
+        ClipPath(
+            clipper: ProfileImageClipper(),
+            child: Container(
+              width: 20,
+              height: 21,
+              child: Image.network("${_authManager.getPhoto()}"),
+            )
+
+        ),
         const SizedBox(width: 9,),
         Text(
-          "현재 $userName님의 억양이에요.",
+          "현재 ${_authManager.getName()}님의 억양이에요.",
           style: TextStyles.medium00BoldTextStyle,
         )
 
