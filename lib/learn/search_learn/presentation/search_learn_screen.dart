@@ -286,38 +286,49 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     Widget selectCategorySection = Visibility(
-      visible: _tagVisibility,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-            vertical: MediaQuery.of(context).size.height*0.01,
-            horizontal: MediaQuery.of(context).size.width*0.038
-        ),
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
-        decoration: const BoxDecoration(
-          color: ColorStyles.searchFillGray,
-          borderRadius: BorderRadius.all(Radius.circular(16.0)),
-        ),
+        visible: _tagVisibility,
         child: _selectedIndex == 0
-        ? Wrap(
-          children: [
-            selectCategory('assets/icons/conservation.svg', '일상'),
-            selectCategory('assets/icons/order.svg', '주문'),
-            selectCategory('assets/icons/shopping.svg', '쇼핑'),
-            //글자수 이슈
-            selectCategory('assets/icons/public.svg', '은행/공공기관'),
-            selectCategory('assets/icons/company.svg', '회사'),
-            selectCategory('assets/icons/etc.svg', '기타'),
-          ],
+            ? Container(
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height*0.01,
+                horizontal: MediaQuery.of(context).size.width*0.038
+            ),
+            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
+            decoration: const BoxDecoration(
+              color: ColorStyles.tagGray,
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+            child: Wrap(
+              children: [
+                selectSituationCategory('assets/icons/conservation.svg', '일상'),
+                selectSituationCategory('assets/icons/order.svg', '주문'),
+                selectSituationCategory('assets/icons/shopping.svg', '쇼핑'),
+                //글자수 이슈
+                selectSituationCategory('assets/icons/public.svg', '은행/공공기관'),
+                selectSituationCategory('assets/icons/company.svg', '회사'),
+                selectSituationCategory('assets/icons/etc.svg', '기타'),
+              ],
+            )
         )
-        : Wrap(
-          children: [
-            selectCategory('assets/icons/question.svg', '의문문'),
-            selectCategory('assets/icons/honorific.svg', '존댓말'),
-            selectCategory('assets/icons/negative.svg', '부정문'),
-            selectCategory('assets/icons/feeling.svg', '감정 표현'),
-          ],
-        ),
-      )
+            : Container(
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height*0.02,
+                horizontal: MediaQuery.of(context).size.width*0.06
+            ),
+            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
+            decoration: const BoxDecoration(
+              color: ColorStyles.tagGray,
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+            child: Wrap(
+              children: [
+                selectStatementCategory('의문문'),
+                selectStatementCategory('존댓말'),
+                selectStatementCategory('부정문'),
+                selectStatementCategory('감정 표현'),
+              ],
+            )
+        )
     );
 
     Widget chipSection = Visibility(
