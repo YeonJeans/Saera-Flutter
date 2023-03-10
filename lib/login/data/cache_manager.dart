@@ -31,6 +31,18 @@ mixin CacheManager {
     return true;
   }
 
+  Future<bool> saveTodayWordIdx(int? idx) async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.TODAYWORDIDX.toString(), idx);
+    return true;
+  }
+
+  Future<bool> saveTodayStatementIdx(String? idx) async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.TODAYSTATEMENTIDX.toString(), idx);
+    return true;
+  }
+
   String? getToken() {
     final box = GetStorage();
     return box.read(CacheManagerKey.TOKEN.toString());
@@ -56,6 +68,16 @@ mixin CacheManager {
     return box.read(CacheManagerKey.PHOTO.toString());
   }
 
+  int? getTodayWordIdx() {
+    final box = GetStorage();
+    return box.read(CacheManagerKey.TODAYWORDIDX.toString());
+  }
+
+  int? getTodayStatementIdx() {
+    final box = GetStorage();
+    return box.read(CacheManagerKey.TODAYWORDIDX.toString());
+  }
+
   Future<void> removeToken() async {
     final box = GetStorage();
     await box.remove(CacheManagerKey.TOKEN.toString());
@@ -72,5 +94,7 @@ enum CacheManagerKey {
   REFRESHTOKEN,
   NAME,
   EMAIL,
-  PHOTO
+  PHOTO,
+  TODAYWORDIDX,
+  TODAYSTATEMENTIDX
 }
