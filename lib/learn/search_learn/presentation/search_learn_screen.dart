@@ -23,6 +23,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<dynamic>? statement;
   final List<ChipData> _chipList = [];
   List<String> situationList = ["일상", "주문", "쇼핑", "은행/공공기관", "회사", "기타"];
+  List<String> statementTypeList = ["의문문", "존댓말", "부정문", "감정 표현"];
   int? _selectedIndex;
 
   late TextEditingController _textEditingController;
@@ -41,6 +42,48 @@ class _SearchPageState extends State<SearchPage> {
   void _setTagVisibility() {
     setState(() {
       _selectedIndex != null ? _tagVisibility = true : _tagVisibility = false;
+    });
+  }
+
+  void checkSituationCategorySelected(String categoryName) {
+    bool isSituationCategorySelected = false;
+    setState(() {
+      for (int i = _chipList.length-1; i >= 0; ) { // 이 코드가 왜 중복 처리를 하는지 이해할 수가 없네
+        if (_chipList[i].name == categoryName) {
+          return;
+        } else {
+          return;
+        }
+      }
+      if (isSituationCategorySelected == false) {
+        _addChip(categoryName);
+        isSituationCategorySelected == true;
+      }
+    });
+  }
+
+  void _setTypeVisibility(String categoryName) {
+    bool isTypeCategorySelected = false; //카테고리네임이랑 동일한 태그가 리스트에 있는가를 검사하는 변수
+    setState(() {
+      if (_chipList.isEmpty) { //리스트가 비어있으면 처음이니까 칩 추가
+        _addChip(categoryName);
+        _checkVisibility = true;
+      }
+      for(int i = _chipList.length-1; i >= 0; i--) { //리스트 검사해서
+        if (_chipList[i].name == categoryName) { //버튼 눌렀을 때 이름이 같은게 있으면
+          isTypeCategorySelected = true; //이미 있음을 표시
+          return;
+        } else {
+          isTypeCategorySelected = false;
+        }
+      }
+      if (isTypeCategorySelected == false) { //얘가 위에 검사 뚫고 false면 리스트에 없다는 뜻
+        _addChip(categoryName); //추가해
+        isTypeCategorySelected = true;
+        _checkVisibility = true;
+      } else {
+        return;
+      }
     });
   }
 
@@ -72,6 +115,7 @@ class _SearchPageState extends State<SearchPage> {
     for (int i = _chipList.length-1; i >= 0; i--) {
       _deleteChip(_chipList[i].id);
     }
+    _checkVisibility = false;
   }
 
   Color selectTagColor(String tag) {
@@ -234,9 +278,11 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
 
-    InkWell selectCategory(String icon, String categoryName) {
+    InkWell selectSituationCategory(String icon, String categoryName) {
       return InkWell(
-        onTap: () => _addChip(categoryName),
+        onTap: () {
+          checkSituationCategorySelected(categoryName);
+        },
         child: Container(
           padding: EdgeInsets.symmetric(
             vertical: MediaQuery.of(context).size.height*0.01,
@@ -261,7 +307,7 @@ class _SearchPageState extends State<SearchPage> {
       return InkWell(
         onTap: () {
           setState(() {
-            _checkVisibility = !_checkVisibility;
+            _setTypeVisibility(categoryName);
           });
         },
         child: Container(
