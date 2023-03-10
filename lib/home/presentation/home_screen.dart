@@ -2,8 +2,15 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/learn/pronounce_learn/pronounce_learn_screen.dart';
 import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../../login/data/authentication_manager.dart';
+import '../../login/data/refresh_token.dart';
+import '../../server.dart';
 import '../../style/font.dart';
 import '../../style/color.dart';
 
@@ -15,7 +22,51 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final AuthenticationManager _authManager = Get.find();
+
+  List<int> wordList = [];
+  List<int> statementList = [];
+
   String name = '수연';
+
+  @override
+  void initState() {
+
+    getTodayWordList();
+    super.initState();
+  }
+
+  getTodayWordList() async {
+    var url = Uri.parse('${serverHttp}/today-list?type=WORD');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      wordList.clear();
+      wordList = List.from(body);
+    }
+    else if(response.statusCode == 401){
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getTodayWordList();
+      }
+    }
+  }
+
+  getTodaySentenceList() async {
+    var url = Uri.parse('${serverHttp}/today-list?type=STATEMENT');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      statementList.clear();
+      statementList = List.from(body);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +228,7 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton(
-              onPressed: null,
+              onPressed: () => Get.to(PronouncePracticePage(idx: 0, isTodayLearn: true, wordList: wordList)),
               style: ButtonStyle(
                   elevation: MaterialStateProperty.all(8),
                   backgroundColor: MaterialStateProperty.all(Colors.white),
