@@ -29,19 +29,20 @@ class _SearchPageState extends State<SearchPage> {
   late TextEditingController _textEditingController;
   var value = Get.arguments;
 
-  bool _visibility = false;
-  bool _tagVisibility = false;
+  bool _chipSectionVisibility = false;
+  bool _categorySectionVisibility = false;
   bool _checkVisibility = false;
 
   void _setVisibility() {
+  void _setChipSectionVisibility() {
     setState(() {
-      _chipList.isNotEmpty ? _visibility = true : _visibility = false;
+      _chipList.isNotEmpty ? _chipSectionVisibility = true : _chipSectionVisibility = false;
     });
   }
 
-  void _setTagVisibility() {
+  void _setCategorySectionVisibility() {
     setState(() {
-      _selectedIndex != null ? _tagVisibility = true : _tagVisibility = false;
+      _selectedIndex != null ? _categorySectionVisibility = true : _categorySectionVisibility = false;
     });
   }
 
@@ -100,7 +101,7 @@ class _SearchPageState extends State<SearchPage> {
       } else {
         Container();
       }
-      _setVisibility();
+      _setChipSectionVisibility();
     });
   }
 
@@ -108,7 +109,7 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _chipList.removeWhere((element) => element.id == id);
       statement = searchStatement("", "content");
-      _setVisibility();
+      _setChipSectionVisibility();
     });
   }
 
@@ -271,7 +272,7 @@ class _SearchPageState extends State<SearchPage> {
               onSelected: (bool selected) {
                 setState(() {
                   _selectedIndex = selected ? index : null;
-                  _setTagVisibility();
+                  _setCategorySectionVisibility();
                 });
               },
             );
@@ -333,7 +334,7 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     Widget selectCategorySection = Visibility(
-        visible: _tagVisibility,
+        visible: _categorySectionVisibility,
         child: _selectedIndex == 0
             ? Container(
             padding: EdgeInsets.symmetric(
@@ -378,7 +379,7 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     Widget chipSection = Visibility(
-      visible: _visibility,
+      visible: _chipSectionVisibility,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
