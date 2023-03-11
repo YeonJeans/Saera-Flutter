@@ -22,7 +22,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   Future<dynamic>? statement;
   final List<ChipData> _chipList = [];
-  List<String> situationList = ["일상", "주문", "쇼핑", "은행/공공기관", "회사", "기타"];
+  List<String> situationList = ["일상", "소비", "인사", "은행/공공기관", "회사"];
   List<String> statementTypeList = ["의문문", "존댓말", "부정문", "감정 표현"];
   int? _selectedIndex;
 
@@ -346,14 +346,13 @@ class _SearchPageState extends State<SearchPage> {
               borderRadius: BorderRadius.all(Radius.circular(16.0)),
             ),
             child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
               children: [
                 selectSituationCategory('assets/icons/conservation.svg', '일상'),
-                selectSituationCategory('assets/icons/order.svg', '주문'),
-                selectSituationCategory('assets/icons/shopping.svg', '쇼핑'),
-                //글자수 이슈
+                selectSituationCategory('assets/icons/order.svg', '소비'),
+                selectSituationCategory('assets/icons/greeting.svg', '인사'),
                 selectSituationCategory('assets/icons/public.svg', '은행/공공기관'),
                 selectSituationCategory('assets/icons/company.svg', '회사'),
-                selectSituationCategory('assets/icons/etc.svg', '기타'),
               ],
             )
         )
