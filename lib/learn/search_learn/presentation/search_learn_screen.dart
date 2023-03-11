@@ -32,7 +32,19 @@ class _SearchPageState extends State<SearchPage> {
   bool _chipSectionVisibility = false;
   bool _categorySectionVisibility = false;
 
-  void _setVisibility() {
+  bool checkChipList(String categoryName) {
+    bool isExist = false;
+    for(int i = _chipList.length-1; i >= 0; i--) { //리스트 검사해서
+      if (_chipList[i].name == categoryName) { //버튼 눌렀을 때 이름이 같은게 있으면
+        isExist = true;
+        break;
+      } else {
+        isExist = false;
+      }
+    }
+    return isExist;
+  }
+
   void _setChipSectionVisibility() {
     setState(() {
       _chipList.isNotEmpty ? _chipSectionVisibility = true : _chipSectionVisibility = false;
@@ -289,11 +301,17 @@ class _SearchPageState extends State<SearchPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SvgPicture.asset(icon),
+              Opacity(
+                opacity: checkChipList(categoryName) ? 1.0 : 0.4,
+                child: SvgPicture.asset(icon),
+              ),
               Padding(padding: EdgeInsets.only(top: 3)),
-              Text(
-                categoryName,
-                style: TextStyles.tiny55TextStyle,
+              Opacity(
+                opacity: checkChipList(categoryName) ? 1.0 : 0.4,
+                child: Text(
+                  categoryName,
+                  style: TextStyles.tiny55TextStyle,
+                ),
               )
             ],
           ),
@@ -314,13 +332,16 @@ class _SearchPageState extends State<SearchPage> {
           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
           child: Row(
             children: [
-              Text(
-                categoryName,
-                style: TextStyles.small00TextStyle,
+              Opacity(
+                opacity: checkChipList(categoryName) ? 1.0 : 0.5,
+                child: Text(
+                  categoryName,
+                  style: TextStyles.small00TextStyle,
+                ),
               ),
               Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),),
               Visibility(
-                  visible: _checkVisibility,
+                  visible: checkChipList(categoryName) ? true : false,
                   child: SvgPicture.asset('assets/icons/click_check.svg')
               )
             ],
