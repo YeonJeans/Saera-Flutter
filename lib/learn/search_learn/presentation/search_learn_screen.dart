@@ -31,7 +31,6 @@ class _SearchPageState extends State<SearchPage> {
 
   bool _chipSectionVisibility = false;
   bool _categorySectionVisibility = false;
-  bool _checkVisibility = false;
 
   void _setVisibility() {
   void _setChipSectionVisibility() {
@@ -69,7 +68,6 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       if (_chipList.isEmpty) { //리스트가 비어있으면 처음이니까 칩 추가
         _addChip(categoryName);
-        _checkVisibility = true;
       }
       for(int i = _chipList.length-1; i >= 0; i--) { //리스트 검사해서
         if (_chipList[i].name == categoryName) { //버튼 눌렀을 때 이름이 같은게 있으면
@@ -82,7 +80,6 @@ class _SearchPageState extends State<SearchPage> {
       if (isTypeCategorySelected == false) { //얘가 위에 검사 뚫고 false면 리스트에 없다는 뜻
         _addChip(categoryName); //추가해
         isTypeCategorySelected = true;
-        _checkVisibility = true;
       } else {
         return;
       }
@@ -117,7 +114,6 @@ class _SearchPageState extends State<SearchPage> {
     for (int i = _chipList.length-1; i >= 0; i--) {
       _deleteChip(_chipList[i].id);
     }
-    _checkVisibility = false;
   }
 
   Color selectTagColor(String tag) {
