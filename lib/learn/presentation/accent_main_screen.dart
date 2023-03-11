@@ -152,11 +152,10 @@ class AccentMainPage extends StatelessWidget {
       child: Wrap(
         children: [
           situationButton('assets/icons/conservation.svg', '일상'),
-          situationButton('assets/icons/order.svg', '주문'),
-          situationButton('assets/icons/shopping.svg', '쇼핑'),
+          situationButton('assets/icons/order.svg', '소비'),
+          situationButton('assets/icons/greeting.svg', '인사'),
           situationButton('assets/icons/public.svg', '은행/공공기관'),
           situationButton('assets/icons/company.svg', '회사'),
-          situationButton('assets/icons/etc.svg', '기타')
         ],
       ),
     );
