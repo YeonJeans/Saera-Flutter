@@ -197,12 +197,12 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   }
 
   getAccentEvaluation() async {
-    var url = Uri.parse('${serverHttp}/practiced');
+    var url = Uri.parse('${serverHttp}/practiced?type=STATEMENT&fk=${widget.id.toString()}&isTodayStudy=true');
     var request = http.MultipartRequest('POST', url);
-    request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}"});
+    request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}"});
+
     request.files.add(await http.MultipartFile.fromPath('record', recordingPath));
 
-    request.fields['id'] = widget.id.toString();
 
     var responsed = await request.send();
     var response = await http.Response.fromStream(responsed);
@@ -455,8 +455,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget practiceSentenceSection() {
     return Container(
-      margin: const EdgeInsets.only(top: 20.0),
-      padding: const EdgeInsets.only(top:30.0, bottom: 24.0),
+      margin: const EdgeInsets.only(top: 16.0),
+      padding: const EdgeInsets.only(top:20.0, bottom: 20.0),
       decoration: BoxDecoration(
           color: ColorStyles.searchFillGray,
           borderRadius: BorderRadius.circular(10)
