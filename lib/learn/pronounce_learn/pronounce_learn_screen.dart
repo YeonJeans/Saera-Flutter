@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/audio_bar.dart';
+import 'package:saera/learn/pronounce_learn/widgets/word_tag.dart';
 import 'package:saera/login/data/refresh_token.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
@@ -41,6 +42,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
   final AuthenticationManager _authManager = Get.find();
   late FToast fToast;
 
+  int contentTag = 0;
   String content = "";
   String contentPronounce = "";
   String contentInfo = "";
@@ -207,15 +209,14 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
+      print(body);
 
       setState(() {
         content = body["notation"];
         contentPronounce = body["pronunciation"];
         contentInfo = body["definition"];
-      });
-
-      setState(() {
         _isBookmarked = body["bookmarked"];
+        contentTag = body["tag_id"];
       });
 
     }
@@ -674,9 +675,9 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
               width: 20,
               height: 20,
             ),
-            SizedBox(width: 16,),
-            const Text(
-              '\‘ㅗ\' 발음을 \‘ㅓ\' 처럼 발음하지 않도록 신경써야 합니다.',
+            const SizedBox(width: 16,),
+            Text(
+              WordTip(contentTag),
               style: TextStyles.small55TextStyle,
             ),
           ],
