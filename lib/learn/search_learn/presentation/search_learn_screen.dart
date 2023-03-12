@@ -12,7 +12,6 @@ import 'package:http/http.dart' as http;
 import '../../../server.dart';
 import '../../../style/color.dart';
 import '../../../style/font.dart';
-import '../../presentation/widgets/learn_category_icon_tile.dart';
 
 class SearchPage extends StatefulWidget {
 
@@ -23,17 +22,79 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   Future<dynamic>? statement;
   final List<ChipData> _chipList = [];
-  List<String> placeList = ["병원", "회사", "편의점", "카페", "은행", "옷가게", "음식점"];
+  List<String> situationList = ["일상", "소비", "인사", "은행/공공기관", "회사"];
+  List<String> statementTypeList = ["의문문", "존댓말", "부정문", "감정 표현"];
   int? _selectedIndex;
 
   late TextEditingController _textEditingController;
   var value = Get.arguments;
 
-  bool _visibility = false;
+  bool _chipSectionVisibility = false;
+  bool _categorySectionVisibility = false;
 
-  void _setVisibility() {
+  bool checkChipList(String categoryName) {
+    bool isExist = false;
+    for(int i = _chipList.length-1; i >= 0; i--) { //리스트 검사해서
+      if (_chipList[i].name == categoryName) { //버튼 눌렀을 때 이름이 같은게 있으면
+        isExist = true;
+        break;
+      } else {
+        isExist = false;
+      }
+    }
+    return isExist;
+  }
+
+  void _setChipSectionVisibility() {
     setState(() {
-      _chipList.isNotEmpty ? _visibility = true : _visibility = false;
+      _chipList.isNotEmpty ? _chipSectionVisibility = true : _chipSectionVisibility = false;
+    });
+  }
+
+  void _setCategorySectionVisibility() {
+    setState(() {
+      _selectedIndex != null ? _categorySectionVisibility = true : _categorySectionVisibility = false;
+    });
+  }
+
+  void checkSituationCategorySelected(String categoryName) {
+    bool isSituationCategorySelected = false;
+    setState(() {
+      for (int i = _chipList.length-1; i >= 0; i--) {
+        for (int j = 0; j < situationList.length; j++) {
+          if (_chipList[i].name == situationList[j]) {
+            isSituationCategorySelected = true;
+            break;
+          }
+        }
+      }
+      if (isSituationCategorySelected == false) {
+        _addChip(categoryName);
+        isSituationCategorySelected == true;
+      }
+    });
+  }
+
+  void _setTypeVisibility(String categoryName) {
+    bool isTypeCategorySelected = false; //카테고리네임이랑 동일한 태그가 리스트에 있는가를 검사하는 변수
+    setState(() {
+      if (_chipList.isEmpty) { //리스트가 비어있으면 처음이니까 칩 추가
+        _addChip(categoryName);
+      }
+      for(int i = _chipList.length-1; i >= 0; i--) { //리스트 검사해서
+        if (_chipList[i].name == categoryName) { //버튼 눌렀을 때 이름이 같은게 있으면
+          isTypeCategorySelected = true; //이미 있음을 표시
+          return;
+        } else {
+          isTypeCategorySelected = false;
+        }
+      }
+      if (isTypeCategorySelected == false) { //얘가 위에 검사 뚫고 false면 리스트에 없다는 뜻
+        _addChip(categoryName); //추가해
+        isTypeCategorySelected = true;
+      } else {
+        return;
+      }
     });
   }
 
@@ -43,13 +104,13 @@ class _SearchPageState extends State<SearchPage> {
         _chipList.add(ChipData(
             id: DateTime.now().toString(),
             name: chipText,
-            color: {placeList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
+            color: {situationList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
         ));
         statement = searchStatement(chipText.toString(), "tag");
       } else {
         Container();
       }
-      _setVisibility();
+      _setChipSectionVisibility();
     });
   }
 
@@ -57,17 +118,13 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _chipList.removeWhere((element) => element.id == id);
       statement = searchStatement("", "content");
-      _setVisibility();
+      _setChipSectionVisibility();
     });
   }
 
   void _deleteAllChip() {
-    for (ChipData data in _chipList) {
-      var index = _chipList.indexOf(data);
-      for (int i = 0; i <= index; i++) {
-        _deleteChip(data.id);
-      }
-      break;
+    for (int i = _chipList.length-1; i >= 0; i--) {
+      _deleteChip(_chipList[i].id);
     }
   }
 
@@ -155,6 +212,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 icon: SvgPicture.asset(
                   'assets/icons/back.svg',
+                    color: ColorStyles.backIconGreen
                 ),
                 label: const Padding(
                   padding: EdgeInsets.only(bottom: 2.0),
@@ -208,7 +266,6 @@ class _SearchPageState extends State<SearchPage> {
 
     List<String> filterList = ['상황', '문장 유형'];
     Widget filterSection = Container(
-      padding: EdgeInsets.only(bottom: 7),
       child: Wrap(
           spacing: 7,
           children: List.generate(filterList.length, (index) {
@@ -223,6 +280,7 @@ class _SearchPageState extends State<SearchPage> {
               onSelected: (bool selected) {
                 setState(() {
                   _selectedIndex = selected ? index : null;
+                  _setCategorySectionVisibility();
                 });
               },
             );
@@ -230,57 +288,153 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
 
-    Widget selectSection = Container(
-      padding: EdgeInsets.only(bottom: 6.0),
-      color: ColorStyles.searchFillGray,
-      child: Visibility(
-          visible: true,
-          child: Wrap(
-            //이부분 3개로 분리해서 파일 따로따로 넣어놓고 if 문으로 selectedIndex 검사해서 넣기
-            direction: Axis.horizontal,
+    InkWell selectSituationCategory(String icon, String categoryName) {
+      return InkWell(
+        onTap: () {
+          checkSituationCategorySelected(categoryName);
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.height*0.01,
+            horizontal: MediaQuery.of(context).size.width*0.02
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CategoryIconTile(CategoryData(Icons.local_hospital_outlined, "병원", ColorStyles.totalGray, 12)),
-              CategoryIconTile(CategoryData(Icons.corporate_fare_outlined, "회사", ColorStyles.totalGray, 12)),
-              CategoryIconTile(CategoryData(Icons.local_convenience_store_outlined, "편의점", ColorStyles.totalGray, 12)),
-              CategoryIconTile(CategoryData(Icons.local_cafe_outlined, "카페", ColorStyles.totalGray, 12)),
-              CategoryIconTile(CategoryData(Icons.account_balance_outlined, "은행", ColorStyles.totalGray, 12)),
-              CategoryIconTile(CategoryData(Icons.checkroom_outlined, "옷가게", ColorStyles.totalGray, 12)),
-              CategoryIconTile(CategoryData(Icons.food_bank_outlined, "음식점", ColorStyles.totalGray, 12))
+              Opacity(
+                opacity: checkChipList(categoryName) ? 1.0 : 0.4,
+                child: SvgPicture.asset(icon),
+              ),
+              Padding(padding: EdgeInsets.only(top: 3)),
+              Opacity(
+                opacity: checkChipList(categoryName) ? 1.0 : 0.4,
+                child: Text(
+                  categoryName,
+                  style: TextStyles.tiny55TextStyle,
+                ),
+              )
             ],
           ),
-      ),
+        ),
+      );
+    }
+
+    InkWell selectStatementCategory(String categoryName) {
+      return InkWell(
+        onTap: () {
+          setState(() {
+            _setTypeVisibility(categoryName);
+          });
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width*0.18,
+          margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.2),
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
+          child: Row(
+            children: [
+              Opacity(
+                opacity: checkChipList(categoryName) ? 1.0 : 0.5,
+                child: Text(
+                  categoryName,
+                  style: TextStyles.small00TextStyle,
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),),
+              Visibility(
+                  visible: checkChipList(categoryName) ? true : false,
+                  child: SvgPicture.asset('assets/icons/click_check.svg')
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget selectCategorySection = Visibility(
+        visible: _categorySectionVisibility,
+        child: _selectedIndex == 0
+            ? Container(
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height*0.01,
+                horizontal: MediaQuery.of(context).size.width*0.038
+            ),
+            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
+            decoration: const BoxDecoration(
+              color: ColorStyles.tagGray,
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              children: [
+                selectSituationCategory('assets/icons/conservation.svg', '일상'),
+                selectSituationCategory('assets/icons/order.svg', '소비'),
+                selectSituationCategory('assets/icons/greeting.svg', '인사'),
+                selectSituationCategory('assets/icons/public.svg', '은행/공공기관'),
+                selectSituationCategory('assets/icons/company.svg', '회사'),
+              ],
+            )
+        )
+            : Container(
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height*0.02,
+                horizontal: MediaQuery.of(context).size.width*0.06
+            ),
+            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
+            decoration: const BoxDecoration(
+              color: ColorStyles.tagGray,
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+            child: Wrap(
+              children: [
+                selectStatementCategory('의문문'),
+                selectStatementCategory('존댓말'),
+                selectStatementCategory('부정문'),
+                selectStatementCategory('감정 표현'),
+              ],
+            )
+        )
     );
 
-    Widget chipSection = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Wrap(
-            spacing: 8.0,
-            children: _chipList.map((chip) => Chip(
-              labelPadding: const EdgeInsets.only(left: 8.0, right: 4.0, bottom: 2.0),
-              labelStyle: TextStyles.small00TextStyle,
-              label: Text(
-                chip.name,
+    Widget chipSection = Visibility(
+      visible: _chipSectionVisibility,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width*0.75,
+              height: MediaQuery.of(context).size.height*0.05,
+              child: ListView(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                children: [
+                  Wrap(
+                      spacing: 8.0,
+                      children: _chipList.map((chip) => Chip(
+                        labelPadding: const EdgeInsets.only(left: 8.0, right: 4.0, bottom: 2.0),
+                        labelStyle: TextStyles.small00TextStyle,
+                        label: Text(
+                          chip.name,
+                        ),
+                        backgroundColor: chip.color.first,
+                        onDeleted: () => _deleteChip(chip.id),
+                      )).toList()
+                  )
+                ]
               ),
-              backgroundColor: chip.color.first,
-              onDeleted: () => _deleteChip(chip.id),
-            )).toList()
-        ),
-        Visibility(
-          visible: _visibility,
-          child: IconButton(
-            onPressed: () => {
-              if (_chipList.isNotEmpty) {
-                _deleteAllChip(),
-                statement = searchStatement("", "content"),
-              } else {
-                Container(),
-              }
-            },
-            icon: SvgPicture.asset('assets/icons/refresh.svg', color: ColorStyles.totalGray,),
-          ),
+            ),
+            IconButton(
+              onPressed: () => {
+                if (_chipList.isNotEmpty) {
+                  _deleteAllChip(),
+                  statement = searchStatement("", "content"),
+                } else {
+                  Container(),
+                }
+              },
+              icon: SvgPicture.asset('assets/icons/refresh.svg', color: ColorStyles.totalGray,),
+            ),
+          ],
         )
-      ],
     );
 
     Widget statementSection = FutureBuilder(
@@ -387,7 +541,7 @@ class _SearchPageState extends State<SearchPage> {
                     appBarSection,
                     searchSection,
                     filterSection,
-                    selectSection,
+                    selectCategorySection,
                     chipSection,
                     statementSection
                   ],

@@ -165,21 +165,24 @@ class _LearnPageState extends State<LearnPage> {
       ),
     );
 
-    return SafeArea(
-        child: Scaffold(
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
             appBar: PreferredSize(
-              preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.24),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: ListView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    backSection,
-                    whatLearnSection,
-                    whatLearnTextSection
-                  ],
-                ),
-              )
+                preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.24),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: ListView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      backSection,
+                      whatLearnSection,
+                      whatLearnTextSection
+                    ],
+                  ),
+                )
             ),
             body: Container(
               margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
@@ -192,7 +195,8 @@ class _LearnPageState extends State<LearnPage> {
                 ],
               ),
             ),
-        )
+          )
+      ),
     );
   }
 }
