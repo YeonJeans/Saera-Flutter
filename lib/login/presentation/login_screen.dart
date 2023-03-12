@@ -66,8 +66,8 @@ class _LoginPageState extends State<LoginPage> {
 
         setState(() {
           _loginPlatform = LoginPlatform.google;
-          Get.to(() => TabBarMainPage());
         });
+        Get.to(() => TabBarMainPage());
       }
     }
     else{
@@ -84,8 +84,10 @@ class _LoginPageState extends State<LoginPage> {
 
         setState(() {
           _loginPlatform = LoginPlatform.google;
-          Get.to(() => TabBarMainPage());
         });
+
+        Get.to(() => TabBarMainPage());
+
       }
     }
 
