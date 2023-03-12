@@ -8,6 +8,7 @@ import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../learn/accent_learn/presentation/accent_todaylearn_screen.dart';
 import '../../login/data/authentication_manager.dart';
 import '../../login/data/refresh_token.dart';
 import '../../server.dart';
@@ -33,10 +34,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
 
     getTodayWordList();
+    getTodaySentenceList();
     super.initState();
   }
 
   getTodayWordList() async {
+    await Future.delayed(const Duration(seconds: 1));
     var url = Uri.parse('${serverHttp}/today-list?type=WORD');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
@@ -57,12 +60,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   getTodaySentenceList() async {
+    await Future.delayed(const Duration(seconds: 1));
     var url = Uri.parse('${serverHttp}/today-list?type=STATEMENT');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
-
       statementList.clear();
       statementList = List.from(body);
     }
@@ -264,7 +267,7 @@ class _HomePageState extends State<HomePage> {
               )
           ),
           ElevatedButton(
-              onPressed: null,
+              onPressed: () => Get.to(AccentTodayPracticePage(idx: 0, sentenceList: statementList)),
               style: ButtonStyle(
                   elevation: MaterialStateProperty.all(8),
                   backgroundColor: MaterialStateProperty.all(Colors.white),
