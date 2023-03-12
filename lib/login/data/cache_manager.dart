@@ -37,7 +37,7 @@ mixin CacheManager {
     return true;
   }
 
-  Future<bool> saveTodayStatementIdx(String? idx) async {
+  Future<bool> saveTodayStatementIdx(int? idx) async {
     final box = GetStorage();
     await box.write(CacheManagerKey.TODAYSTATEMENTIDX.toString(), idx);
     return true;
@@ -75,7 +75,7 @@ mixin CacheManager {
 
   int? getTodayStatementIdx() {
     final box = GetStorage();
-    return box.read(CacheManagerKey.TODAYWORDIDX.toString());
+    return box.read(CacheManagerKey.TODAYSTATEMENTIDX.toString());
   }
 
   Future<void> removeToken() async {
