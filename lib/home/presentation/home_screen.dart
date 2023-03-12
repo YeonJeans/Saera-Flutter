@@ -32,8 +32,20 @@ class _HomePageState extends State<HomePage> {
   int todayWordLearnIdx = 0;
   int todayStatementLearnIdx = 0;
 
+  int todayWordProgressIdx = 0;
+  int todayStatementProgressIdx = 0;
+
   @override
   void initState() {
+    if(_authManager.getTodayStatementIdx() == null){
+      _authManager.saveTodayStatementIdx(0);
+    }
+    if(_authManager.getTodayWordIdx() == null){
+      _authManager.saveTodayWordIdx(0);
+    }
+
+    todayWordProgressIdx = _authManager.getTodayWordIdx()!;
+    todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
 
     getTodayWordList();
     getTodaySentenceList();
@@ -239,7 +251,10 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton(
-              onPressed: () => Get.to(PronouncePracticePage(idx: 0, isTodayLearn: true, wordList: wordList)),
+              onPressed: (){
+                todayWordProgressIdx = _authManager.getTodayWordIdx()!;
+                Get.to(PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList));
+                },
               style: ButtonStyle(
                   elevation: MaterialStateProperty.all(8),
                   backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -275,7 +290,9 @@ class _HomePageState extends State<HomePage> {
               )
           ),
           ElevatedButton(
-              onPressed: () => Get.to(AccentTodayPracticePage(idx: 0, sentenceList: statementList)),
+              onPressed: (){
+                todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
+                Get.to(AccentTodayPracticePage(idx: todayStatementProgressIdx, sentenceList: statementList));},
               style: ButtonStyle(
                   elevation: MaterialStateProperty.all(8),
                   backgroundColor: MaterialStateProperty.all(Colors.white),

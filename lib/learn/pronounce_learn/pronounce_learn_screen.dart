@@ -165,41 +165,6 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
     );
   }
 
-  showCustomToast() {
-    Widget toast = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          color: ColorStyles.black00.withOpacity(0.6),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              "음성 인식에 실패했습니다.\n목소리가 잘 들리도록 다시 녹음해 주세요!",
-              style: TextStyles.smallFFTextStyle,
-            ),
-
-            IconButton(
-                onPressed: (){
-                  fToast.removeCustomToast();
-                },
-                icon: SvgPicture.asset(
-                  'assets/icons/close_toast.svg',
-                  fit: BoxFit.scaleDown,
-                )
-            )
-          ],
-        )
-    );
-
-    fToast.showToast(
-      child: toast,
-      toastDuration: const Duration(seconds: 3),
-    );
-  }
-
   getExampleAccent() async {
 
     var url = Uri.parse('${serverHttp}/words/${widget.wordList[widget.idx]}');
@@ -209,7 +174,6 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
-      print(body);
 
       setState(() {
         content = body["notation"];
@@ -287,6 +251,29 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
     }
   }
 
+  completePractice() async {
+    var url = Uri.parse('${serverHttp}/practiced?type=WORD&fk=${widget.wordList[widget.idx].toString()}&isTodayStudy=${widget.isTodayLearn}');
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}"});
+
+    request.files.add(await http.MultipartFile.fromPath('record', recordingPath));
+
+    var responsed = await request.send();
+    var response = await http.Response.fromStream(responsed);
+
+    if (responsed.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      if(widget.isTodayLearn && _authManager.getTodayWordIdx()! < widget.idx +1){
+        _authManager.saveTodayWordIdx(widget.idx + 1);
+      }
+
+      print(body);
+      setState(() {
+        _isPracticed = true;
+      });
+      return true;
+    }
+  }
 
 
   @override
@@ -297,7 +284,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
     fToast = FToast();
     fToast.init(context);
 
-    if(_authManager.getTodayWordIdx() == null){
+    if(widget.isTodayLearn && _authManager.getTodayWordIdx() == null){
       _authManager.saveTodayWordIdx(0);
     }
 
@@ -413,32 +400,31 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
             GestureDetector(
                 onTap: (){
-                  if((isRecord || _authManager.getTodayWordIdx()! > widget.idx ) && widget.idx + 1 != 5){
+                  if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 != 5){
 
-                    if(_authManager.getTodayWordIdx()! < widget.idx +1){
-                      _authManager.saveTodayWordIdx(widget.idx + 1);
-                    }
                     Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: (widget.idx + 1), isTodayLearn: true, wordList: widget.wordList)),
                     );
                   }
-                  else if((isRecord || _authManager.getTodayWordIdx()! > widget.idx ) && widget.idx + 1 == 5){
+                  else if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 == 5){
                     //TODO 학습 결과 리스트를 보여주는 페이지로 페이지 전환
                   }
                 },
                 child: (){
-                  if((isRecord || _authManager.getTodayWordIdx()! > widget.idx) && widget.idx + 1 == 5){
+                  if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx)) && widget.idx + 1 == 5){
                     return completeBtn();
                   }
                   else if(widget.idx + 1 == 5){
                     return unActiveCompleteBtn();
                   }
-                  else if(isRecord || _authManager.getTodayWordIdx()! > widget.idx ){
+                  else if(isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx )){
                     return activeNextBtn();
                   }
                   else{
+                    print(_authManager.getTodayWordIdx());
+                    print("widget id : ${widget.idx}");
                     return unActiveNextBtn();
                   }
 
@@ -519,7 +505,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
             GestureDetector(
               onTap: (){
-                if((isRecord || _authManager.getTodayWordIdx()! >= widget.idx ) && widget.wordList.length > widget.idx + 1){
+                if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx) ) && widget.wordList.length > widget.idx + 1){
                   //GetX로 페이지 넘길 경우, 동작하지 않음.... 왜...?
                   Navigator.pop(context);
                   Navigator.push(
@@ -529,7 +515,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                 }
               },
               child: (){
-                if(isRecord || _authManager.getTodayWordIdx()! >= widget.idx ){
+                if(isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx) ){
                   return wordActiveNextBtn();
                 }
                 else{
@@ -678,6 +664,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
             const SizedBox(width: 16,),
             Text(
               WordTip(contentTag),
+              maxLines: 2,
               style: TextStyles.small55TextStyle,
             ),
           ],
@@ -797,7 +784,8 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
         setState(() {
           _isRecording = true;
-          _isPracticed = true;
+          completePractice();
+
           recordingState = 3;
         });
       },
