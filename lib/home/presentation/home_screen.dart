@@ -29,6 +29,8 @@ class _HomePageState extends State<HomePage> {
   List<int> statementList = [];
 
   String name = '수연';
+  int todayWordLearnIdx = 0;
+  int todayStatementLearnIdx = 0;
 
   @override
   void initState() {
@@ -48,6 +50,9 @@ class _HomePageState extends State<HomePage> {
 
       wordList.clear();
       wordList = List.from(body);
+      if(wordList[0] != todayWordLearnIdx){
+        _authManager.saveTodayWordIdx(0);
+      }
     }
     else if(response.statusCode == 401){
       String? before = _authManager.getToken();
@@ -68,6 +73,9 @@ class _HomePageState extends State<HomePage> {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
       statementList.clear();
       statementList = List.from(body);
+      if(statementList[0] != todayStatementLearnIdx){
+        _authManager.saveTodayStatementIdx(0);
+      }
     }
   }
 
