@@ -27,6 +27,7 @@ class TextStyles {
   static const regular82TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff828282));
   static const regularAATextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xffAAAAAA));
   static const regularBlueTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff3E68A8));
+  static const regularRedTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xffF1573F));
   static const regularHighlightBlueTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff86C4CC));
   static const regularHighlightBlueBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xff86C4CC));
   static const regularOliveTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xff9EA615));
