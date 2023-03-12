@@ -48,7 +48,6 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
   double accuracyRate = 0;
   int recordingState = 1;
-  int wordListIdx = 0;
 
 
   bool _isBookmarked = false;
@@ -292,7 +291,6 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
   @override
   void initState(){
     initRecorder();
-    wordListIdx = widget.idx;
     getExampleAccent();
     _isAudioReady = getTTS();
     fToast = FToast();
@@ -608,8 +606,8 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
   Widget practiceSentenceSection() {
     return Container(
-      margin: const EdgeInsets.only(top: 28.0),
-      padding: const EdgeInsets.only(top:24.0, bottom: 24.0),
+      margin: const EdgeInsets.only(top: 16.0),
+      padding: const EdgeInsets.only(top:20.0, bottom: 20.0),
       decoration: BoxDecoration(
           color: ColorStyles.searchFillGray,
           borderRadius: BorderRadius.circular(10)
