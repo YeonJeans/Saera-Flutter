@@ -29,14 +29,13 @@ class _UserInfoState extends State<UserInfo> {
       children: [
         SizedBox(
           width: 200,
-          height: 200,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               LiquidCustomProgressIndicator(
                 value: 0.8,
-                valueColor: AlwaysStoppedAnimation(ColorStyles.saeraKhaki),
+                valueColor: AlwaysStoppedAnimation(ColorStyles.backIconGreen),
                 backgroundColor: ColorStyles.searchFillGray,
                 direction: Axis.vertical,
                 shapePath: ProfileImageClipper().getClip(Size(189, 181)),
@@ -47,7 +46,6 @@ class _UserInfoState extends State<UserInfo> {
 
         SizedBox(
           width: 200,
-          height: 200,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,12 +74,12 @@ class _UserInfoState extends State<UserInfo> {
 
   Widget userInfoTextSection(){
     return Container(
-      margin: const EdgeInsets.only(top: 16),
+      margin: const EdgeInsets.only(top: 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Lv. $level ",
-            style: TextStyles.largeHighlightBlueTextStyle,
+            style: TextStyles.largeGreenTextStyle,
           ),
           Text("${_authManager.getName()} ",
             style: TextStyles.large00TextStyle,
@@ -97,7 +95,7 @@ class _UserInfoState extends State<UserInfo> {
 
   Widget userLevelInfoSection(){
     return Container(
-      margin: const EdgeInsets.only(top: 6.0),
+      margin: const EdgeInsets.only(top: 8.0),
       child: Text("다음 레벨까지 $leftexp xp 남았어요.",
         style: TextStyles.medium55TextStyle,
       ),
