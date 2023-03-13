@@ -430,16 +430,10 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         })
     );
 
-    Widget floatingButtonSection = Container(
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.6,
-        left: MediaQuery.of(context).size.width*0.7
-      ),
-      child: FloatingActionButton(
-        onPressed: () => Get.to(CreateSentenceScreen()),
-        backgroundColor: ColorStyles.saeraAppBar,
-        child: SvgPicture.asset('assets/icons/plus.svg'),
-      ),
+    Widget floatingButtonSection = FloatingActionButton(
+      onPressed: () => Get.to(CreateSentenceScreen()),
+      backgroundColor: ColorStyles.saeraAppBar,
+      child: SvgPicture.asset('assets/icons/plus.svg'),
     );
 
     return Stack(
@@ -460,10 +454,10 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                       selectCategorySection,
                       chipSection,
                       statementSection,
-                      floatingButtonSection
                     ],
                   ),
-                )
+                ),
+              floatingActionButton: floatingButtonSection,
             )
         )
       ],
