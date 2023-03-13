@@ -21,7 +21,7 @@ class LearnStatementPage extends StatefulWidget {
 
 class _LearnStatementPageState extends State<LearnStatementPage> {
   Future<dynamic>? statement;
-  List<String> tagList = [];
+  List<String> tagList = []; //서버에서 넘겨받을 리스트
   final List<ChipData> _chipList = [];
   int? _selectedIndex;
 
@@ -315,6 +315,99 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         )
     );
 
+    Container notExistStatement() {
+      return Container(
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.15),
+        child: Center(
+          child: Column(
+            children: [
+              SvgPicture.asset('assets/icons/box_open.svg'),
+              Padding(padding: EdgeInsets.all(4)),
+              const Text(
+                '아직 생성한 문장이 없습니다.\n화면 우측 하단의 + 버튼을 눌러\n직접 학습할 문장을 생성해 보세요.',
+                style: TextStyles.regular82TextStyleWithHeight,
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        )
+      );
+    }
+
+    Container existStatement(List<Statement> statements) {
+      return Container(
+        padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+        height: MediaQuery.of(context).size.height,
+        child: ListView.separated(
+            itemBuilder: ((context, index) {
+              Statement statement = statements[index];
+              return ListTile(
+                  contentPadding: EdgeInsets.only(left: 11),
+                  onTap: () => Get.to(AccentPracticePage(id: statement.id)),
+                  title: Transform.translate(
+                    offset: const Offset(0, 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                statement.content,
+                                style: TextStyles.regular00TextStyle
+                            ),
+                            Row(
+                              children: statement.tags.map((tag) {
+                                return Container(
+                                  margin: EdgeInsets.only(right: 4),
+                                  child: Chip(
+                                    label: Text(tag),
+                                    labelStyle: TextStyles.small00TextStyle,
+                                  ),
+                                );
+                              }).toList(),
+                            )
+                          ],
+                        ),
+                        IconButton(
+                            onPressed: (){
+                              if(statement.bookmarked){
+                                setState(() {
+                                  statement.bookmarked = false;
+                                });
+                                deleteBookmark(statement.id);
+                              }
+                              else{
+                                setState(() {
+                                  statement.bookmarked = true;
+                                });
+                                createBookmark(statement.id);
+                              }
+                            },
+                            icon: statement.bookmarked?
+                            SvgPicture.asset(
+                              'assets/icons/star_fill.svg',
+                              fit: BoxFit.scaleDown,
+                            )
+                                :
+                            SvgPicture.asset(
+                              'assets/icons/star_unfill.svg',
+                              fit: BoxFit.scaleDown,
+                            )
+                        )
+                      ],
+                    ),
+                  )
+              );
+            }),
+            separatorBuilder: (BuildContext context, int index) {
+              return const Divider(thickness: 1,);
+            },
+            itemCount: statements.length
+        ),
+      );
+    }
+
     Widget statementSection = FutureBuilder(
         future: statement,
         builder: ((context, snapshot) {
@@ -325,77 +418,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               );
             } else {
               List<Statement> statements = snapshot.data;
-              return Container(
-                padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                height: MediaQuery.of(context).size.height,
-                child: ListView.separated(
-                    itemBuilder: ((context, index) {
-                      Statement statement = statements[index];
-                      return ListTile(
-                          contentPadding: EdgeInsets.only(left: 11),
-                          onTap: () => Get.to(AccentPracticePage(id: statement.id)),
-                          title: Transform.translate(
-                            offset: const Offset(0, 5.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        statement.content,
-                                        style: TextStyles.regular00TextStyle
-                                    ),
-                                    Row(
-                                      children: statement.tags.map((tag) {
-                                        return Container(
-                                          margin: EdgeInsets.only(right: 4),
-                                          child: Chip(
-                                              label: Text(tag),
-                                              labelStyle: TextStyles.small00TextStyle,
-                                          ),
-                                        );
-                                      }).toList(),
-                                    )
-                                  ],
-                                ),
-                                IconButton(
-                                    onPressed: (){
-                                      if(statement.bookmarked){
-                                        setState(() {
-                                          statement.bookmarked = false;
-                                        });
-                                        deleteBookmark(statement.id);
-                                      }
-                                      else{
-                                        setState(() {
-                                          statement.bookmarked = true;
-                                        });
-                                        createBookmark(statement.id);
-                                      }
-                                    },
-                                    icon: statement.bookmarked?
-                                    SvgPicture.asset(
-                                      'assets/icons/star_fill.svg',
-                                      fit: BoxFit.scaleDown,
-                                    )
-                                        :
-                                    SvgPicture.asset(
-                                      'assets/icons/star_unfill.svg',
-                                      fit: BoxFit.scaleDown,
-                                    )
-                                )
-                              ],
-                            ),
-                          )
-                      );
-                    }),
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider(thickness: 1,);
-                    },
-                    itemCount: statements.length
-                ),
-              );
+              if (statements.isEmpty) {
+                return notExistStatement();
+              } else {
+                return existStatement(statements);
+              }
             }
           } else {
             return Container();
@@ -403,7 +430,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         })
     );
 
-    Widget floationButtonSection = Container(
+    Widget floatingButtonSection = Container(
       margin: EdgeInsets.only(
         top: MediaQuery.of(context).size.height*0.6,
         left: MediaQuery.of(context).size.width*0.7
@@ -433,7 +460,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                       selectCategorySection,
                       chipSection,
                       statementSection,
-                      floationButtonSection
+                      floatingButtonSection
                     ],
                   ),
                 )
