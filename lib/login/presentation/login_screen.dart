@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _loginPlatform = LoginPlatform.google;
         });
-        Get.to(() => TabBarMainPage());
+        Get.offAll(() => TabBarMainPage());
       }
     }
     else{
@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
           _loginPlatform = LoginPlatform.google;
         });
 
-        Get.to(() => TabBarMainPage());
+        Get.offAll(() => TabBarMainPage());
 
       }
     }
@@ -133,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget appleLoginBtn (){
     return GestureDetector(
-      onTap: () => Get.to(TabBarMainPage()),
+      onTap: () => Get.to(() => TabBarMainPage()),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
