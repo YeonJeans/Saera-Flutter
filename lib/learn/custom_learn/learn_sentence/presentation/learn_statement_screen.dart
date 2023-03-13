@@ -341,62 +341,72 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         child: ListView.separated(
             itemBuilder: ((context, index) {
               Statement statement = statements[index];
-              return ListTile(
-                  contentPadding: EdgeInsets.only(left: 11),
-                  onTap: () => Get.to(AccentPracticePage(id: statement.id)),
-                  title: Transform.translate(
-                    offset: const Offset(0, 5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              return Dismissible(
+                  key: Key(statement.id.toString()),
+                  background: Container(color: Colors.red), //휴지통 아이콘이 들어가면 어떨지?
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    setState(() {
+                      statements.removeAt(index); //삭제 시 확인 화면 구현?
+                    });
+                  },
+                  child: ListTile(
+                      contentPadding: EdgeInsets.only(left: 11),
+                      onTap: () => Get.to(AccentPracticePage(id: statement.id)),
+                      title: Transform.translate(
+                        offset: const Offset(0, 5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                                statement.content,
-                                style: TextStyles.regular00TextStyle
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    statement.content,
+                                    style: TextStyles.regular00TextStyle
+                                ),
+                                Row(
+                                  children: statement.tags.map((tag) {
+                                    return Container(
+                                      margin: EdgeInsets.only(right: 4),
+                                      child: Chip(
+                                        label: Text(tag),
+                                        labelStyle: TextStyles.small00TextStyle,
+                                      ),
+                                    );
+                                  }).toList(),
+                                )
+                              ],
                             ),
-                            Row(
-                              children: statement.tags.map((tag) {
-                                return Container(
-                                  margin: EdgeInsets.only(right: 4),
-                                  child: Chip(
-                                    label: Text(tag),
-                                    labelStyle: TextStyles.small00TextStyle,
-                                  ),
-                                );
-                              }).toList(),
+                            IconButton(
+                                onPressed: (){
+                                  if(statement.bookmarked){
+                                    setState(() {
+                                      statement.bookmarked = false;
+                                    });
+                                    deleteBookmark(statement.id);
+                                  }
+                                  else{
+                                    setState(() {
+                                      statement.bookmarked = true;
+                                    });
+                                    createBookmark(statement.id);
+                                  }
+                                },
+                                icon: statement.bookmarked?
+                                SvgPicture.asset(
+                                  'assets/icons/star_fill.svg',
+                                  fit: BoxFit.scaleDown,
+                                )
+                                    :
+                                SvgPicture.asset(
+                                  'assets/icons/star_unfill.svg',
+                                  fit: BoxFit.scaleDown,
+                                )
                             )
                           ],
                         ),
-                        IconButton(
-                            onPressed: (){
-                              if(statement.bookmarked){
-                                setState(() {
-                                  statement.bookmarked = false;
-                                });
-                                deleteBookmark(statement.id);
-                              }
-                              else{
-                                setState(() {
-                                  statement.bookmarked = true;
-                                });
-                                createBookmark(statement.id);
-                              }
-                            },
-                            icon: statement.bookmarked?
-                            SvgPicture.asset(
-                              'assets/icons/star_fill.svg',
-                              fit: BoxFit.scaleDown,
-                            )
-                                :
-                            SvgPicture.asset(
-                              'assets/icons/star_unfill.svg',
-                              fit: BoxFit.scaleDown,
-                            )
-                        )
-                      ],
-                    ),
+                      )
                   )
               );
             }),
