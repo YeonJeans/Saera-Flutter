@@ -11,6 +11,8 @@ class TodayLearnWordListPage extends StatefulWidget {
 }
 
 class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
+  var value = Get.arguments;
+
   @override
   Widget build(BuildContext context) {
 
@@ -35,10 +37,9 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
     Widget todayLearnWordTextSection = Container(
       margin: const EdgeInsets.only(left: 10.0),
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-      child: const Text(
-        '오늘 학습한 단어 목록',
-        style: TextStyles.xxLargeTextStyle,
-      ),
+      child: value == 'word'
+          ? Text('학습한 단어 목록', style: TextStyles.xxLargeTextStyle,)
+          : Text('오늘 학습한 단어 목록', style: TextStyles.xxLargeTextStyle,),
     );
     
     Widget wordListSection = Container(
