@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:saera/login/presentation/login_screen.dart';
-import 'package:saera/mypage/presentation/widgets/mypage_background_image.dart';
 import 'package:saera/mypage/presentation/widgets/mypage_userInfo.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
+import '../../login/data/authentication_manager.dart';
 import '../../login/data/login_platform.dart';
+import '../../login/data/refresh_token.dart';
+import '../../login/presentation/login_screen.dart';
 import '../../server.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 
 class MyPage extends StatefulWidget {
@@ -22,48 +25,70 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+  final AuthenticationManager _authManager = Get.find();
 
   LoginPlatform _loginPlatform = LoginPlatform.google;
 
+  int xp = 1;
+
   void signOut() async {
-    // switch (_loginPlatform) {
-    //   case LoginPlatform.google:
-    //     print("Google logout");
-    //     await GoogleSignIn(
-    //         clientId: googleClientId,
-    //         serverClientId: serverClientId
-    //     ).signOut();
-    //     break;
-    //   case LoginPlatform.apple:
-    //     break;
-    //   case LoginPlatform.none:
-    //     break;
-    // }
 
     setState(() {
       _loginPlatform = LoginPlatform.none;
-      // Get.to(() => LoginPage());
+      //_authManager.logOut();
     });
 
+  }
+
+  getUserExp() async {
+    await Future.delayed(const Duration(seconds: 1));
+    var url = Uri.parse('${serverHttp}/member');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      setState(() {
+        xp = body["xp"];
+      });
+
+    }
+    else if(response.statusCode == 401){
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getUserExp();
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    getUserExp();
+
+    super.initState();
   }
 
   Widget _mypageButton(String label, String icon, bool isEnter, void func) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 3),
-      child: ElevatedButton(
-          onPressed: (){
+      child: GestureDetector(
+          onTap: (){
             func;
+            (){
+              if(isEnter == false){
+                _authManager.logOut();
+                return Get.to(() => LoginPage());
+              }
+            }();
           },
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(ColorStyles.searchFillGray),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0)
-                  )
-              )
-          ),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 11),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            decoration: const BoxDecoration(
+              color: ColorStyles.searchFillGray,
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -97,7 +122,6 @@ class _MyPageState extends State<MyPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const MyPageBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
                 backgroundColor: Colors.transparent,
@@ -110,10 +134,12 @@ class _MyPageState extends State<MyPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          UserInfo(),
+                          UserInfo(exp: xp,),
                           Container(
-                            margin: EdgeInsets.only(top: 53),
-                            child: _mypageButton("프로필 수정", "edit.svg", true, (){print("here");}),
+                            margin: EdgeInsets.only(top: 52, bottom: 4),
+                            child: _mypageButton("프로필 수정", "edit.svg", true, (){
+                              print("here");
+                            }),
                           ),
                           _mypageButton("로그아웃", "signout.svg", false, signOut())
                         ],

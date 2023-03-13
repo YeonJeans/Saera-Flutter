@@ -12,7 +12,7 @@ void main() async {
 
   await GetStorage.init();
   runApp(
-    GetMaterialApp(
+    const GetMaterialApp(
       title: 'saera',
       home: SplashScreen(),
     )

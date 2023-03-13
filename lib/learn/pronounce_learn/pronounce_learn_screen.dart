@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:io' show Platform;
 
 
@@ -7,12 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:saera/learn/accent_learn/presentation/widgets/accent_learn_background_image.dart';
-import 'package:saera/learn/accent_learn/presentation/widgets/accent_line_chart.dart';
 import 'package:saera/learn/accent_learn/presentation/widgets/audio_bar.dart';
+import 'package:saera/learn/pronounce_learn/widgets/word_tag.dart';
 import 'package:saera/login/data/refresh_token.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
@@ -26,13 +23,16 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../login/data/authentication_manager.dart';
-
+import '../../login/presentation/widget/profile_image_clipper.dart';
 
 class PronouncePracticePage extends StatefulWidget {
 
-  final int id;
+  final int idx;
+  final bool isTodayLearn;
+  final List<int> wordList;
 
-  const PronouncePracticePage({Key? key, required this.id}) : super(key: key);
+  // wordList.length를 체크 후 length보다 작으면 idx 증가해서 보여주는 방식 처음 화면에서 넘겨 줄 때는 무조건 0
+  const PronouncePracticePage({Key? key, required this.idx, required this.isTodayLearn, required this.wordList}) : super(key: key);
 
   @override
   State<PronouncePracticePage> createState() => _PronouncePracticePageState();
@@ -42,9 +42,10 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
   final AuthenticationManager _authManager = Get.find();
   late FToast fToast;
 
+  int contentTag = 0;
   String content = "";
-  String contentPronounce = "공부";
-  String contentInfo = "학문이나 기술을 배우고 익힘.";
+  String contentPronounce = "";
+  String contentInfo = "";
   String userName = "";
 
   double accuracyRate = 0;
@@ -53,6 +54,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
   bool _isBookmarked = false;
   bool _isRecording = false;
+  bool _isPracticed = false;
   late Future <dynamic> _isAudioReady;
 
   AudioPlayer audioPlayer = AudioPlayer();
@@ -60,78 +62,126 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
   // String audioPath = "mp3/ex.wav";
   String audioPath = "";
   String recordingPath = "";
-  String _fileName = "recordp.wav";
 
   final _recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
 
-  late List<double> x = [];
-  late List<double> y = [];
-
-  late List<double> x2 = [];
-  late List<double> y2 = [];
-
-  showCustomToast() {
-    Widget toast = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          color: ColorStyles.black00.withOpacity(0.6),
+  Widget wordActiveNextBtn(){
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+            width: 1,
+            color: ColorStyles.saeraOlive1
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              "음성 인식에 실패했습니다.\n목소리가 잘 들리도록 다시 녹음해 주세요!",
-              style: TextStyles.smallFFTextStyle,
-            ),
+        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+        color: ColorStyles.saeraOlive1,
+        boxShadow:[
+          BoxShadow(
+            color: ColorStyles.black00.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 0), // changes position of shadow
+          ),
+        ],
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+      child: const Text(
+        "다음",
+        style: TextStyles.regularWhiteTextStyle,
+      ),
 
-            IconButton(
-                onPressed: (){
-                  fToast.removeCustomToast();
-                },
-                icon: SvgPicture.asset(
-                  'assets/icons/close_toast.svg',
-                  fit: BoxFit.scaleDown,
-                )
-            )
-          ],
-        )
     );
+  }
 
-    fToast.showToast(
-      child: toast,
-      toastDuration: const Duration(seconds: 3),
+  Widget activeNextBtn(){
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+            width: 1,
+            color: ColorStyles.saeraOlive1
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+      child: const Text(
+        "다음",
+        style: TextStyles.regularOliveTextStyle,
+      ),
+
+    );
+  }
+
+  Widget completeBtn(){
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+            width: 1,
+            color: ColorStyles.saeraOlive1
+        ),
+        color: ColorStyles.saeraOlive1,
+        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+      child: const Text(
+        "완료",
+        style: TextStyles.regularWhiteTextStyle,
+      ),
+
+    );
+  }
+
+  Widget unActiveCompleteBtn(){
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+            width: 1,
+            color: ColorStyles.disableGray
+        ),
+        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+      child: const Text(
+        "완료",
+        style: TextStyles.regularAATextStyle,
+      ),
+
+    );
+  }
+
+  Widget unActiveNextBtn(){
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+            width: 1,
+            color: ColorStyles.disableGray
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+      child: const Text(
+        "다음",
+        style: TextStyles.regularAATextStyle,
+      ),
+
     );
   }
 
   getExampleAccent() async {
 
-    var url = Uri.parse('${serverHttp}/statements/${widget.id}');
+    var url = Uri.parse('${serverHttp}/words/${widget.wordList[widget.idx]}');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+
+
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
 
-      x.clear();
-      y.clear();
-
       setState(() {
-        content = body["content"];
-        content = "공부";
-      });
-
-      setState(() {
+        content = body["notation"];
+        contentPronounce = body["pronunciation"];
+        contentInfo = body["definition"];
         _isBookmarked = body["bookmarked"];
-        userName = body["nickname"];
+        contentTag = body["tag_id"];
       });
-
-      for(int i in body["pitch_x"]){
-        double pitch  = i.toDouble();
-        x.add(pitch);
-      }
-
-      y = List.from(body["pitch_y"]);
 
     }
     else if(response.statusCode == 401){
@@ -150,21 +200,16 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
   Future<dynamic> getTTS() async {
 
-    var url = Uri.parse('${serverHttp}/statements/record/${widget.id}');
+    var url = Uri.parse('${serverHttp}/words/record/${widget.wordList[widget.idx]}');
 
-    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}"});
 
-    print(response.body);
     if (response.statusCode == 200) {
-
       Uint8List audioInUnit8List = response.bodyBytes;
       final tempDir = await getTemporaryDirectory();
 
-      print("here!");
-      File file = await File('${tempDir.path}/exampleAudio${widget.id}.wav').create();
+      File file = await File('${tempDir.path}/exampleAudio${widget.wordList[widget.idx]}.wav').create();
       file.writeAsBytesSync(audioInUnit8List);
-
-      print("here!");
 
       setState(() {
         audioPath = file.path;
@@ -179,12 +224,14 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
   createBookmark (int id) async {
 
-    var url = Uri.parse('${serverHttp}/bookmark/${id}');
+    var url = Uri.parse('${serverHttp}/bookmark?type=WORD&fk=${widget.wordList[widget.idx]}');
 
 
-    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
+    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}"});
 
     if (response.statusCode == 200) {
+      print(response.body);
+
       setState(() {
         _isBookmarked = !_isBookmarked;
       });
@@ -192,10 +239,11 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
   }
 
   void deleteBookmark () async {
-    var url = Uri.parse('${serverHttp}/bookmark/${widget.id}');
+    var url = Uri.parse('${serverHttp}/bookmark?type=WORD&fk=${widget.wordList[widget.idx]}');
 
     final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}" });
 
+    print(response.body);
     if (response.statusCode == 200) {
       setState(() {
         _isBookmarked = !_isBookmarked;
@@ -203,47 +251,29 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
     }
   }
 
-  getAccentEvaluation() async {
-    var url = Uri.parse('${serverHttp}/practiced');
+  completePractice() async {
+    var url = Uri.parse('${serverHttp}/practiced?type=WORD&fk=${widget.wordList[widget.idx].toString()}&isTodayStudy=${widget.isTodayLearn}');
     var request = http.MultipartRequest('POST', url);
-    request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}", "RefreshToken" : "Bearer ${_authManager.getRefreshToken()}"});
-    request.files.add(await http.MultipartFile.fromPath('record', recordingPath));
+    request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}"});
 
-    request.fields['id'] = widget.id.toString();
+    request.files.add(await http.MultipartFile.fromPath('record', recordingPath));
 
     var responsed = await request.send();
     var response = await http.Response.fromStream(responsed);
 
-    print(response.body);
     if (responsed.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
-
-      setState(() {
-        recordingState = 4;
-        accuracyRate = body["score"];
-      });
-
-      x2.clear();
-      y2.clear();
-
-      for(int i in body["pitch_x"]){
-        double pitch  = i.toDouble();
-        x2.add(pitch);
+      if(widget.isTodayLearn && _authManager.getTodayWordIdx()! < widget.idx +1){
+        _authManager.saveTodayWordIdx(widget.idx + 1);
       }
 
-      y2 = List.from(body["pitch_y"]);
-
+      print(body);
+      setState(() {
+        _isPracticed = true;
+      });
       return true;
     }
-    else{
-      showCustomToast();
-      setState(() {
-        recordingState = 1;
-        _isRecording = false;
-      });
-    }
   }
-
 
 
   @override
@@ -253,6 +283,10 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
     _isAudioReady = getTTS();
     fToast = FToast();
     fToast.init(context);
+
+    if(widget.isTodayLearn && _authManager.getTodayWordIdx() == null){
+      _authManager.saveTodayWordIdx(0);
+    }
 
     super.initState();
   }
@@ -316,7 +350,129 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
     }
   }
 
-  Widget topBarSection (){
+  Widget todayTopBarSection(bool isRecord){
+    return Stack(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            (){
+              if(widget.idx != 0 || !widget.isTodayLearn){
+                return GestureDetector(
+                  onTap: (){
+                    if(widget.idx - 1 >= 0 || !widget.isTodayLearn ){
+
+                      int nextIdx = widget.idx - 1;
+
+                      if(!widget.isTodayLearn && widget.idx - 1 < 0){
+                        nextIdx - widget.wordList.length - 1;
+                      }
+
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: nextIdx, isTodayLearn: widget.isTodayLearn, wordList: widget.wordList)),
+                      );
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1,
+                          color: ColorStyles.saeraOlive1
+                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                      color: Colors.white,
+                      boxShadow:[
+                        BoxShadow(
+                          color: ColorStyles.black00.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 0), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+                    child: const Text(
+                      "이전",
+                      style: TextStyles.regularOliveTextStyle,
+                    ),
+
+                  ),
+                );
+              }
+              else{
+                return const Spacer();
+              }
+            }(),
+
+            GestureDetector(
+                onTap: (){
+                  if((isRecord || !widget.isTodayLearn || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 != 5){
+
+                    int nextIdx = widget.idx + 1;
+
+                    if(!widget.isTodayLearn && widget.idx + 1 == widget.wordList.length){
+                      nextIdx = 0;
+                    }
+
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: nextIdx, isTodayLearn: widget.isTodayLearn, wordList: widget.wordList)),
+                    );
+                  }
+                  else if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 == 5){
+                    //TODO 학습 결과 리스트를 보여주는 페이지로 페이지 전환
+                  }
+                },
+                child: (){
+                  if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx)) && (widget.idx + 1 == 5 && widget.isTodayLearn)){
+                    return completeBtn();
+                  }
+                  else if(widget.idx + 1 == 5 && widget.isTodayLearn){
+                    return unActiveCompleteBtn();
+                  }
+                  else if(isRecord || !widget.isTodayLearn || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx )){
+                    return activeNextBtn();
+                  }
+                  else{
+                    return unActiveNextBtn();
+                  }
+
+                }()
+            )
+          ],
+        ),
+
+        Center(
+            child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: (){
+
+                  if(widget.idx == 0){
+                    return Image.asset('assets/icons/first_progress.png');
+                  }
+                  else if(widget.idx == 1){
+                    return Image.asset('assets/icons/second_progress.png');
+                  }
+                  else if(widget.idx == 2){
+                    return Image.asset('assets/icons/third_progress.png');
+                  }
+                  else if(widget.idx == 3){
+                    return Image.asset('assets/icons/fourth_progress.png');
+                  }
+                  else {
+                    return Image.asset('assets/icons/fifth_progress.png');
+                  }
+
+                }()
+            )
+        )
+      ],
+    );
+  }
+
+  Widget topBarSection (bool isRecord){
     return Stack(
       children: [
         Row(
@@ -324,7 +480,14 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
           children: [
             GestureDetector(
               onTap: (){
-
+                if(0 <= widget.idx - 1){
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: (widget.idx - 1), isTodayLearn: widget.isTodayLearn, wordList: widget.wordList)),
+                  );
+                  //Get.off(() => PronouncePracticePage(idx: (widget.idx - 1), isTodayLearn: widget.isTodayLearn, wordList: widget.wordList));
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -332,7 +495,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                         width: 1,
                         color: ColorStyles.saeraOlive1
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                     color: Colors.white,
                     boxShadow:[
                       BoxShadow(
@@ -342,7 +505,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                       ),
                     ],
                 ),
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
                 child: const Text(
                   "이전",
                   style: TextStyles.regularOliveTextStyle,
@@ -353,31 +516,23 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
             GestureDetector(
               onTap: (){
-
+                if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx) ) && widget.wordList.length > widget.idx + 1){
+                  //GetX로 페이지 넘길 경우, 동작하지 않음.... 왜...?
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: (widget.idx + 1), isTodayLearn: widget.isTodayLearn, wordList: widget.wordList)),
+                  );
+                }
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: ColorStyles.saeraOlive1
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                  color: ColorStyles.saeraOlive1,
-                  boxShadow:[
-                    BoxShadow(
-                      color: ColorStyles.black00.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 0), // changes position of shadow
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
-                child: const Text(
-                  "다음",
-                  style: TextStyles.regularWhiteTextStyle,
-                ),
-
-              ),
+              child: (){
+                if(isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx) ){
+                  return wordActiveNextBtn();
+                }
+                else{
+                  return unActiveNextBtn();
+                }
+              }()
             )
           ],
         ),
@@ -403,13 +558,12 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
   Widget appBarSection (){
     return Container(
-      //padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TextButton.icon(
-              onPressed: () => Get.back(),
+              onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
               icon: SvgPicture.asset(
                 'assets/icons/back.svg',
@@ -427,7 +581,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                   deleteBookmark();
                 }
                 else{
-                  createBookmark(widget.id);
+                  createBookmark(widget.wordList[widget.idx]);
                 }
               },
               icon: _isBookmarked ?
@@ -450,8 +604,8 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
   Widget practiceSentenceSection() {
     return Container(
-      margin: const EdgeInsets.only(top: 28.0),
-      padding: const EdgeInsets.only(top:24.0, bottom: 24.0),
+      margin: const EdgeInsets.only(top: 16.0),
+      padding: const EdgeInsets.only(top:20.0, bottom: 20.0),
       decoration: BoxDecoration(
           color: ColorStyles.searchFillGray,
           borderRadius: BorderRadius.circular(10)
@@ -518,9 +672,10 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
               width: 20,
               height: 20,
             ),
-            SizedBox(width: 16,),
+            const SizedBox(width: 16,),
             Text(
-              '\‘ㅗ\' 발음을 \‘ㅓ\' 처럼 발음하지 않도록 신경써야 합니다.',
+              WordTip(contentTag),
+              maxLines: 2,
               style: TextStyles.small55TextStyle,
             ),
           ],
@@ -589,12 +744,18 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Image(
-          width: 22,
-          image: AssetImage('assets/icons/user_profile.png'),),
+        ClipPath(
+            clipper: ProfileImageClipper(),
+            child: Container(
+              width: 20,
+              height: 21,
+              child: Image.network("${_authManager.getPhoto()}"),
+            )
+
+        ),
         const SizedBox(width: 9,),
         Text(
-          "현재 $userName님의 발음이에요.",
+          "현재 ${_authManager.getName()}님의 발음이에요.",
           style: TextStyles.medium00BoldTextStyle,
         )
 
@@ -634,6 +795,8 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
         setState(() {
           _isRecording = true;
+          completePractice();
+
           recordingState = 3;
         });
       },
@@ -811,7 +974,9 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const AccentPracticeBackgroundImage(key: null,),
+        Container(
+          color: Colors.white,
+        ),
         SafeArea(
             child: Scaffold(
                 appBar: AppBar(
@@ -823,6 +988,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                 backgroundColor: Colors.transparent,
                 resizeToAvoidBottomInset: false,
                 body: ListView(
+                    //physics: const NeverScrollableScrollPhysics(),
                     children: [
                       // appBarSection(),
                       Container(
@@ -830,7 +996,24 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            topBarSection(),
+                            (){
+                              if(widget.isTodayLearn){
+                                if(_isPracticed == true){
+                                  return todayTopBarSection(_isPracticed);
+                                }
+                                else{
+                                  return todayTopBarSection(_isPracticed);
+                                }
+                              }
+                              else{
+                                if(_isPracticed){
+                                  return topBarSection(_isPracticed);
+                                }
+                                else{
+                                  return topBarSection(_isPracticed);
+                                }
+                              }
+                            }(),
                             practiceSentenceSection(),
                             exampleSection(),
                             practiceSection(),
@@ -841,7 +1024,6 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                 )
             )
         )
-
 
       ],
     );

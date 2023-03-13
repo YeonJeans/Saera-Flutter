@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:saera/style/color.dart';
 
+import '../../../login/data/authentication_manager.dart';
+import '../../../login/presentation/widget/profile_image_clipper.dart';
 import '../../../style/font.dart';
 
+import 'liquid_custom_progress.dart';
+
 class UserInfo extends StatefulWidget {
-  const UserInfo({Key? key}) : super(key: key);
+
+  final int exp;
+
+  const UserInfo({Key? key, required this.exp}) : super(key: key);
 
   @override
   State<UserInfo> createState() => _UserInfoState();
@@ -12,31 +21,67 @@ class UserInfo extends StatefulWidget {
 
 class _UserInfoState extends State<UserInfo> {
 
-  int leftexp = 1313;
-  int level = 13;
-  String userName = "유사마동석";
+  final AuthenticationManager _authManager = Get.find();
 
   Widget userProfileImage(){
     return Stack(
       alignment: Alignment.center,
       children: [
-        SvgPicture.asset('assets/icons/mypage_profile_bg.svg',
-            semanticsLabel: 'Acme Logo'),
-        Image(image: AssetImage('assets/icons/user_profile.png'),)
+        SizedBox(
+          width: 200,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              LiquidCustomProgressIndicator(
+                value: widget.exp == 1 ? 0.0 : (widget.exp)/1000,
+                valueColor: AlwaysStoppedAnimation(ColorStyles.saeraKhaki),
+                backgroundColor: ColorStyles.searchFillGray,
+                direction: Axis.vertical,
+                shapePath: ProfileImageClipper().getClip(Size(189, 181)),
+              ),
+            ],
+          ),
+        ),
+
+        SizedBox(
+          width: 200,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(width: 14,),
+              Container(
+                child: ClipPath(
+                    clipper: ProfileImageClipper(),
+                    child: Container(
+                      width: 165,
+                      height: 158,
+                      child: Image.network("${_authManager.getPhoto()}",
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                ),
+              ),
+              Spacer()
+            ],
+          ),
+        )
+
       ],
     );
   }
 
   Widget userInfoTextSection(){
     return Container(
-      margin: const EdgeInsets.only(top: 16),
+      margin: const EdgeInsets.only(top: 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Lv. $level ",
+          Text("Lv. ${(widget.exp / 1000).round()} ",
             style: TextStyles.largeHighlightBlueTextStyle,
           ),
-          Text("$userName ",
+          Text("${_authManager.getName()} ",
             style: TextStyles.large00TextStyle,
           ),
           const Text("님",
@@ -51,7 +96,7 @@ class _UserInfoState extends State<UserInfo> {
   Widget userLevelInfoSection(){
     return Container(
       margin: const EdgeInsets.only(top: 6.0),
-      child: Text("다음 레벨까지 $leftexp xp 남았어요.",
+      child: Text("다음 레벨까지 ${1000-widget.exp} xp 남았어요.",
         style: TextStyles.medium55TextStyle,
       ),
     );

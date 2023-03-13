@@ -2,8 +2,17 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/learn/pronounce_learn/pronounce_learn_screen.dart';
+import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 import 'package:saera/learn/presentation/learn_screen.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../../learn/accent_learn/presentation/accent_todaylearn_screen.dart';
+import '../../login/data/authentication_manager.dart';
+import '../../login/data/refresh_token.dart';
+import '../../server.dart';
 import '../../style/font.dart';
 import '../../style/color.dart';
 
@@ -15,7 +24,73 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final AuthenticationManager _authManager = Get.find();
+
+  List<int> wordList = [];
+  List<int> statementList = [];
+
   String name = '수연';
+  int todayWordLearnIdx = 0;
+  int todayStatementLearnIdx = 0;
+
+  int todayWordProgressIdx = 0;
+  int todayStatementProgressIdx = 0;
+
+  @override
+  void initState() {
+    if(_authManager.getTodayStatementIdx() == null){
+      _authManager.saveTodayStatementIdx(0);
+    }
+    if(_authManager.getTodayWordIdx() == null){
+      _authManager.saveTodayWordIdx(0);
+    }
+
+    todayWordProgressIdx = _authManager.getTodayWordIdx()!;
+    todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
+
+    getTodayWordList();
+    getTodaySentenceList();
+    super.initState();
+  }
+
+  getTodayWordList() async {
+    await Future.delayed(const Duration(seconds: 1));
+    var url = Uri.parse('${serverHttp}/today-list?type=WORD');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      wordList.clear();
+      wordList = List.from(body);
+      if(wordList[0] != todayWordLearnIdx){
+        _authManager.saveTodayWordIdx(0);
+      }
+    }
+    else if(response.statusCode == 401){
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getTodayWordList();
+      }
+    }
+  }
+
+  getTodaySentenceList() async {
+    await Future.delayed(const Duration(seconds: 1));
+    var url = Uri.parse('${serverHttp}/today-list?type=STATEMENT');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      statementList.clear();
+      statementList = List.from(body);
+      if(statementList[0] != todayStatementLearnIdx){
+        _authManager.saveTodayStatementIdx(0);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +248,10 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton(
-              onPressed: null,
+              onPressed: (){
+                todayWordProgressIdx = _authManager.getTodayWordIdx()!;
+                Get.to(PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList));
+                },
               style: ButtonStyle(
                   elevation: MaterialStateProperty.all(8),
                   backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -209,7 +287,9 @@ class _HomePageState extends State<HomePage> {
               )
           ),
           ElevatedButton(
-              onPressed: null,
+              onPressed: (){
+                todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
+                Get.to(AccentTodayPracticePage(idx: todayStatementProgressIdx, sentenceList: statementList));},
               style: ButtonStyle(
                   elevation: MaterialStateProperty.all(8),
                   backgroundColor: MaterialStateProperty.all(Colors.white),
