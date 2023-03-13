@@ -357,14 +357,21 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             (){
-              if(widget.idx != 0){
+              if(widget.idx != 0 || !widget.isTodayLearn){
                 return GestureDetector(
                   onTap: (){
-                    if(widget.idx - 1 >= 0){
+                    if(widget.idx - 1 >= 0 || !widget.isTodayLearn ){
+
+                      int nextIdx = widget.idx - 1;
+
+                      if(!widget.isTodayLearn && widget.idx - 1 < 0){
+                        nextIdx - widget.wordList.length - 1;
+                      }
+
                       Navigator.pop(context);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: (widget.idx -1), isTodayLearn: true, wordList: widget.wordList)),
+                        MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: nextIdx, isTodayLearn: widget.isTodayLearn, wordList: widget.wordList)),
                       );
                     }
                   },
@@ -400,12 +407,18 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
             GestureDetector(
                 onTap: (){
-                  if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 != 5){
+                  if((isRecord || !widget.isTodayLearn || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 != 5){
+
+                    int nextIdx = widget.idx + 1;
+
+                    if(!widget.isTodayLearn && widget.idx + 1 == widget.wordList.length){
+                      nextIdx = 0;
+                    }
 
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: (widget.idx + 1), isTodayLearn: true, wordList: widget.wordList)),
+                      MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: nextIdx, isTodayLearn: widget.isTodayLearn, wordList: widget.wordList)),
                     );
                   }
                   else if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 == 5){
@@ -413,18 +426,16 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                   }
                 },
                 child: (){
-                  if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx)) && widget.idx + 1 == 5){
+                  if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx)) && (widget.idx + 1 == 5 && widget.isTodayLearn)){
                     return completeBtn();
                   }
-                  else if(widget.idx + 1 == 5){
+                  else if(widget.idx + 1 == 5 && widget.isTodayLearn){
                     return unActiveCompleteBtn();
                   }
-                  else if(isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx )){
+                  else if(isRecord || !widget.isTodayLearn || (widget.isTodayLearn && _authManager.getTodayWordIdx()! > widget.idx )){
                     return activeNextBtn();
                   }
                   else{
-                    print(_authManager.getTodayWordIdx());
-                    print("widget id : ${widget.idx}");
                     return unActiveNextBtn();
                   }
 

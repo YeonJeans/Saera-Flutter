@@ -8,7 +8,7 @@ class LiquidCustomProgressIndicator extends ProgressIndicator {
 
   LiquidCustomProgressIndicator({
     Key? key,
-    double value = 0.8,
+    double value = 0.01,
     Color? backgroundColor,
     Animation<Color>? valueColor,
     this.center,
