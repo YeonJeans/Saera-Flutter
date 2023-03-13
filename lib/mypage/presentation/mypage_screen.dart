@@ -29,7 +29,7 @@ class _MyPageState extends State<MyPage> {
 
   LoginPlatform _loginPlatform = LoginPlatform.google;
 
-  int xp = 1;
+  int xp = 0;
 
   void signOut() async {
 
