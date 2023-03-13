@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:saera/style/color.dart';
 
+import '../../../login/data/authentication_manager.dart';
+import '../../../login/presentation/widget/profile_image_clipper.dart';
 import '../../../style/font.dart';
+
+import 'liquid_custom_progress.dart';
 
 class UserInfo extends StatefulWidget {
   const UserInfo({Key? key}) : super(key: key);
@@ -12,17 +18,58 @@ class UserInfo extends StatefulWidget {
 
 class _UserInfoState extends State<UserInfo> {
 
+  final AuthenticationManager _authManager = Get.find();
+
   int leftexp = 1313;
   int level = 13;
-  String userName = "유사마동석";
 
   Widget userProfileImage(){
     return Stack(
       alignment: Alignment.center,
       children: [
-        SvgPicture.asset('assets/icons/mypage_profile_bg.svg',
-            semanticsLabel: 'Acme Logo'),
-        Image(image: AssetImage('assets/icons/user_profile.png'),)
+        SizedBox(
+          width: 200,
+          height: 200,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              LiquidCustomProgressIndicator(
+                value: 0.8,
+                valueColor: AlwaysStoppedAnimation(ColorStyles.saeraKhaki),
+                backgroundColor: ColorStyles.searchFillGray,
+                direction: Axis.vertical,
+                shapePath: ProfileImageClipper().getClip(Size(189, 181)),
+              ),
+            ],
+          ),
+        ),
+
+        SizedBox(
+          width: 200,
+          height: 200,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(width: 14,),
+              Container(
+                child: ClipPath(
+                    clipper: ProfileImageClipper(),
+                    child: Container(
+                      width: 165,
+                      height: 158,
+                      child: Image.network("${_authManager.getPhoto()}",
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                ),
+              ),
+              Spacer()
+            ],
+          ),
+        )
+
       ],
     );
   }
@@ -36,7 +83,7 @@ class _UserInfoState extends State<UserInfo> {
           Text("Lv. $level ",
             style: TextStyles.largeHighlightBlueTextStyle,
           ),
-          Text("$userName ",
+          Text("${_authManager.getName()} ",
             style: TextStyles.large00TextStyle,
           ),
           const Text("님",

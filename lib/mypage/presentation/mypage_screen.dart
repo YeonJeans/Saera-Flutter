@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:saera/login/presentation/login_screen.dart';
 import 'package:saera/mypage/presentation/widgets/mypage_background_image.dart';
 import 'package:saera/mypage/presentation/widgets/mypage_userInfo.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -10,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
+import '../../login/data/authentication_manager.dart';
 import '../../login/data/login_platform.dart';
 import '../../server.dart';
 
@@ -22,27 +21,16 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+  final AuthenticationManager _authManager = Get.find();
 
   LoginPlatform _loginPlatform = LoginPlatform.google;
 
   void signOut() async {
-    // switch (_loginPlatform) {
-    //   case LoginPlatform.google:
-    //     print("Google logout");
-    //     await GoogleSignIn(
-    //         clientId: googleClientId,
-    //         serverClientId: serverClientId
-    //     ).signOut();
-    //     break;
-    //   case LoginPlatform.apple:
-    //     break;
-    //   case LoginPlatform.none:
-    //     break;
-    // }
 
     setState(() {
       _loginPlatform = LoginPlatform.none;
-      // Get.to(() => LoginPage());
+      _authManager.logOut();
+      //Get.to(() => LoginPage());
     });
 
   }
@@ -110,10 +98,12 @@ class _MyPageState extends State<MyPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          UserInfo(),
+                          const UserInfo(),
                           Container(
-                            margin: EdgeInsets.only(top: 53),
-                            child: _mypageButton("프로필 수정", "edit.svg", true, (){print("here");}),
+                            margin: EdgeInsets.only(top: 53, bottom: 4),
+                            child: _mypageButton("프로필 수정", "edit.svg", true, (){
+                              print("here");
+                            }),
                           ),
                           _mypageButton("로그아웃", "signout.svg", false, signOut())
                         ],
