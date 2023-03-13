@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:saera/mypage/presentation/widgets/mypage_background_image.dart';
 import 'package:saera/mypage/presentation/widgets/mypage_userInfo.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -10,6 +9,7 @@ import 'package:saera/style/font.dart';
 
 import '../../login/data/authentication_manager.dart';
 import '../../login/data/login_platform.dart';
+import '../../login/presentation/login_screen.dart';
 import '../../server.dart';
 
 
@@ -29,8 +29,7 @@ class _MyPageState extends State<MyPage> {
 
     setState(() {
       _loginPlatform = LoginPlatform.none;
-      _authManager.logOut();
-      //Get.to(() => LoginPage());
+      //_authManager.logOut();
     });
 
   }
@@ -38,20 +37,22 @@ class _MyPageState extends State<MyPage> {
   Widget _mypageButton(String label, String icon, bool isEnter, void func) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 3),
-      child: ElevatedButton(
-          onPressed: (){
+      child: GestureDetector(
+          onTap: (){
             func;
+            (){
+              if(isEnter == false){
+                _authManager.logOut();
+                return Get.to(() => LoginPage());
+              }
+            }();
           },
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(ColorStyles.searchFillGray),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0)
-                  )
-              )
-          ),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 11),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            decoration: const BoxDecoration(
+              color: ColorStyles.searchFillGray,
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -85,7 +86,6 @@ class _MyPageState extends State<MyPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const MyPageBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
                 backgroundColor: Colors.transparent,
@@ -100,7 +100,7 @@ class _MyPageState extends State<MyPage> {
                         children: [
                           const UserInfo(),
                           Container(
-                            margin: EdgeInsets.only(top: 53, bottom: 4),
+                            margin: EdgeInsets.only(top: 52, bottom: 4),
                             child: _mypageButton("프로필 수정", "edit.svg", true, (){
                               print("here");
                             }),
