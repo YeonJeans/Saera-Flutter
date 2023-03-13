@@ -10,7 +10,11 @@ import 'package:saera/style/font.dart';
 
 import '../../login/data/authentication_manager.dart';
 import '../../login/data/login_platform.dart';
+import '../../login/data/refresh_token.dart';
 import '../../server.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 
 class MyPage extends StatefulWidget {
@@ -25,6 +29,8 @@ class _MyPageState extends State<MyPage> {
 
   LoginPlatform _loginPlatform = LoginPlatform.google;
 
+  int xp = 1;
+
   void signOut() async {
 
     setState(() {
@@ -33,6 +39,36 @@ class _MyPageState extends State<MyPage> {
       //Get.to(() => LoginPage());
     });
 
+  }
+
+  getUserExp() async {
+    await Future.delayed(const Duration(seconds: 1));
+    var url = Uri.parse('${serverHttp}/member');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      setState(() {
+        xp = body["xp"];
+      });
+
+    }
+    else if(response.statusCode == 401){
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getUserExp();
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    getUserExp();
+
+    super.initState();
   }
 
   Widget _mypageButton(String label, String icon, bool isEnter, void func) {
@@ -98,7 +134,7 @@ class _MyPageState extends State<MyPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const UserInfo(),
+                          UserInfo(exp: xp,),
                           Container(
                             margin: EdgeInsets.only(top: 53, bottom: 4),
                             child: _mypageButton("프로필 수정", "edit.svg", true, (){

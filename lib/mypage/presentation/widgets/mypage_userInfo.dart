@@ -10,7 +10,10 @@ import '../../../style/font.dart';
 import 'liquid_custom_progress.dart';
 
 class UserInfo extends StatefulWidget {
-  const UserInfo({Key? key}) : super(key: key);
+
+  final int exp;
+
+  const UserInfo({Key? key, required this.exp}) : super(key: key);
 
   @override
   State<UserInfo> createState() => _UserInfoState();
@@ -19,9 +22,6 @@ class UserInfo extends StatefulWidget {
 class _UserInfoState extends State<UserInfo> {
 
   final AuthenticationManager _authManager = Get.find();
-
-  int leftexp = 1313;
-  int level = 13;
 
   Widget userProfileImage(){
     return Stack(
@@ -35,7 +35,7 @@ class _UserInfoState extends State<UserInfo> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               LiquidCustomProgressIndicator(
-                value: 0.8,
+                value: widget.exp == 1 ? 0.0 : (widget.exp)/1000,
                 valueColor: AlwaysStoppedAnimation(ColorStyles.saeraKhaki),
                 backgroundColor: ColorStyles.searchFillGray,
                 direction: Axis.vertical,
@@ -52,7 +52,7 @@ class _UserInfoState extends State<UserInfo> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(width: 14,),
+              const SizedBox(width: 14,),
               Container(
                 child: ClipPath(
                     clipper: ProfileImageClipper(),
@@ -80,7 +80,7 @@ class _UserInfoState extends State<UserInfo> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Lv. $level ",
+          Text("Lv. ${(widget.exp / 1000).round()} ",
             style: TextStyles.largeHighlightBlueTextStyle,
           ),
           Text("${_authManager.getName()} ",
@@ -98,7 +98,7 @@ class _UserInfoState extends State<UserInfo> {
   Widget userLevelInfoSection(){
     return Container(
       margin: const EdgeInsets.only(top: 6.0),
-      child: Text("다음 레벨까지 $leftexp xp 남았어요.",
+      child: Text("다음 레벨까지 ${1000-widget.exp} xp 남았어요.",
         style: TextStyles.medium55TextStyle,
       ),
     );
