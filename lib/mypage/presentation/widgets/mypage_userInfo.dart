@@ -29,7 +29,6 @@ class _UserInfoState extends State<UserInfo> {
       children: [
         SizedBox(
           width: 200,
-          height: 200,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,7 +46,6 @@ class _UserInfoState extends State<UserInfo> {
 
         SizedBox(
           width: 200,
-          height: 200,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,7 +74,7 @@ class _UserInfoState extends State<UserInfo> {
 
   Widget userInfoTextSection(){
     return Container(
-      margin: const EdgeInsets.only(top: 16),
+      margin: const EdgeInsets.only(top: 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

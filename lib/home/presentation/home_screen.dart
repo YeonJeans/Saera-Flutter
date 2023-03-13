@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:saera/learn/pronounce_learn/pronounce_learn_screen.dart';
 import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
+import 'package:saera/learn/presentation/learn_screen.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -95,37 +96,33 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 
     Widget imageSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-      width:MediaQuery.of(context).size.width*0.5,
-      height: MediaQuery.of(context).size.height*0.25,
-      decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/home_item_bg.png'),
-            fit: BoxFit.fill
-          ),
+      margin: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height*0.147,
+        left: MediaQuery.of(context).size.width*0.05
       ),
+      child: SvgPicture.asset('assets/images/home_image.svg'),
     );
 
     Widget greetingTextSection = Container(
       margin: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height*0.08,
-          left: MediaQuery.of(context).size.width*0.63
+          top: MediaQuery.of(context).size.height*0.07,
+          left: MediaQuery.of(context).size.width*0.07
       ),
       child: Text(
-        '$name 님,\n 어서 오세요!',
+        '$name 님,\n어서 오세요!',
         style: TextStyles.xLarge25TextStyle,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.left,
       ),
     );
 
     Widget studyTextSection = Container(
       margin: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height*0.165,
-          left: MediaQuery.of(context).size.width*0.60
+          top: MediaQuery.of(context).size.height*0.1,
+          left: MediaQuery.of(context).size.width*0.63
       ),
       child: const Text(
-        '오늘은 무엇을 학습할까요?',
-        style: TextStyles.small25TextStyle,
+        '갑자일주 3월 10일 운세\n빨간색을 조심하세요',
+        style: TextStyles.small25TextStyleWithHeight,
         textAlign: TextAlign.right,
       ),
     );
@@ -139,7 +136,7 @@ class _HomePageState extends State<HomePage> {
           Flexible(
               child: TextField(
                 readOnly: true,
-                onTap: () => Get.to(SearchPage()),
+                onTap: () => Get.to(LearnPage()),
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                   hintText: '무엇을 학습할까요?',
