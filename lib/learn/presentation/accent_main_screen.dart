@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/learn/custom_learn/learn_sentence/presentation/learn_statement_screen.dart';
 import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
 
 import '../../style/color.dart';
@@ -46,7 +47,7 @@ class AccentMainPage extends StatelessWidget {
     );
 
     Widget customButtonSection = InkWell(
-      onTap: null,
+      onTap: () => Get.to(LearnStatementPage()),
       child: Container(
         margin: EdgeInsets.only(
             top: MediaQuery.of(context).size.height*0.01,

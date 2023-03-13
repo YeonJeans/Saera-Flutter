@@ -27,6 +27,7 @@ class TextStyles {
   static const regular99TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff999999));
   static const regular25BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xff252525));
   static const regular82TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff828282));
+  static const regular82TextStyleWithHeight = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff828282), height: 1.6);
   static const regularAATextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xffAAAAAA));
   static const regularBlueTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff3E68A8));
   static const regularRedTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xffF1573F));
