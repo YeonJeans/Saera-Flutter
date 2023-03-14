@@ -263,7 +263,7 @@ class _HomePageState extends State<HomePage> {
                 }
                 else{
                   Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList)
+                      builder: (context) => PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList, pcList: [],)
                   ));
                 }
                 //Get.to(PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList));
