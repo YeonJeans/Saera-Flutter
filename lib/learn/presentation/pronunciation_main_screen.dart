@@ -1,12 +1,54 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:saera/learn/pronounce_learn/pronounce_learn_screen.dart';
 
+import '../../login/data/authentication_manager.dart';
+import '../../server.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
 
 class PronunciationMainPage extends StatelessWidget {
+  final AuthenticationManager _authManager = Get.find();
+  List<int> wordList = [];
+  List<int> etcList = [13, 14, 16, 17, 18, 19];
+
+  int returnId(String menu) {
+    if (menu == '구개음화') {
+      return 9;
+    } else if (menu == '두음법칙') {
+      return 10;
+    } else if (menu == '치조마찰음화') {
+      return 11;
+    } else if (menu == '단모음화') {
+      return 15;
+    } else if (menu == "'ㄴ' 첨가") {
+      return 12;
+    } else { //기타
+      return 13;
+    }
+  }
+
+  getWordList(int id) async {
+    var url = Uri.parse('${serverHttp}/words?tag_id=$id');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}"});
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+        wordList = List.from(body);
+    }
+  }
+
+  getEtcList(int id) async {
+    var url = Uri.parse('${serverHttp}/words?tag_id=$id');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}"});
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      wordList += List.from(body);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +91,20 @@ class PronunciationMainPage extends StatelessWidget {
 
     InkWell pronunciationMenu(String word, String description) {
       return InkWell(
-        onTap: null,
+        onTap: () {
+          if (returnId(word) == 13) {
+            for (int i in etcList) {
+              getEtcList(i);
+            }
+          } else {
+            getWordList(returnId(word));
+          }
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: returnId(word), isTodayLearn: false, wordList: wordList))
+          );
+          wordList.clear();
+        },
         child: Container(
           margin: EdgeInsets.symmetric(
             vertical: MediaQuery.of(context).size.height*0.01,
