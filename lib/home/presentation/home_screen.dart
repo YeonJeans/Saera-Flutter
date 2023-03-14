@@ -4,6 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:saera/learn/pronounce_learn/pronounce_learn_screen.dart';
 import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
+import 'package:saera/main.dart';
+import 'package:saera/tabbar.dart';
 import 'package:saera/learn/presentation/learn_screen.dart';
 
 import 'package:http/http.dart' as http;
@@ -136,7 +138,9 @@ class _HomePageState extends State<HomePage> {
           Flexible(
               child: TextField(
                 readOnly: true,
-                onTap: () => Get.to(LearnPage()),
+                onTap: () {
+                  TabBarMainPage.myTabbedPageKey.currentState?.tabController.animateTo(1);
+                },
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
                   hintText: '무엇을 학습할까요?',
@@ -250,7 +254,10 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
               onPressed: (){
                 todayWordProgressIdx = _authManager.getTodayWordIdx()!;
-                Get.to(PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList));
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList)
+                ));
+                //Get.to(PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList));
                 },
               style: ButtonStyle(
                   elevation: MaterialStateProperty.all(8),
@@ -289,7 +296,10 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
               onPressed: (){
                 todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
-                Get.to(AccentTodayPracticePage(idx: todayStatementProgressIdx, sentenceList: statementList));},
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => AccentTodayPracticePage(idx: todayStatementProgressIdx, sentenceList: statementList)
+                ));
+                },
               style: ButtonStyle(
                   elevation: MaterialStateProperty.all(8),
                   backgroundColor: MaterialStateProperty.all(Colors.white),
