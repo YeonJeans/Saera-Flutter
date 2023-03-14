@@ -25,7 +25,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         TextButton.icon(
-            onPressed: () => Get.back(),
+            onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
             icon: SvgPicture.asset(
               'assets/icons/back.svg',
@@ -137,7 +137,9 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
         right: MediaQuery.of(context).size.width*0.04
       ),
       child: OutlinedButton(
-          onPressed: () => Get.offAll(HomePage()),
+          onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  HomePage()), (route) => false),
           style: OutlinedButton.styleFrom(
             backgroundColor: ColorStyles.saeraOlive1,
             shape: const RoundedRectangleBorder(
