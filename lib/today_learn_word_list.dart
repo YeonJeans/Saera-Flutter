@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/home/presentation/home_screen.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
 class TodayLearnWordListPage extends StatefulWidget {
+
+  final List<int> wordList;
+  final bool isTodayWord;
+
+  const TodayLearnWordListPage({Key? key, required this.wordList, required this.isTodayWord});
 
   @override
   State<StatefulWidget> createState() => _TodayLearnWordListPageState();
 }
 
 class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
+
   @override
   Widget build(BuildContext context) {
 
@@ -37,10 +44,9 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
     Widget todayLearnWordTextSection = Container(
       margin: const EdgeInsets.only(left: 10.0),
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-      child: const Text(
-        '오늘 학습한 단어 목록',
-        style: TextStyles.xxLargeTextStyle,
-      ),
+      child: widget.isTodayWord == true
+          ? Text('오늘 학습한 단어 목록', style: TextStyles.xxLargeTextStyle,)
+          : Text('학습한 단어 목록', style: TextStyles.xxLargeTextStyle,),
     );
     
     Widget wordListSection = Container(
@@ -51,7 +57,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
             return Row(
                 children: [
                   Text(
-                    '굳이',
+                    '굳이', //서버연결
                     style: TextStyles.regular00TextStyle,
                   ),
                   Text(
@@ -104,7 +110,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
         ]
       ),
       child: OutlinedButton(
-          onPressed: null,
+          onPressed: null, //오늘의 학습이냐 단어 학습이냐에 따라 달라짐 서버 연결할 때 같이 연결할 것
           style: OutlinedButton.styleFrom(
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8.0))
@@ -133,7 +139,9 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
         right: MediaQuery.of(context).size.width*0.04
       ),
       child: OutlinedButton(
-          onPressed: null,
+          onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  HomePage()), (route) => false),
           style: OutlinedButton.styleFrom(
             backgroundColor: ColorStyles.saeraOlive1,
             shape: const RoundedRectangleBorder(
