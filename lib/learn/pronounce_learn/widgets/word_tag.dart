@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 String WordTip(int idx){
   //구개음화
   if(idx == 9){
-    return "‘ㄷ’, ‘ㅌ’ 뒤에 ‘ㅣ’가 올 때 ‘ㅈ’, ‘ㅊ’로 \n발음하도록 신경써야 합니다.";
+    return "‘ㄷ’, ‘ㅌ’ 뒤에 ‘ㅣ’가 올 때 ‘ㅈ’, ‘ㅊ’로 발음하도록 신경써야\n 합니다.";
   }
   //두음법칙
   else if(idx == 10){
@@ -19,7 +19,7 @@ String WordTip(int idx){
   }
   //ㄹ첨가
   else if(idx == 13){
-    return "받침 'ㄹ'뒤에 '이,야,여,요,유'가 오는 경우,\n 'ㄹ'을 첨가하여 발음해야 합니다.";
+    return "받침 'ㄹ'뒤에 '이,야,여,요,유'가 오는 경우, 'ㄹ'을 첨가하여 \n발음해야 합니다.";
   }
   // 여=>애
   else if(idx == 14){
@@ -43,7 +43,7 @@ String WordTip(int idx){
   }
   //모음조화
   else if(idx == 19){
-    return "양성 모음은 양성 모음끼리, 음성 모음은 음성 모음끼리 \n어울리도록 발음합니다.";
+    return "양성 모음은 양성 모음끼리, 음성 모음은 음성 모음끼리 어울리도록\n 발음합니다.";
   }
   return "";
 }
