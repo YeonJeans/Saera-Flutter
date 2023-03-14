@@ -34,21 +34,23 @@ class PronunciationMainPage extends StatelessWidget {
 
   getWordList(int id) async {
     var url = Uri.parse('${serverHttp}/words?tag_id=$id');
-    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}"});
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}"});
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
-        wordList = List.from(body);
+      wordList = List.from(body);
     }
   }
 
   getEtcList(int id) async {
     var url = Uri.parse('${serverHttp}/words?tag_id=$id');
-    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}"});
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}"});
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
       wordList += List.from(body);
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,7 @@ class PronunciationMainPage extends StatelessWidget {
 
     InkWell pronunciationMenu(String word, String description) {
       return InkWell(
-        onTap: () {
+        onTap: () async {
           if (returnId(word) == 13) {
             for (int i in etcList) {
               getEtcList(i);
@@ -99,11 +101,11 @@ class PronunciationMainPage extends StatelessWidget {
           } else {
             getWordList(returnId(word));
           }
+          await Future.delayed(const Duration(seconds: 1));
           Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: returnId(word), isTodayLearn: false, wordList: wordList))
+              MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: false, wordList: wordList))
           );
-          wordList.clear();
         },
         child: Container(
           margin: EdgeInsets.symmetric(
