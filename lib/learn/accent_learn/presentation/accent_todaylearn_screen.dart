@@ -26,6 +26,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../../login/data/authentication_manager.dart';
 import '../../../login/presentation/widget/profile_image_clipper.dart';
+import '../../../today_learn_statement_list.dart';
 
 
 class AccentTodayPracticePage extends StatefulWidget {
@@ -255,7 +256,11 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                   }
                   else if((_isPracticed || _authManager.getTodayStatementIdx()! > widget.idx ) && widget.idx + 1 == 5){
                     //TODO 학습 결과 리스트를 보여주는 페이지로 페이지 전환
+                    _authManager.saveTodayStatementIdx(widget.idx + 1);
                     Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => TodayLearnStatementListPage(),
+                    ));
                   }
                 },
                 child: (){
@@ -1190,7 +1195,6 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const AccentPracticeBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
                 appBar: AppBar(
@@ -1199,7 +1203,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                 ),
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
                 resizeToAvoidBottomInset: false,
                 body: ListView(
                     children: [
