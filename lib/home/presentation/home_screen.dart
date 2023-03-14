@@ -9,6 +9,7 @@ import 'package:saera/tabbar.dart';
 import 'package:saera/learn/presentation/learn_screen.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:saera/today_learn_word_list.dart';
 import 'dart:convert';
 
 import '../../learn/accent_learn/presentation/accent_todaylearn_screen.dart';
@@ -17,6 +18,7 @@ import '../../login/data/refresh_token.dart';
 import '../../server.dart';
 import '../../style/font.dart';
 import '../../style/color.dart';
+import '../../today_learn_statement_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -254,9 +256,16 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
               onPressed: (){
                 todayWordProgressIdx = _authManager.getTodayWordIdx()!;
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList)
-                ));
+                if(todayWordProgressIdx == 5){
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => const TodayLearnWordListPage(wordList: [], isTodayWord: true),
+                  ));
+                }
+                else{
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList)
+                  ));
+                }
                 //Get.to(PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList));
                 },
               style: ButtonStyle(
@@ -296,9 +305,15 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
               onPressed: (){
                 todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => AccentTodayPracticePage(idx: todayStatementProgressIdx, sentenceList: statementList)
-                ));
+                if(todayStatementProgressIdx == 5){
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => TodayLearnStatementListPage(),
+                  ));
+                }else{
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => AccentTodayPracticePage(idx: todayStatementProgressIdx, sentenceList: statementList)
+                  ));
+                }
                 },
               style: ButtonStyle(
                   elevation: MaterialStateProperty.all(8),
