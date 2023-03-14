@@ -1,9 +1,12 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:saera/learn/accent_learn/data/line_controller.dart';
 
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
+
+import 'package:get/get.dart';
 
 class AudioBar extends StatefulWidget {
 
@@ -29,6 +32,7 @@ String formatTime(Duration duration){
   ].join(":");
 }
 
+
 class _AudioBarState extends State<AudioBar> {
 
   bool _isPlaying = false;
@@ -39,6 +43,8 @@ class _AudioBarState extends State<AudioBar> {
   Duration position = Duration.zero;
 
   String url = '';
+
+  final LineController _lineController = Get.find();
 
   @override
   void initState(){
@@ -61,6 +67,7 @@ class _AudioBarState extends State<AudioBar> {
         setState(() {
           duration = newDuration;
         });
+        _lineController.setting(newDuration.inMilliseconds.toDouble());
       }
     });
 
@@ -69,6 +76,7 @@ class _AudioBarState extends State<AudioBar> {
       if(this.mounted){
         setState(() {
           position = newPosition;
+          _lineController.positionChanged(newPosition.inMilliseconds.toDouble());
         });
       }
     });
@@ -77,6 +85,7 @@ class _AudioBarState extends State<AudioBar> {
       if(this.mounted){
         setState(() {
           position = Duration.zero;
+          _lineController.positionChanged(0.0);
           setAudio();
         });
       }
@@ -94,9 +103,9 @@ class _AudioBarState extends State<AudioBar> {
 
   @override
   void dispose(){
-    super.dispose();
+
     audioPlayer.dispose();
-    // audioPlayer.release();
+    super.dispose();
   }
 
   @override
@@ -163,13 +172,14 @@ class _AudioBarState extends State<AudioBar> {
                       onChanged: (value) async {
                         final position = Duration(microseconds: value.toInt());
                         await audioPlayer.seek(position);
+                        _lineController.positionChanged(position.inMilliseconds.toDouble());
                         await audioPlayer.resume();
                       },
                     ),
                   )
               ),
               Container(
-                margin: EdgeInsets.only(left: 5.0),
+                margin: const EdgeInsets.only(left: 5.0),
                 child: Text(formatTime(duration),
                   style: TextStyles.small66TextStyle,
                 ),
