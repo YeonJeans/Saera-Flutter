@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:saera/learn/accent_learn/data/line_controller.dart';
 
 import 'login/data/authentication_manager.dart';
 import 'login/presentation/login_screen.dart';
@@ -29,6 +30,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   final AuthenticationManager _authmanager = Get.put(AuthenticationManager());
+  final LineController _lineController = Get.put(LineController());
 
   Future<void> initializeSettings() async {
     _authmanager.checkLoginStatus();
