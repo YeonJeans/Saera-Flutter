@@ -776,9 +776,6 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                   }
                   // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
                   else {
-                    // AudioBar가 보이지 않는 문제
-                    //return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
-
                     return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
                   }
                 }),

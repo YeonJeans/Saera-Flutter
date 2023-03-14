@@ -528,7 +528,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                 );
               }
               else {
-                return AccentLineChart(x: x, y: y);
+                return AccentLineChart(x: x, y: y,);
               }
             }),
       ),
