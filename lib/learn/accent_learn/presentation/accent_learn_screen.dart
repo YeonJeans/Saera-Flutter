@@ -981,7 +981,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const AccentPracticeBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
               appBar: AppBar(
@@ -990,7 +989,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
               ),
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.white,
               resizeToAvoidBottomInset: false,
               body: ListView(
                 children: [
