@@ -7,12 +7,16 @@ import 'package:saera/style/font.dart';
 
 class TodayLearnWordListPage extends StatefulWidget {
 
+  final List<int> wordList;
+  final bool isTodayWord;
+
+  const TodayLearnWordListPage({Key? key, required this.wordList, required this.isTodayWord});
+
   @override
   State<StatefulWidget> createState() => _TodayLearnWordListPageState();
 }
 
 class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
-  var value = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +42,9 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
     Widget todayLearnWordTextSection = Container(
       margin: const EdgeInsets.only(left: 10.0),
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-      child: value == 'word'
-          ? Text('학습한 단어 목록', style: TextStyles.xxLargeTextStyle,)
-          : Text('오늘 학습한 단어 목록', style: TextStyles.xxLargeTextStyle,),
+      child: widget.isTodayWord == true
+          ? Text('오늘 학습한 단어 목록', style: TextStyles.xxLargeTextStyle,)
+          : Text('학습한 단어 목록', style: TextStyles.xxLargeTextStyle,),
     );
     
     Widget wordListSection = Container(
@@ -51,7 +55,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
             return Row(
                 children: [
                   Text(
-                    '굳이',
+                    '굳이', //서버연결
                     style: TextStyles.regular00TextStyle,
                   ),
                   Text(
