@@ -15,6 +15,10 @@ import '../../../style/font.dart';
 
 class SearchPage extends StatefulWidget {
 
+  final String value;
+
+  const SearchPage({Key? key, required this.value}) : super(key: key);
+
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
@@ -27,7 +31,6 @@ class _SearchPageState extends State<SearchPage> {
   int? _selectedIndex;
 
   late TextEditingController _textEditingController;
-  var value = Get.arguments;
 
   bool _chipSectionVisibility = false;
   bool _categorySectionVisibility = false;
@@ -100,7 +103,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void _addChip(var chipText) {
     setState(() {
-      if (value != null) {
+      if (widget.value != "") {
         _chipList.add(ChipData(
             id: DateTime.now().toString(),
             name: chipText,
@@ -188,7 +191,7 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     _textEditingController = TextEditingController();
     statement = searchStatement("", "content");
-    _addChip(value);
+    _addChip(widget.value);
   }
 
   @override
@@ -206,7 +209,9 @@ class _SearchPageState extends State<SearchPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextButton.icon(
-                onPressed: () => Get.back(),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 style: TextButton.styleFrom(
                     backgroundColor: Colors.transparent
                 ),

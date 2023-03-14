@@ -25,7 +25,9 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         TextButton.icon(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
+            },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
             icon: SvgPicture.asset(
               'assets/icons/back.svg',

@@ -141,7 +141,9 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           TextButton.icon(
-              onPressed: () => Get.back(),
+              onPressed: () {
+                Navigator.pop(context);
+              },
               style: TextButton.styleFrom(
                   backgroundColor: Colors.transparent
               ),
@@ -352,7 +354,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                   },
                   child: ListTile(
                       contentPadding: EdgeInsets.only(left: 11),
-                      onTap: () => Get.to(AccentPracticePage(id: statement.id)),
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => AccentPracticePage(id: statement.id),
+                        ));
+                      },
                       title: Transform.translate(
                         offset: const Offset(0, 5.0),
                         child: Row(
@@ -441,7 +447,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
     );
 
     Widget floatingButtonSection = FloatingActionButton(
-      onPressed: () => Get.to(CreateSentenceScreen()),
+      onPressed: (){
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => CreateSentenceScreen(),
+        ));
+      },
       backgroundColor: ColorStyles.saeraAppBar,
       child: SvgPicture.asset('assets/icons/plus.svg'),
     );
