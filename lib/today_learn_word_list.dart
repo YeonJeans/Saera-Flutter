@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/home/presentation/home_screen.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
@@ -11,6 +12,8 @@ class TodayLearnWordListPage extends StatefulWidget {
 }
 
 class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
+  var value = Get.arguments;
+
   @override
   Widget build(BuildContext context) {
 
@@ -35,10 +38,9 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
     Widget todayLearnWordTextSection = Container(
       margin: const EdgeInsets.only(left: 10.0),
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-      child: const Text(
-        '오늘 학습한 단어 목록',
-        style: TextStyles.xxLargeTextStyle,
-      ),
+      child: value == 'word'
+          ? Text('학습한 단어 목록', style: TextStyles.xxLargeTextStyle,)
+          : Text('오늘 학습한 단어 목록', style: TextStyles.xxLargeTextStyle,),
     );
     
     Widget wordListSection = Container(
@@ -102,7 +104,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
         ]
       ),
       child: OutlinedButton(
-          onPressed: null,
+          onPressed: null, //오늘의 학습이냐 단어 학습이냐에 따라 달라짐 서버 연결할 때 같이 연결할 것
           style: OutlinedButton.styleFrom(
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8.0))
@@ -131,7 +133,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
         right: MediaQuery.of(context).size.width*0.04
       ),
       child: OutlinedButton(
-          onPressed: null,
+          onPressed: () => Get.offAll(HomePage()),
           style: OutlinedButton.styleFrom(
             backgroundColor: ColorStyles.saeraOlive1,
             shape: const RoundedRectangleBorder(
