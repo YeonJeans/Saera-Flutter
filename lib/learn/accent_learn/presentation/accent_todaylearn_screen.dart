@@ -615,7 +615,9 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TextButton.icon(
-              onPressed: () => Get.back(),
+              onPressed: (){
+                Navigator.pop(context);
+              },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
               icon: SvgPicture.asset(
                 'assets/icons/back.svg',
@@ -750,7 +752,12 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                   //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미
                   if (snapshot.hasData == false) {
                     // return CircularProgressIndicator();
-                    return before_audio_bar();
+                    return Column(
+                      children: [
+                        before_audio_bar(),
+
+                      ],
+                    );
                   }
                   //error가 발생하게 될 경우 반환하게 되는 부분
                   else if (snapshot.hasError) {

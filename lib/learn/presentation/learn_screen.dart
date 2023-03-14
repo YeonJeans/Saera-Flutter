@@ -5,6 +5,7 @@ import 'package:saera/learn/presentation/accent_main_screen.dart';
 import 'package:saera/learn/presentation/pronunciation_main_screen.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
+import 'package:saera/tabbar.dart';
 
 class LearnPage extends StatefulWidget {
   const LearnPage({Key? key}) : super(key: key);
@@ -21,7 +22,9 @@ class _LearnPageState extends State<LearnPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         TextButton.icon(
-            onPressed: () => Get.back(),
+            onPressed: (){
+              TabBarMainPage.myTabbedPageKey.currentState?.tabController.animateTo(0);
+            },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
             icon: SvgPicture.asset(
               'assets/icons/back.svg',
@@ -72,7 +75,11 @@ class _LearnPageState extends State<LearnPage> {
     }
 
     Widget goPronunciationButtonSection = InkWell(
-      onTap: () => Get.to(PronunciationMainPage()),
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => PronunciationMainPage(),
+        ));
+      },
       child: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.035),
@@ -112,7 +119,11 @@ class _LearnPageState extends State<LearnPage> {
     );
 
     Widget goAccentButtonSection = InkWell(
-      onTap: () => Get.to(AccentMainPage()),
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => AccentMainPage(),
+        ));
+        },
       child: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.035),

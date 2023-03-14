@@ -16,7 +16,9 @@ class AccentMainPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         TextButton.icon(
-            onPressed: () => Get.back(),
+            onPressed: () {
+              Navigator.pop(context);
+            },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
             icon: SvgPicture.asset(
               'assets/icons/back.svg',
@@ -47,7 +49,11 @@ class AccentMainPage extends StatelessWidget {
     );
 
     Widget customButtonSection = InkWell(
-      onTap: () => Get.to(LearnStatementPage()),
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => LearnStatementPage(),
+        ));
+      },
       child: Container(
         margin: EdgeInsets.only(
             top: MediaQuery.of(context).size.height*0.01,
@@ -102,7 +108,11 @@ class AccentMainPage extends StatelessWidget {
 
     InkWell situationButton(String icon, String situation) {
       return InkWell(
-        onTap: () => Get.to(SearchPage(), arguments: situation),
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => SearchPage(value: situation),
+          ));
+        },
         child: Container(
             margin: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.height*0.01,
