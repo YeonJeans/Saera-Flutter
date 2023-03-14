@@ -20,6 +20,7 @@ import 'package:saera/server.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:saera/today_learn_word_list.dart';
 import 'dart:convert';
 
 import '../../../login/data/authentication_manager.dart';
@@ -421,8 +422,13 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                       MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: nextIdx, isTodayLearn: widget.isTodayLearn, wordList: widget.wordList)),
                     );
                   }
-                  else if((isRecord || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 == 5){
+                  else if((isRecord  || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 == 5 && widget.isTodayLearn){
                     //TODO 학습 결과 리스트를 보여주는 페이지로 페이지 전환
+                    _authManager.saveTodayStatementIdx(widget.idx + 1);
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => TodayLearnWordListPage(wordList: [], isTodayWord: true),
+                    ));
                   }
                 },
                 child: (){
