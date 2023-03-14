@@ -34,7 +34,7 @@ class _UserInfoState extends State<UserInfo> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               LiquidCustomProgressIndicator(
-                value: widget.exp == 1 ? 0.0 : (widget.exp)/1000,
+                value: widget.exp == 0 ? 0.0 : widget.exp/1000 - ((widget.exp)/1000).floor(),
                 valueColor: AlwaysStoppedAnimation(ColorStyles.saeraKhaki),
                 backgroundColor: ColorStyles.searchFillGray,
                 direction: Axis.vertical,
@@ -78,7 +78,7 @@ class _UserInfoState extends State<UserInfo> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Lv. ${(widget.exp / 1000).round()} ",
+          Text("Lv. ${( 1+ widget.exp / 1000).floor()} ",
             style: TextStyles.largeHighlightBlueTextStyle,
           ),
           Text("${_authManager.getName()} ",
@@ -96,7 +96,7 @@ class _UserInfoState extends State<UserInfo> {
   Widget userLevelInfoSection(){
     return Container(
       margin: const EdgeInsets.only(top: 6.0),
-      child: Text("다음 레벨까지 ${1000-widget.exp} xp 남았어요.",
+      child: Text("다음 레벨까지 ${widget.exp != 0 ? 1000 - 1000 % widget.exp : ""} xp 남았어요.",
         style: TextStyles.medium55TextStyle,
       ),
     );
