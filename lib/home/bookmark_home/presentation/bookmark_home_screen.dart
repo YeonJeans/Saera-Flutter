@@ -43,7 +43,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           }
         }
       }
-      print("_list : $_list");
+      print("_list : ${_list.length}");
       return _list;
     } else {
       throw Exception("데이터를 불러오는데 실패했습니다.");
@@ -88,32 +88,43 @@ class _BookmarkPageState extends State<BookmarkPage> {
       )
     );
 
-    Widget bookmarkStatementSection = FutureBuilder(
-        future: statement1 = searchStatement(),
-        builder: ((context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(snapshot.error.toString()),
-              );
-            } else {
-              List<Statement>? statements = snapshot.data;
-              return Container(
-                padding: EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
-                height: MediaQuery.of(context).size.height*0.72,
-                child: ListView.separated(
-                    itemBuilder: ((context, index) {
-                      Statement statement = statements[index];
-                      return InkWell(
-                          onTap: () => Get.to(AccentPracticePage(id: statement.id)),
-                          child: Row(
+    Widget bookmarkStatementSection(){
+      return FutureBuilder(
+          future: statement1 = searchStatement(),
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(snapshot.error.toString()),
+                );
+              } else {
+                List<Statement>? statements = snapshot.data;
+                return Container(
+                  padding: EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
+                  height: MediaQuery.of(context).size.height*0.72,
+                  child: RefreshIndicator(
+                    onRefresh: () async => (
+                        setState(() {
+                          statement1 = searchStatement();
+                        })
+                    ),
+                    child: ListView.separated(
+                        itemBuilder: ((context, index) {
+                          Statement statement = statements[index];
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => AccentPracticePage(id: statement.id),
+                              ));
+                            },
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.symmetric(vertical: 3),
+                                      padding: const EdgeInsets.symmetric(vertical: 3),
                                       child: Text(
                                           statement.content,
                                           style: TextStyles.regular00TextStyle
@@ -148,21 +159,23 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                     )
                                 )
                               ],
-                          ),
-                      );
-                    }),
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider(thickness: 1,);
-                    },
-                    itemCount: statements!.length
-                ),
-              );
+                            ),
+                          );
+                        }),
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Divider(thickness: 1,);
+                        },
+                        itemCount: statements!.length
+                    ),
+                  )
+                );
+              }
+            } else {
+              return Container();
             }
-          } else {
-            return Container();
-          }
-        })
-    );
+          })
+      );
+    }
 
     return Stack(
       children: [
@@ -174,12 +187,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               body: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                children: <Widget>[
-                  textSection,
-                  bookmarkStatementSection
-                ],
-              ),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  children: <Widget>[
+                    textSection,
+                    bookmarkStatementSection()
+                  ],
+                ),
+
             )
         )
       ],
