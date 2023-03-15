@@ -163,10 +163,10 @@ class PronunciationMainPage extends StatelessWidget {
     );
 
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white
-      ),
-      child: SafeArea(
+        decoration: BoxDecoration(
+            color: Colors.white
+        ),
+        child: SafeArea(
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: PreferredSize(
@@ -184,11 +184,11 @@ class PronunciationMainPage extends StatelessWidget {
                 )
             ),
             body: Container(
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
-              child: pronunciationTypeSection
+                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                child: pronunciationTypeSection
             ),
           ),
-      )
+        )
     );
   }
 }

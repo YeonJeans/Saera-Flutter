@@ -26,6 +26,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../../login/data/authentication_manager.dart';
 import '../../../login/presentation/widget/profile_image_clipper.dart';
+import '../../../today_learn_statement_list.dart';
 
 
 class AccentTodayPracticePage extends StatefulWidget {
@@ -255,7 +256,11 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                   }
                   else if((_isPracticed || _authManager.getTodayStatementIdx()! > widget.idx ) && widget.idx + 1 == 5){
                     //TODO 학습 결과 리스트를 보여주는 페이지로 페이지 전환
+                    _authManager.saveTodayStatementIdx(widget.idx + 1);
                     Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => TodayLearnStatementListPage(),
+                    ));
                   }
                 },
                 child: (){
@@ -395,7 +400,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
   }
 
   getAccentEvaluation() async {
-    var url = Uri.parse('${serverHttp}/practiced?type=STATEMENT&fk=${widget.sentenceList[widget.idx].toString()}&isTodayStudy=true');
+    var url = Uri.parse('${serverHttp}/practice?type=STATEMENT&fk=${widget.sentenceList[widget.idx].toString()}&isTodayStudy=true');
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}"});
 
@@ -771,9 +776,6 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                   }
                   // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
                   else {
-                    // AudioBar가 보이지 않는 문제
-                    //return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
-
                     return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
                   }
                 }),
@@ -1190,7 +1192,6 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const AccentPracticeBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
                 appBar: AppBar(
@@ -1199,7 +1200,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                 ),
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
                 resizeToAvoidBottomInset: false,
                 body: ListView(
                     children: [

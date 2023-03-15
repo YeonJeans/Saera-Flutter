@@ -197,7 +197,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   }
 
   getAccentEvaluation() async {
-    var url = Uri.parse('${serverHttp}/practiced?type=STATEMENT&fk=${widget.id.toString()}&isTodayStudy=true');
+    var url = Uri.parse('${serverHttp}/practice?type=STATEMENT&fk=${widget.id.toString()}&isTodayStudy=true');
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}"});
 
@@ -528,7 +528,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                 );
               }
               else {
-                return AccentLineChart(x: x, y: y);
+                return AccentLineChart(x: x, y: y,);
               }
             }),
       ),
@@ -981,7 +981,6 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const AccentPracticeBackgroundImage(key: null,),
         SafeArea(
             child: Scaffold(
               appBar: AppBar(
@@ -990,7 +989,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
               ),
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.white,
               resizeToAvoidBottomInset: false,
               body: ListView(
                 children: [
