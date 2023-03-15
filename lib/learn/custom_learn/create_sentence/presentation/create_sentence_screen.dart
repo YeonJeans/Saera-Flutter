@@ -1,10 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:saera/learn/custom_learn/create_sentence/presentation/widgets/create_sentence_background.dart';
 import 'package:saera/learn/custom_learn/create_sentence/presentation/widgets/subtitle_section.dart';
 
 import 'package:saera/style/font.dart';
@@ -24,22 +21,22 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   bool isExist = true;
   int inputFieldInfo = 0;
 
-  late ScrollController _scrollController = ScrollController();
+  //late ScrollController _scrollController = ScrollController();
 
   final TextEditingController _controller = TextEditingController();
   List<String> _tags = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _scrollController = ScrollController();
+  // }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _scrollController.dispose();
+  //   super.dispose();
+  // }
 
   Widget appBarSection (){
     return Row(
@@ -47,10 +44,13 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         TextButton.icon(
-            onPressed: () => Get.back(),
+            onPressed: () {
+              Navigator.pop(context);
+            },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
             icon: SvgPicture.asset(
               'assets/icons/back.svg',
+              color: ColorStyles.saeraAppBar,
               fit: BoxFit.scaleDown,
             ),
             label: const Text(' 뒤로',
@@ -131,13 +131,12 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
           height: 56,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: ColorStyles.primary,
+              color: ColorStyles.saeraAppBar,
               boxShadow:[
                 BoxShadow(
-                  color: ColorStyles.primary.withOpacity(0.4),
-                  spreadRadius: 0.1,
-                  blurRadius: 12,
-                  offset: const Offset(0, -2), // changes position of shadow
+                  color: ColorStyles.black00.withOpacity(0.1),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4), // changes position of shadow
                 ),
               ],
           ),
@@ -246,7 +245,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   Widget checkValidSection(){
     return  Container(
       height: 52,
-      padding: EdgeInsets.only(top: 10, bottom: 25),
+      padding: EdgeInsets.only(top: 8, bottom: 20),
       child: (){
         if(inputFieldInfo == 1){
           return checkValidText(true, "생성 가능한 문장입니다.");
@@ -281,9 +280,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                       child: Chip(
                         label: Text(tag),
                         onDeleted: () => _removeTag(tag),
-                        backgroundColor: ColorStyles.saeraYellow,
-                        deleteIcon: SvgPicture.asset('assets/icons/delete.svg', fit: BoxFit.scaleDown),
-                        deleteIconColor: ColorStyles.deleteGray,
+                        backgroundColor: ColorStyles.saeraYellow.withOpacity(0.5),
                       ),
                     ),
 
@@ -302,9 +299,9 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                           controller: _controller,
                           onSubmitted: (_) => _addTag(),
                           onTap: (){
-                            _scrollController.animateTo(120.0,
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.ease);
+                            // _scrollController.animateTo(120.0,
+                            //     duration: Duration(milliseconds: 500),
+                            //     curve: Curves.ease);
                           },
                           onChanged: (text){
                             if(text.contains(" ")){
@@ -360,26 +357,26 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const CreateSentenceBackgroundImage(),
         SafeArea(
             child: GestureDetector(
               onTap: () {
                   FocusScope.of(context).unfocus();
                 },
               child: Scaffold(
+                  resizeToAvoidBottomInset: false,
                   appBar: AppBar(
                     automaticallyImplyLeading: false,
                     title: appBarSection(),
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
                   ),
-                  backgroundColor: Colors.transparent,
-                  // resizeToAvoidBottomInset: true,
+                  backgroundColor: Colors.white,
                   bottomSheet: Container(
-                      child: isComplete ? createBtn() : disableCreateBtn(),
+                    //padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom ),
+                    child: isComplete ? createBtn() : disableCreateBtn(),
                   ),
                   body: SingleChildScrollView(
-                    controller: _scrollController,
+                    //controller: _scrollController,
                     child: Container(
                       margin: const EdgeInsets.only(left: 14, right: 14),
                       child: Column(
@@ -393,6 +390,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
 
                           SubTitleSection(subtitle: "이 문장에 대한 태그를 추가해 주세요.", desc: "최대 3개의 태그를 달 수 있으며, 각각의 태그는 띄어쓰기로 구분됩니다."),
                           enterTagSection(),
+                          const SizedBox(height: 250,),
                         ],
                       ),
                     ),
