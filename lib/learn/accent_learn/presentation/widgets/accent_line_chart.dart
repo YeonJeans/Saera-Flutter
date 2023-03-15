@@ -1,7 +1,8 @@
-import 'dart:ffi';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../data/line_controller.dart';
 
 class AccentLineChart extends StatefulWidget {
   const AccentLineChart({Key? key, required this.x, required this.y}) : super(key: key);
@@ -22,44 +23,69 @@ class AccentPoint {
 
 class _AccentLineChartState extends State<AccentLineChart> {
 
-  final points = new List<AccentPoint>.empty(growable: true);
+  final points = List<AccentPoint>.empty(growable: true);
+  final LineController _lineManager = Get.find();
 
-  // List<double> x =
-  // List<double> y =
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return LineChart(
-      LineChartData(
-          lineTouchData: LineTouchData(enabled: false),
-          gridData: FlGridData(
-            show: false,
-            drawVerticalLine: false,
-            drawHorizontalLine: false,
-          ),
-          titlesData: FlTitlesData(
-            show: false,
-          ),
 
-          borderData: FlBorderData(show: false),
-          lineBarsData: [
-            LineChartBarData(spots: (){
-                points.clear();
+    double width = MediaQuery.of(context).size.width;
 
-                for(int i = 0; i < widget.x.length; i++){
-                  points.add(AccentPoint(widget.x[i], widget.y[i]));
-                }
-
-                return points.map(
-                        (point) => FlSpot(point.x, point.y)
-                ).toList();
-              }(),
-              color: Colors.black,
-              dotData: FlDotData(
+    return Stack(
+      children: [
+        LineChart(
+          LineChartData(
+              lineTouchData: LineTouchData(enabled: false),
+              gridData: FlGridData(
+                show: false,
+                drawVerticalLine: false,
+                drawHorizontalLine: false,
+              ),
+              titlesData: FlTitlesData(
                 show: false,
               ),
-            )
-      ]),
 
+              borderData: FlBorderData(show: false),
+              lineBarsData: [
+                LineChartBarData(spots: (){
+                  points.clear();
+
+                  for(int i = 0; i < widget.x.length; i++){
+                    points.add(AccentPoint(widget.x[i], widget.y[i]));
+                  }
+
+                  return points.map(
+                          (point) => FlSpot(point.x, point.y)
+                  ).toList();
+                }(),
+                  color: Colors.black,
+                  dotData: FlDotData(
+                    show: false,
+                  ),
+                )
+              ]),
+        ),
+
+        //이곳에 라인 지나가도록 추가
+        Obx(() =>
+            Positioned(
+              left: width / _lineManager.duration.value * _lineManager.position.value,
+              child: Container(
+                width: 1,
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+        ),
+
+     ],
     );
   }
 }

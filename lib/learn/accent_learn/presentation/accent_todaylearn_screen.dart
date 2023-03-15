@@ -400,7 +400,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
   }
 
   getAccentEvaluation() async {
-    var url = Uri.parse('${serverHttp}/practiced?type=STATEMENT&fk=${widget.sentenceList[widget.idx].toString()}&isTodayStudy=true');
+    var url = Uri.parse('${serverHttp}/practice?type=STATEMENT&fk=${widget.sentenceList[widget.idx].toString()}&isTodayStudy=true');
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}"});
 
@@ -776,9 +776,6 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                   }
                   // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행
                   else {
-                    // AudioBar가 보이지 않는 문제
-                    //return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
-
                     return AudioBar(recordPath: audioPath, isRecording: false, isAccent: true);
                   }
                 }),
