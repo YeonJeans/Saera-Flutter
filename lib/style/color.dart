@@ -24,6 +24,7 @@ class ColorStyles {
   static const Color recentInfoGray = Color(0xff828282);
   static const Color digitGray = Color(0xff666666);
   static const Color totalGray = Color(0xff555555);
+  static const Color tabGray = Color(0xff75817E);
   static const Color deleteGray = Color(0xffBDBDBD);
   static const Color disableGray = Color(0xffDDDDDD);
   static const Color black00 = Color(0xff000000);

@@ -79,7 +79,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
           controller: tabController,
           tabs: <Widget>[
             Tab(
-              icon: selectedIndex == 0 ? Icon(Icons.home, color: ColorStyles.backIconGreen) : Icon(Icons.home_outlined, color: ColorStyles.backIconGreen),
+              icon: selectedIndex == 0 ? Icon(Icons.home, color: ColorStyles.tabGray) : Icon(Icons.home_outlined, color: ColorStyles.tabGray),
               iconMargin: EdgeInsets.only(bottom: 5.0),
               child: Text(
                 '홈',
@@ -87,7 +87,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
               ),
             ),
             Tab(
-              icon: selectedIndex == 1 ? Icon(Icons.view_list, color: ColorStyles.backIconGreen) : Icon(Icons.view_list_outlined, color: ColorStyles.backIconGreen),
+              icon: selectedIndex == 1 ? Icon(Icons.view_list, color: ColorStyles.tabGray) : Icon(Icons.view_list_outlined, color: ColorStyles.tabGray),
               iconMargin: EdgeInsets.only(bottom: 5.0),
               child: Text(
                 '학습',
@@ -95,7 +95,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
               ),
             ),
             Tab(
-              icon: selectedIndex == 2? Icon(Icons.star, color: ColorStyles.backIconGreen) : Icon(Icons.star_border, color: ColorStyles.backIconGreen),
+              icon: selectedIndex == 2? Icon(Icons.star, color: ColorStyles.tabGray) : Icon(Icons.star_border, color: ColorStyles.tabGray),
               iconMargin: EdgeInsets.only(bottom: 5.0),
               child: Text(
                 '북마크',
@@ -103,7 +103,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
               ),
             ),
             Tab(
-              icon: selectedIndex == 3? Icon(Icons.person, color: ColorStyles.backIconGreen) : Icon(Icons.person_2_outlined, color: ColorStyles.backIconGreen),
+              icon: selectedIndex == 3? Icon(Icons.person, color: ColorStyles.tabGray) : Icon(Icons.person_2_outlined, color: ColorStyles.tabGray),
               iconMargin: EdgeInsets.only(bottom: 5.0),
               child: Text(
                 '내 정보',
