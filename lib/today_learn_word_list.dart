@@ -222,9 +222,15 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
       ),
       child: OutlinedButton(
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: true, wordList: widget.wordList, pcList: [],), //이미 학습한것은 어떻게 처리? idx
-            ));
+            if (widget.isTodayWord == true) {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: true, wordList: widget.wordList, pcList: [],), //이미 학습한것은 어떻게 처리? idx
+              ));
+            } else {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: false, wordList: widget.wordList, pcList: [],), //이미 학습한것은 어떻게 처리? idx
+              ));
+            }
           },
           style: OutlinedButton.styleFrom(
             shape: const RoundedRectangleBorder(
