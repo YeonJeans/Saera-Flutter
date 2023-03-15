@@ -88,7 +88,7 @@ class PronunciationMainPage extends StatelessWidget {
           wordList.then((wordList){
             Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: false, wordList: wordList))
+                MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: false, wordList: wordList, pcList: [],))
             );
           });
         },
