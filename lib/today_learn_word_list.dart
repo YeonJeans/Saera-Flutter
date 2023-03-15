@@ -1,9 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:saera/home/presentation/home_screen.dart';
+import 'package:saera/server.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
+
+import 'learn/pronounce_learn/pronounce_learn_screen.dart';
+import 'login/data/authentication_manager.dart';
 
 class TodayLearnWordListPage extends StatefulWidget {
 
@@ -17,6 +25,62 @@ class TodayLearnWordListPage extends StatefulWidget {
 }
 
 class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
+  final AuthenticationManager _authManager = Get.find();
+
+  Future<dynamic>? word;
+
+  Color selectTagColor(String tag) { // 태그별 컬러파레트 필요
+    if (tag == '구개음화') {
+      return ColorStyles.saeraBlue.withOpacity(0.5);
+    } else if (tag == "ㄴ첨가") {
+      return ColorStyles.saeraKhaki.withOpacity(0.5);
+    } else if (tag == '두음법칙') {
+      return ColorStyles.saeraPink3.withOpacity(0.5);
+    } else {
+      return ColorStyles.saeraYellow.withOpacity(0.5);
+    }
+  }
+
+  Future<List<Word>> getWord() async {
+    List<Word> wordList = [];
+    String word_id = "";
+    for(int i = 0; i<widget.wordList.length; i++) {
+      word_id += 'idList=${widget.wordList[i]}&';
+    }
+    var url = Uri.parse('$serverHttp/complete?type=WORD&$word_id&isTodayStudy=${widget.isTodayWord}');
+    print("url : $url");
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}"});
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      for (dynamic i in body) {
+        int id = i["id"];
+        String notation = i["notation"];
+        String pronunciation = i["pronunciation"];
+        String tag = i["tag"];
+        bool bookmarked = i["bookmarked"];
+        wordList.add(Word(id: id, notation: notation, pronunciation: pronunciation, tag: tag, bookmarked: bookmarked));
+      }
+    }
+    return wordList;
+  }
+
+  createBookmark (int id) async {
+    var url = Uri.parse('${serverHttp}/bookmark?type=STATEMENT&fk=$id');
+    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+    print("create : $response");
+  }
+
+  deleteBookmark (int id) async {
+    var url = Uri.parse('${serverHttp}/bookmark?type=STATEMENT&fk=$id');
+    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+    print("delete : $response");
+  }
+
+  @override
+  void initState() {
+    word = getWord();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,48 +113,95 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
           : Text('학습한 단어 목록', style: TextStyles.xxLargeTextStyle,),
     );
     
-    Widget wordListSection = Container(
-      height: MediaQuery.of(context).size.height*0.53,
-      margin: const EdgeInsets.symmetric(horizontal: 30),
-      child: ListView.separated(
-          itemBuilder: ((context, index) {
-            return Row(
-                children: [
-                  Text(
-                    '굳이', //서버연결
-                    style: TextStyles.regular00TextStyle,
-                  ),
-                  Text(
-                    '[구지]',
-                    style: TextStyles.regularGreenTextStyle,
-                  ),
-                  Spacer(flex: 2,),
-                  Chip(
-                    label: Text(
-                      "구개음화",
-                      style: TextStyles.small00TextStyle,
-                    ),
-                    backgroundColor: ColorStyles.saeraBlue,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
-                    child: IconButton(
-                        onPressed: null,
-                        icon: SvgPicture.asset(
-                          'assets/icons/star_fill.svg',
-                          fit: BoxFit.scaleDown,
-                        )
-                    ),
+    Widget wordListSection = FutureBuilder(
+        future: word,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Container(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                  child: LoadingAnimationWidget.waveDots(
+                      color: ColorStyles.expFillGray,
+                      size: 45.0
                   )
-                ],
-
+              ),
             );
-          }),
-          separatorBuilder: (BuildContext context, int index) {
-            return const Divider(thickness: 1, height: 3,);
-          },
-          itemCount: 10
-      ),
+          } else {
+            if (snapshot.hasError) {
+              return Center(
+                  child: Container(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                    child: const Text("서버 연결이 불안정합니다.", style: TextStyles.regular25TextStyle,),
+                  )
+              );
+            } else {
+              List<Word> words = snapshot.data;
+              return Container(
+                height: MediaQuery.of(context).size.height*0.53,
+                margin: const EdgeInsets.symmetric(horizontal: 30),
+                child: ListView.separated(
+                    itemBuilder: ((context, index) {
+                      Word word = words[index];
+                      return Row(
+                        children: [
+                          Text(
+                            word.notation,
+                            style: TextStyles.regular00TextStyle,
+                          ),
+                          Text(
+                            '[${word.pronunciation}]',
+                            style: TextStyles.regularGreenTextStyle,
+                          ),
+                          Spacer(flex: 2,),
+                          Chip(
+                            label: Text(
+                              word.tag,
+                              style: TextStyles.small00TextStyle,
+                            ),
+                            backgroundColor: selectTagColor(word.tag),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                            child: IconButton(
+                                onPressed: (){
+                                  if(word.bookmarked){
+                                    setState(() {
+                                      word.bookmarked = false;
+                                    });
+                                    deleteBookmark(word.id);
+                                  }
+                                  else{
+                                    setState(() {
+                                      word.bookmarked = true;
+                                    });
+                                    createBookmark(word.id);
+                                  }
+                                },
+                                icon: word.bookmarked?
+                                SvgPicture.asset(
+                                  'assets/icons/star_fill.svg',
+                                  fit: BoxFit.scaleDown,
+                                )
+                                    :
+                                SvgPicture.asset(
+                                  'assets/icons/star_unfill.svg',
+                                  fit: BoxFit.scaleDown,
+                                )
+                            ),
+                          )
+                        ],
+
+                      );
+                    }),
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(thickness: 1, height: 3,);
+                    },
+                    itemCount: snapshot.data!.length
+                ),
+              );
+            }
+          }
+        }
     );
 
     Widget retryLearnButtonSection = Container(
@@ -110,7 +221,11 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
         ]
       ),
       child: OutlinedButton(
-          onPressed: null, //오늘의 학습이냐 단어 학습이냐에 따라 달라짐 서버 연결할 때 같이 연결할 것
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: true, wordList: widget.wordList, pcList: [],), //이미 학습한것은 어떻게 처리? idx
+            ));
+          },
           style: OutlinedButton.styleFrom(
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8.0))
@@ -196,4 +311,13 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
     );
   }
 
+}
+
+class Word {
+  final int id;
+  final String notation;
+  final String pronunciation;
+  final String tag;
+  bool bookmarked;
+  Word({required this.id, required this.notation, required this.pronunciation, required this.tag, required this.bookmarked});
 }
