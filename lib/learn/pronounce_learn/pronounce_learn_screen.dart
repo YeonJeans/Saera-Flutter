@@ -256,7 +256,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
   }
 
   completePractice() async {
-    var url = Uri.parse('${serverHttp}/practiced?type=WORD&fk=${widget.wordList[widget.idx].toString()}&isTodayStudy=${widget.isTodayLearn}');
+    var url = Uri.parse('${serverHttp}/practice?type=WORD&fk=${widget.wordList[widget.idx].toString()}&isTodayStudy=${widget.isTodayLearn}');
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}"});
 

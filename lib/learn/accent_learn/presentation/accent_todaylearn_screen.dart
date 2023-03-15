@@ -400,7 +400,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
   }
 
   getAccentEvaluation() async {
-    var url = Uri.parse('${serverHttp}/practiced?type=STATEMENT&fk=${widget.sentenceList[widget.idx].toString()}&isTodayStudy=true');
+    var url = Uri.parse('${serverHttp}/practice?type=STATEMENT&fk=${widget.sentenceList[widget.idx].toString()}&isTodayStudy=true');
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}"});
 
