@@ -736,7 +736,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                 );
               }
               else {
-                return AccentLineChart(x: x, y: y);
+                return AccentLineChart(x: x, y: y, isRecord: false);
               }
             }),
       ),
@@ -953,7 +953,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
           ),
           child: Container(
             padding: const EdgeInsets.all(25),
-            child: AccentLineChart(x: x2, y: y2),
+            child: AccentLineChart(x: x2, y: y2, isRecord: true),
           ),
         ),
 
