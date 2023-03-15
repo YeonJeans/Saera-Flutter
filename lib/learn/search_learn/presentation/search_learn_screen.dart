@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
-import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../login/data/authentication_manager.dart';
 import '../../../server.dart';
 import '../../../style/color.dart';
 import '../../../style/font.dart';
@@ -24,6 +24,8 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final AuthenticationManager _authManager = Get.find();
+
   Future<dynamic>? statement;
   final List<ChipData> _chipList = [];
   List<String> situationList = ["일상", "소비", "인사", "은행/공공기관", "회사"];
@@ -109,7 +111,7 @@ class _SearchPageState extends State<SearchPage> {
             name: chipText,
             color: {situationList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
         ));
-        statement = searchStatement(chipText.toString(), "tag");
+        statement = searchStatement("");
       } else {
         Container();
       }
@@ -120,7 +122,7 @@ class _SearchPageState extends State<SearchPage> {
   void _deleteChip(String id) {
     setState(() {
       _chipList.removeWhere((element) => element.id == id);
-      statement = searchStatement("", "content");
+      statement = searchStatement("");
       _setChipSectionVisibility();
     });
   }
@@ -129,39 +131,39 @@ class _SearchPageState extends State<SearchPage> {
     for (int i = _chipList.length-1; i >= 0; i--) {
       _deleteChip(_chipList[i].id);
     }
+    _setChipSectionVisibility();
   }
 
   Color selectTagColor(String tag) {
-    if (tag == '질문') {
-      return ColorStyles.saeraYellow;
-    } else if (tag == '업무') {
-      return ColorStyles.saeraKhaki;
-    } else if (tag == '은행') {
-      return ColorStyles.saeraBlue;
+    if (tag == '일상' || tag == '소비' || tag == '인사' || tag == '은행/공공기관' || tag == '회사') {
+      return ColorStyles.saeraBlue.withOpacity(0.5);
+    } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정 표현') {
+      return ColorStyles.saeraBeige.withOpacity(0.5);
     } else {
-      return ColorStyles.saeraBeige;
+      return ColorStyles.saeraYellow.withOpacity(0.5);
     }
   }
 
-  Future<List<Statement>> searchStatement(String input, String choose) async {
+  Future<List<Statement>> searchStatement(String input) async {
     List<Statement> _list = [];
-    late var url;
-    if (choose == "content") {
-      url = Uri.parse('$serverHttp/statements?content=$input');
-    } else if (choose == "tag") {
-      url = Uri.parse('$serverHttp/statements?tags=$input');
-    } else {
-      throw Exception("태그 검색 오류");
+    Uri url;
+    String tags = "";
+    for (int i = _chipList.length-1; i >= 0; i--) {
+      tags += 'tags=${_chipList[i].name}&';
     }
-
-    final response = await http.get(url);
+    print("tags : $tags");
+    if (input == "") {
+      url = Uri.parse('$serverHttp/statements?$tags');
+    } else {
+      url = Uri.parse('$serverHttp/statements?content=$input&$tags');
+    }
+    print("url : $url");
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     if (response.statusCode == 200) {
-
       var body = jsonDecode(utf8.decode(response.bodyBytes));
-
       if (_list.isEmpty) {
         for (dynamic i in body) {
-          int id = i["statement_id"];
+          int id = i["id"];
           String content = i["content"];
           List<String> tags = List.from(i["tags"]);
           bool bookmarked = i["bookmarked"];
@@ -175,14 +177,14 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   createBookmark (int id) async {
-    var url = Uri.parse('${serverHttp}/statements/${id}/bookmark');
-    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+    var url = Uri.parse('${serverHttp}/bookmark?type=STATEMENT&fk=$id');
+    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     print("create : $response");
   }
 
   void deleteBookmark (int id) async {
-    var url = Uri.parse('${serverHttp}/statements/bookmark/${id}');
-    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+    var url = Uri.parse('${serverHttp}/bookmark?type=STATEMENT&fk=$id');
+    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     print("delete : $response");
   }
 
@@ -190,7 +192,7 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
-    statement = searchStatement("", "content");
+    statement = searchStatement("");
     _addChip(widget.value);
   }
 
@@ -237,7 +239,7 @@ class _SearchPageState extends State<SearchPage> {
         children: <Widget>[
           Flexible(
               child: TextField(
-                autofocus: true,
+                //autofocus: true,
                 controller: _textEditingController,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.allow(RegExp(r'[a-z|A-Z|0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ᆞ|ᆢ|ㆍ|ᆢ|ᄀᆞ|ᄂᆞ|ᄃᆞ|ᄅᆞ|ᄆᆞ|ᄇᆞ|ᄉᆞ|ᄋᆞ|ᄌᆞ|ᄎᆞ|ᄏᆞ|ᄐᆞ|ᄑᆞ|ᄒᆞ]'))
@@ -245,7 +247,7 @@ class _SearchPageState extends State<SearchPage> {
                 maxLines: 1,
                 onSubmitted: (s) {
                   setState(() {
-                    statement = searchStatement(s, "content");
+                    statement = searchStatement(s);
                   });
                 },
                 decoration: InputDecoration(
@@ -363,7 +365,7 @@ class _SearchPageState extends State<SearchPage> {
                 vertical: MediaQuery.of(context).size.height*0.01,
                 horizontal: MediaQuery.of(context).size.width*0.038
             ),
-            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
+            //margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
             decoration: const BoxDecoration(
               color: ColorStyles.tagGray,
               borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -431,7 +433,7 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () => {
                 if (_chipList.isNotEmpty) {
                   _deleteAllChip(),
-                  statement = searchStatement("", "content"),
+                  statement = searchStatement(""),
                 } else {
                   Container(),
                 }
@@ -453,69 +455,69 @@ class _SearchPageState extends State<SearchPage> {
             } else {
               List<Statement> statements = snapshot.data;
               return Container(
-                padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                 height: MediaQuery.of(context).size.height,
                 child: ListView.separated(
                     itemBuilder: ((context, index) {
                       Statement statement = statements[index];
-                      return ListTile(
-                          contentPadding: EdgeInsets.only(left: 11),
-                          onTap: () => Get.to(AccentPracticePage(id: statement.id)),
-                          title: Transform.translate(
-                            offset: const Offset(0, 5.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      return InkWell(
+                        onTap: () => Get.to(AccentPracticePage(id: statement.id)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        statement.content,
-                                        style: TextStyles.regular00TextStyle
-                                    ),
-                                    Row(
-                                      children: statement.tags.map((tag) {
-                                        return Container(
-                                          margin: EdgeInsets.only(right: 4),
-                                          child: Chip(
-                                            label: Text(tag),
-                                            labelStyle: TextStyles.small00TextStyle,
-                                            backgroundColor: selectTagColor(tag)
-                                          ),
-                                        );
-                                      }).toList(),
-                                    )
-                                  ],
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 3),
+                                  child: Text(
+                                      statement.content,
+                                      style: TextStyles.regular00TextStyle
+                                  ),
                                 ),
-                                IconButton(
-                                    onPressed: (){
-                                      if(statement.bookmarked){
-                                        setState(() {
-                                          statement.bookmarked = false;
-                                        });
-                                        deleteBookmark(statement.id);
-                                      }
-                                      else{
-                                        setState(() {
-                                          statement.bookmarked = true;
-                                        });
-                                        createBookmark(statement.id);
-                                      }
-                                    },
-                                    icon: statement.bookmarked?
-                                    SvgPicture.asset(
-                                      'assets/icons/star_fill.svg',
-                                      fit: BoxFit.scaleDown,
-                                    )
-                                        :
-                                    SvgPicture.asset(
-                                      'assets/icons/star_unfill.svg',
-                                      fit: BoxFit.scaleDown,
-                                    )
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width*0.7,
+                                  child: Wrap(
+                                    spacing: 7.0,
+                                    children: statement.tags.map((tag) {
+                                      return Chip(
+                                          label: Text(tag),
+                                          labelStyle: TextStyles.small00TextStyle,
+                                          backgroundColor: selectTagColor(tag)
+                                      );
+                                    }).toList(),
+                                  ),
                                 )
                               ],
                             ),
-                          )
+                            IconButton(
+                                onPressed: (){
+                                  if(statement.bookmarked){
+                                    setState(() {
+                                      statement.bookmarked = false;
+                                    });
+                                    deleteBookmark(statement.id);
+                                  }
+                                  else{
+                                    setState(() {
+                                      statement.bookmarked = true;
+                                    });
+                                    createBookmark(statement.id);
+                                  }
+                                },
+                                icon: statement.bookmarked?
+                                SvgPicture.asset(
+                                  'assets/icons/star_fill.svg',
+                                  fit: BoxFit.scaleDown,
+                                )
+                                    :
+                                SvgPicture.asset(
+                                  'assets/icons/star_unfill.svg',
+                                  fit: BoxFit.scaleDown,
+                                )
+                            )
+                          ],
+                        ),
                       );
                     }),
                     separatorBuilder: (BuildContext context, int index) {
@@ -533,7 +535,9 @@ class _SearchPageState extends State<SearchPage> {
 
     return Stack(
       children: [
-        SearchLearnBackgroundImage(key: null,),
+        Container(
+          color: Colors.white,
+        ),
         SafeArea(
             child: Scaffold(
               backgroundColor: Colors.transparent,
