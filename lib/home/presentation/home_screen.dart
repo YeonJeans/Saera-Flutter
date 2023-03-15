@@ -2,11 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
 import 'package:saera/learn/pronounce_learn/pronounce_learn_screen.dart';
-import 'package:saera/learn/search_learn/presentation/search_learn_screen.dart';
-import 'package:saera/main.dart';
 import 'package:saera/tabbar.dart';
-import 'package:saera/learn/presentation/learn_screen.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:saera/today_learn_word_list.dart';
@@ -32,8 +31,8 @@ class _HomePageState extends State<HomePage> {
 
   List<int> wordList = [];
   List<int> statementList = [];
+  List<Statement> top5StatementList = [];
 
-  String name = '수연';
   int todayWordLearnIdx = 0;
   int todayStatementLearnIdx = 0;
 
@@ -52,6 +51,7 @@ class _HomePageState extends State<HomePage> {
     todayWordProgressIdx = _authManager.getTodayWordIdx()!;
     todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
 
+    getTop5SentenceList();
     getTodayWordList();
     getTodaySentenceList();
     super.initState();
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
 
   getTodayWordList() async {
     await Future.delayed(const Duration(seconds: 1));
-    var url = Uri.parse('${serverHttp}/today-list?type=WORD');
+    var url = Uri.parse('$serverHttp/today-list?type=WORD');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
     if (response.statusCode == 200) {
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
 
   getTodaySentenceList() async {
     await Future.delayed(const Duration(seconds: 1));
-    var url = Uri.parse('${serverHttp}/today-list?type=STATEMENT');
+    var url = Uri.parse('$serverHttp/today-list?type=STATEMENT');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
     if (response.statusCode == 200) {
@@ -92,6 +92,21 @@ class _HomePageState extends State<HomePage> {
       statementList = List.from(body);
       if(statementList[0] != todayStatementLearnIdx){
         _authManager.saveTodayStatementIdx(0);
+      }
+    }
+  }
+
+  getTop5SentenceList() async {
+    var url = Uri.parse('$serverHttp/top5-statement');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      top5StatementList.clear();
+      for (dynamic i in body) {
+        int id = i["id"];
+        String name = i["name"];
+        top5StatementList.add(Statement(id: id, content: name));
       }
     }
   }
@@ -113,7 +128,7 @@ class _HomePageState extends State<HomePage> {
           left: MediaQuery.of(context).size.width*0.07
       ),
       child: Text(
-        '$name 님,\n어서 오세요!',
+        '${_authManager.getName()} 님,\n어서 오세요!',
         style: TextStyles.xLarge25TextStyle,
         textAlign: TextAlign.left,
       ),
@@ -173,11 +188,16 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Container statementSection(String statement) {
+    Container statementSection(int id, String statement) {
       return Container(
         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.03),
         child: ElevatedButton(
-            onPressed: null,
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AccentPracticePage(id: id))
+              );
+            },
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(8),
                 backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -204,29 +224,47 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    List<String> top5StatementList = [
-      '화장실은 어디에 있나요?',
-      '이건 얼마인가요?',
-      '혹시 연세가 어떻게 되세요?',
-      '아이스 아메리카노 한 잔 주세요.',
-      '가게 마감시간은 언제인가요?'
-    ];
-
-    Widget top5StatementSection = Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
-      child: CarouselSlider.builder(
-        itemCount: 5,
-        options: CarouselOptions(
-          height: MediaQuery.of(context).size.height*0.09,
-          initialPage: 0,
-          aspectRatio: 6.0,
-          enlargeCenterPage: true,
-          autoPlay: true
-        ),
-        itemBuilder: (BuildContext context, int index, int realIndex) {
-          return statementSection(top5StatementList[index]);
-        },
-      ),
+    Widget top5StatementSection = FutureBuilder(
+        future: getTop5SentenceList(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Container(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                  child: LoadingAnimationWidget.waveDots(
+                      color: ColorStyles.expFillGray,
+                      size: 45.0
+                  )
+              ),
+            );
+          } else {
+            if (snapshot.hasError) {
+              return Center(
+                child: Container(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                  child: const Text("서버 연결이 불안정합니다.", style: TextStyles.regular25TextStyle,),
+                )
+              );
+            } else {
+              return Container(
+                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                child: CarouselSlider.builder(
+                  itemCount: 5,
+                  options: CarouselOptions(
+                      height: MediaQuery.of(context).size.height*0.09,
+                      initialPage: 0,
+                      aspectRatio: 6.0,
+                      enlargeCenterPage: true,
+                      autoPlay: true
+                  ),
+                  itemBuilder: (BuildContext context, int index, int realIndex) {
+                    return statementSection(top5StatementList[index].id, top5StatementList[index].content);
+                  },
+                ),
+              );
+            }
+          }
+        }
     );
 
     Widget todayRecommandSection = Container(
@@ -358,13 +396,6 @@ class _HomePageState extends State<HomePage> {
       decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(32.0), topRight: Radius.circular(32.0)),
-          boxShadow: [
-            BoxShadow(
-                color: Color(0xffd9d9d9),
-                blurRadius: 30.0,
-                offset: Offset(0, -3)
-            )
-          ]
       ),
       child: Container(
         child: ListView(
@@ -402,4 +433,10 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+}
+
+class Statement {
+  final int id;
+  final String content;
+  Statement({required this.id, required this.content});
 }
