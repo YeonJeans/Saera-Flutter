@@ -35,7 +35,7 @@ class _UserInfoState extends State<UserInfo> {
             children: [
               LiquidCustomProgressIndicator(
                 value: widget.exp == 0 ? 0.0 : widget.exp/1000 - ((widget.exp)/1000).floor(),
-                valueColor: AlwaysStoppedAnimation(ColorStyles.saeraKhaki),
+                valueColor: AlwaysStoppedAnimation(ColorStyles.backIconGreen),
                 backgroundColor: ColorStyles.searchFillGray,
                 direction: Axis.vertical,
                 shapePath: ProfileImageClipper().getClip(Size(189, 181)),
@@ -79,7 +79,7 @@ class _UserInfoState extends State<UserInfo> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Lv. ${1+( widget.exp / 1000).floor()} ",
-            style: TextStyles.largeHighlightBlueTextStyle,
+            style: TextStyles.largeGreenTextStyle,
           ),
           Text("${_authManager.getName()} ",
             style: TextStyles.large00TextStyle,
