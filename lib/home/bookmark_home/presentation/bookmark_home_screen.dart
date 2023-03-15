@@ -39,7 +39,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
             String content = i["content"];
             List<String> tags = List.from(i["tags"]);
             bool bookmarked = i["bookmarked"];
-            _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked));
+            bool recommended = i["recommended"];
+            _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, ));
           }
         }
       }

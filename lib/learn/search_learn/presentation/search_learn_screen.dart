@@ -179,7 +179,8 @@ class _SearchPageState extends State<SearchPage> {
           String content = i["content"];
           List<String> tags = List.from(i["tags"]);
           bool bookmarked = i["bookmarked"];
-          _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked));
+          bool recommended = i["recommended"];
+          _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended));
         }
       }
       return _list;
@@ -456,6 +457,27 @@ class _SearchPageState extends State<SearchPage> {
         )
     );
 
+    Container recommendedStatement(Statement statement) {
+      if (statement.recommended == true) {
+        return Container(
+          margin: EdgeInsets.only(left: 5),
+          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 7),
+          decoration: BoxDecoration(
+              color: ColorStyles.saeraPink2.withOpacity(0.5),
+              borderRadius: BorderRadius.all(Radius.circular(4.0))
+          ),
+          child: const Text(
+            '추천',
+            style: TextStyles.tinyPinkTextStyle,
+            textAlign: TextAlign.center,
+          ),
+        );
+      } else {
+        return Container();
+      }
+    }
+
+
     Widget statementSection = FutureBuilder(
         future: statement,
         builder: ((context, snapshot) {
@@ -480,12 +502,17 @@ class _SearchPageState extends State<SearchPage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: 3),
-                                  child: Text(
-                                      statement.content,
-                                      style: TextStyles.regular00TextStyle
-                                  ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.symmetric(vertical: 3),
+                                      child: Text(
+                                          statement.content,
+                                          style: TextStyles.regular00TextStyle
+                                      ),
+                                    ),
+                                    recommendedStatement(statement)
+                                  ],
                                 ),
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width*0.7,
