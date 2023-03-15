@@ -1,9 +1,6 @@
-import 'dart:ffi';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 import '../../data/line_controller.dart';
 
@@ -12,8 +9,6 @@ class AccentLineChart extends StatefulWidget {
 
   final List<double> x;
   final List<double> y;
-
-  // 전체 시간과 line 플레이 여부를 받아오기
 
   @override
   State<AccentLineChart> createState() => _AccentLineChartState();
@@ -28,10 +23,8 @@ class AccentPoint {
 
 class _AccentLineChartState extends State<AccentLineChart> {
 
-  final points = new List<AccentPoint>.empty(growable: true);
+  final points = List<AccentPoint>.empty(growable: true);
   final LineController _lineManager = Get.find();
-
-  bool isPlay = false;
 
   @override
   void initState() {

@@ -67,7 +67,7 @@ class _AudioBarState extends State<AudioBar> {
         setState(() {
           duration = newDuration;
         });
-        _lineController.setting(newDuration.inMilliseconds.toDouble());
+        _lineController.setting(newDuration.inMicroseconds.toDouble());
       }
     });
 
@@ -76,7 +76,7 @@ class _AudioBarState extends State<AudioBar> {
       if(this.mounted){
         setState(() {
           position = newPosition;
-          _lineController.positionChanged(newPosition.inMilliseconds.toDouble());
+          _lineController.positionChanged(newPosition.inMicroseconds.toDouble());
         });
       }
     });
@@ -172,7 +172,7 @@ class _AudioBarState extends State<AudioBar> {
                       onChanged: (value) async {
                         final position = Duration(microseconds: value.toInt());
                         await audioPlayer.seek(position);
-                        _lineController.positionChanged(position.inMilliseconds.toDouble());
+                        _lineController.positionChanged(position.inMicroseconds.toDouble());
                         await audioPlayer.resume();
                       },
                     ),
