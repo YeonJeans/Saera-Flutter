@@ -13,44 +13,33 @@ import '../../style/font.dart';
 
 class PronunciationMainPage extends StatelessWidget {
   final AuthenticationManager _authManager = Get.find();
-  List<int> wordList = [];
-  List<int> etcList = [13, 14, 16, 17, 18, 19];
 
   int returnId(String menu) {
     if (menu == '구개음화') {
-      return 9;
-    } else if (menu == '두음법칙') {
       return 10;
-    } else if (menu == '치조마찰음화') {
+    } else if (menu == '두음법칙') {
       return 11;
-    } else if (menu == '단모음화') {
-      return 15;
-    } else if (menu == "'ㄴ' 첨가") {
+    } else if (menu == '치조마찰음화') {
       return 12;
-    } else { //기타
+    } else if (menu == '단모음화') {
+      return 16;
+    } else if (menu == "'ㄴ' 첨가") {
       return 13;
+    } else { //기타
+      return 0;
     }
   }
 
-  getWordList(int id) async {
+  Future<List<int>> getWordList(int id) async {
+    List<int> wordList = [];
     var url = Uri.parse('${serverHttp}/words?tag_id=$id');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}"});
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
       wordList = List.from(body);
     }
+    return wordList;
   }
-
-  getEtcList(int id) async {
-    var url = Uri.parse('${serverHttp}/words?tag_id=$id');
-    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}"});
-    if (response.statusCode == 200) {
-      var body = jsonDecode(utf8.decode(response.bodyBytes));
-      wordList += List.from(body);
-    }
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -93,19 +82,15 @@ class PronunciationMainPage extends StatelessWidget {
 
     InkWell pronunciationMenu(String word, String description) {
       return InkWell(
-        onTap: () async {
-          if (returnId(word) == 13) {
-            for (int i in etcList) {
-              getEtcList(i);
-            }
-          } else {
-            getWordList(returnId(word));
-          }
-          await Future.delayed(const Duration(seconds: 1));
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: false, wordList: wordList))
-          );
+        onTap: () {
+          Future<dynamic> wordList;
+          wordList = getWordList(returnId(word));
+          wordList.then((wordList){
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: false, wordList: wordList))
+            );
+          });
         },
         child: Container(
           margin: EdgeInsets.symmetric(
