@@ -103,6 +103,18 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+  double listViewHeight() {
+    if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
+      return MediaQuery.of(context).size.height*0.48;
+    } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
+      return MediaQuery.of(context).size.height*0.6;
+    } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
+      return MediaQuery.of(context).size.height*0.55;
+    } else {
+      return MediaQuery.of(context).size.height*0.65;
+    }
+  }
+
   void _addChip(var chipText) {
     setState(() {
       if (widget.value != "") {
@@ -456,7 +468,7 @@ class _SearchPageState extends State<SearchPage> {
               List<Statement> statements = snapshot.data;
               return Container(
                 padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                height: MediaQuery.of(context).size.height,
+                height: listViewHeight(),
                 child: ListView.separated(
                     itemBuilder: ((context, index) {
                       Statement statement = statements[index];
