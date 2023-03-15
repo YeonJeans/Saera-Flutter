@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
 
   List<int> wordList = [];
   List<int> statementList = [];
-  List<Statement> top5StatementList = [];
+  List<top5Statement> top5StatementList = [];
 
   int todayWordLearnIdx = 0;
   int todayStatementLearnIdx = 0;
@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
       for (dynamic i in body) {
         int id = i["id"];
         String name = i["name"];
-        top5StatementList.add(Statement(id: id, content: name));
+        top5StatementList.add(top5Statement(id: id, content: name));
       }
     }
   }
@@ -296,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                 todayWordProgressIdx = _authManager.getTodayWordIdx()!;
                 if(todayWordProgressIdx == 5){
                   Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => const TodayLearnWordListPage(wordList: [], isTodayWord: true),
+                    builder: (context) => TodayLearnWordListPage(wordList: wordList, isTodayWord: true),
                   ));
                 }
                 else{
@@ -345,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                 todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
                 if(todayStatementProgressIdx == 5){
                   Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => TodayLearnStatementListPage(),
+                    builder: (context) => TodayLearnStatementListPage(sentenceList: statementList,),
                   ));
                 }else{
                   Navigator.push(context, MaterialPageRoute(
@@ -435,8 +435,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class Statement {
+class top5Statement {
   final int id;
   final String content;
-  Statement({required this.id, required this.content});
+  top5Statement({required this.id, required this.content});
 }

@@ -14,6 +14,7 @@ class ColorStyles {
   static const Color saeraRed=Color(0xffF1573F);
   static const Color saeraPink=Color(0xffF7A08C);
   static const Color saeraPink2=Color(0xffFEDCC1);
+  static const Color saeraPink3=Color(0xffEC5D77);
   static const Color saeraYellow2=Color(0xffF7C860);
 
   // Gray Color

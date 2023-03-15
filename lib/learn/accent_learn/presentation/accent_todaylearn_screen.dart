@@ -259,7 +259,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                     _authManager.saveTodayStatementIdx(widget.idx + 1);
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => TodayLearnStatementListPage(),
+                      builder: (context) => TodayLearnStatementListPage(sentenceList: widget.sentenceList,),
                     ));
                   }
                 },
