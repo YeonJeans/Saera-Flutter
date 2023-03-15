@@ -414,7 +414,9 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TextButton.icon(
-              onPressed: () => Get.back(),
+              onPressed: () {
+                Navigator.pop(context);
+              },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
               icon: SvgPicture.asset(
                 'assets/icons/back.svg',
