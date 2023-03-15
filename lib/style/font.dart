@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class TextStyles {
 
-  static const tabBarBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xff4DC6A9));
-  static const tabBarRegularTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.normal, color: Color(0xff4DC6A9));
+  static const tabBarBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xff75817E));
+  static const tabBarRegularTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.normal, color: Color(0xff75817E));
   static const tiny82TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.normal, color: Color(0xff828282));
   static const tiny55TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 10, fontWeight: FontWeight.normal, color: Color(0xff555555));
 

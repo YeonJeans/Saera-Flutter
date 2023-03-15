@@ -67,7 +67,12 @@ class _AudioBarState extends State<AudioBar> {
         setState(() {
           duration = newDuration;
         });
-        _lineController.setting(newDuration.inMicroseconds.toDouble());
+        if(widget.isRecording){
+          _lineController.rsetting(newDuration.inMicroseconds.toDouble());
+        }
+        else{
+          _lineController.setting(newDuration.inMicroseconds.toDouble());
+        }
       }
     });
 
@@ -76,7 +81,12 @@ class _AudioBarState extends State<AudioBar> {
       if(this.mounted){
         setState(() {
           position = newPosition;
-          _lineController.positionChanged(newPosition.inMicroseconds.toDouble());
+          if(widget.isRecording){
+            _lineController.rpositionChanged(newPosition.inMicroseconds.toDouble());
+          }
+          else{
+            _lineController.positionChanged(newPosition.inMicroseconds.toDouble());
+          }
         });
       }
     });
@@ -85,7 +95,12 @@ class _AudioBarState extends State<AudioBar> {
       if(this.mounted){
         setState(() {
           position = Duration.zero;
-          _lineController.positionChanged(0.0);
+          if(widget.isRecording){
+            _lineController.rpositionChanged(0.0);
+          }
+          else{
+            _lineController.positionChanged(0.0);
+          }
           setAudio();
         });
       }
@@ -172,7 +187,12 @@ class _AudioBarState extends State<AudioBar> {
                       onChanged: (value) async {
                         final position = Duration(microseconds: value.toInt());
                         await audioPlayer.seek(position);
-                        _lineController.positionChanged(position.inMicroseconds.toDouble());
+                        if(widget.isRecording){
+                          _lineController.rpositionChanged(position.inMicroseconds.toDouble());
+                        }
+                        else{
+                          _lineController.positionChanged(position.inMicroseconds.toDouble());
+                        }
                         await audioPlayer.resume();
                       },
                     ),

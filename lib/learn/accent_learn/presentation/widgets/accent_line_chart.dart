@@ -5,10 +5,12 @@ import 'package:get/get.dart';
 import '../../data/line_controller.dart';
 
 class AccentLineChart extends StatefulWidget {
-  const AccentLineChart({Key? key, required this.x, required this.y}) : super(key: key);
+  const AccentLineChart({Key? key, required this.x, required this.y, required this.isRecord}) : super(key: key);
 
   final List<double> x;
   final List<double> y;
+
+  final bool isRecord;
 
   @override
   State<AccentLineChart> createState() => _AccentLineChartState();
@@ -73,16 +75,33 @@ class _AccentLineChartState extends State<AccentLineChart> {
 
         //이곳에 라인 지나가도록 추가
         Obx(() =>
-            Positioned(
-              left: width / _lineManager.duration.value * _lineManager.position.value,
-              child: Container(
-                width: 1,
-                height: MediaQuery.of(context).size.height,
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                ),
-              ),
-            ),
+                (){
+              if(widget.isRecord){
+                return Positioned(
+                  left: width / _lineManager.rduration.value * _lineManager.rposition.value,
+                  child: Container(
+                    width: 1,
+                    height: MediaQuery.of(context).size.height,
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                    ),
+                  ),
+                );
+              }
+              else{
+                return Positioned(
+                  left: width / _lineManager.duration.value * _lineManager.position.value,
+                  child: Container(
+                    width: 1,
+                    height: MediaQuery.of(context).size.height,
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                    ),
+                  ),
+                );
+              }
+            }()
+
         ),
 
      ],

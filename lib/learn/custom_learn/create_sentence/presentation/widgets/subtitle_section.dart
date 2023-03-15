@@ -18,7 +18,7 @@ class _SubTitleSectionState extends State<SubTitleSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: 8),
           child: Text(
             widget.subtitle,
             style: TextStyles.medium00BoldTextStyle,
@@ -26,7 +26,7 @@ class _SubTitleSectionState extends State<SubTitleSection> {
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(bottom: 20),
+          margin: const EdgeInsets.only(bottom: 16),
           child: Text(
             widget.desc,
             style: TextStyles.small55TextStyle,
