@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:saera/learn/accent_learn/presentation/accent_todaylearn_screen.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
 import 'package:saera/server.dart';
 import 'package:saera/style/color.dart';
@@ -44,7 +45,8 @@ class _TodayLearnStatementListPageState extends State<TodayLearnStatementListPag
         String content = i["content"];
         List<String> tags = List.from(i["tags"]);
         bool bookmarked = i["bookmarked"];
-        statementList.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked));
+        bool recommended = i["recommended"];
+        statementList.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended));
       }
     }
     return statementList;
@@ -213,7 +215,11 @@ class _TodayLearnStatementListPageState extends State<TodayLearnStatementListPag
           ]
       ),
       child: OutlinedButton(
-          onPressed: null,
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => AccentTodayPracticePage(idx: 0, sentenceList: widget.sentenceList)
+            ));
+          },
           style: OutlinedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8.0))
