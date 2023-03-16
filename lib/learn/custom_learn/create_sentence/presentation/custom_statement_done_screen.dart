@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:saera/learn/custom_learn/create_sentence/presentation/custom_statement_loading_screen.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
-import '../../../accent_learn/presentation/widgets/accent_learn_background_image.dart';
+import '../../../accent_learn/presentation/accent_learn_screen.dart';
 
 class CustomDonePage extends StatelessWidget {
+
+  final int id;
+
+  const CustomDonePage({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
 
+    Future<void> initializeSettings() async {
+      await Future.delayed(Duration(seconds: 3));
+    }
+
     Widget checkIconSection = Container(
-      padding: EdgeInsets.only(top: 300.0),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.28),
       child: SvgPicture.asset('assets/icons/check_round_fill.svg', fit: BoxFit.scaleDown,),
     );
 
@@ -25,16 +34,16 @@ class CustomDonePage extends StatelessWidget {
     );
 
     Widget goLearnPageSection = Container(
-      padding: EdgeInsets.only(top: 185.0),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.22),
       child: OutlinedButton(
-        onPressed: null,
+        onPressed: null, //여길 어떻게 해야할지 고민되네요...
         style: OutlinedButton.styleFrom(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0))
           ),
           side: const BorderSide(
             width: 1.0,
-            color: ColorStyles.primary,
+            color: ColorStyles.saeraAppBar,
           ),
         ),
         child: Container(
@@ -51,15 +60,17 @@ class CustomDonePage extends StatelessWidget {
     Widget goAccentPageSection = Container(
       padding: EdgeInsets.only(top: 9.0),
       child: OutlinedButton(
-          onPressed: null,
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AccentPracticePage(id: id,)));
+          },
           style: OutlinedButton.styleFrom(
-            backgroundColor: ColorStyles.primary,
+            backgroundColor: ColorStyles.saeraAppBar,
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8.0))
             ),
             side: const BorderSide(
               width: 1.0,
-              color: ColorStyles.primary,
+              color: ColorStyles.saeraAppBar,
             ),
           ),
           child: Container(
@@ -73,25 +84,45 @@ class CustomDonePage extends StatelessWidget {
       ),
     );
 
-    return Stack(
-      children: [
-        const AccentPracticeBackgroundImage(key: null,),
-        SafeArea(
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              resizeToAvoidBottomInset: false,
-              body: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+    return FutureBuilder(
+        future: initializeSettings(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CustomLoadingPage();
+          } else {
+            if (snapshot.hasError) {
+              return Center(
+                child: Container(
+                  child: Text('에러'),
+                ),
+              );
+            } else {
+              return Stack(
                 children: [
-                  checkIconSection,
-                  doneSection,
-                  goLearnPageSection,
-                  goAccentPageSection
+                  Container(
+                    color: Colors.white,
+                  ),
+                  SafeArea(
+                      child: Scaffold(
+                        backgroundColor: Colors.transparent,
+                        resizeToAvoidBottomInset: false,
+                        body: ListView(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          physics: NeverScrollableScrollPhysics(),
+                          children: [
+                            checkIconSection,
+                            doneSection,
+                            goLearnPageSection,
+                            goAccentPageSection
+                          ],
+                        ),
+                      )
+                  )
                 ],
-              ),
-            )
-        )
-      ],
+              );
+            }
+          }
+        }
     );
   }
 }

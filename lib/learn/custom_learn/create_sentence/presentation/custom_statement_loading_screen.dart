@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:saera/style/font.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import '../../../accent_learn/presentation/widgets/accent_learn_background_image.dart';
-
 class CustomLoadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
     Widget loadingSpinnerSection = Container(
-        padding: EdgeInsets.only(top: 300.0),
-        margin: EdgeInsets.symmetric(horizontal: 175),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.35),
+        margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.4),
         child: LoadingAnimationWidget.staggeredDotsWave(
             color: Color(0xff2D2D2D),
             size: 45.0
@@ -37,7 +35,9 @@ class CustomLoadingPage extends StatelessWidget {
 
     return Stack(
       children: [
-        const AccentPracticeBackgroundImage(key: null,),
+        Container(
+          color: Colors.white,
+        ),
         SafeArea(
             child: Scaffold(
               backgroundColor: Colors.transparent,

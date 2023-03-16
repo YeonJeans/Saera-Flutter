@@ -52,7 +52,7 @@ class TextStyles {
   static const mediumGrayTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xff75817E));
   static const mediumEFTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xffEFEFEF), decoration: TextDecoration.none,);
   static const mediumWhiteBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xffFFFFFF));
-  static const mediumBlueBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xff00539C));
+  static const mediumBlueBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xff4DC6A9));
   static const mediumSTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xffF1573F), decoration: TextDecoration.none,);
   static const mediumATextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xffF7A08C), decoration: TextDecoration.none,);
   static const mediumBTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xffF7C860), decoration: TextDecoration.none,);
