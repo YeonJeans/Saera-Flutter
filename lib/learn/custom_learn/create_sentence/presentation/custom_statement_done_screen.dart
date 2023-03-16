@@ -36,7 +36,10 @@ class CustomDonePage extends StatelessWidget {
     Widget goLearnPageSection = Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.22),
       child: OutlinedButton(
-        onPressed: null, //여길 어떻게 해야할지 고민되네요...
+        onPressed: () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
         style: OutlinedButton.styleFrom(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0))
