@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
 import 'package:saera/learn/custom_learn/create_sentence/presentation/create_sentence_screen.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../login/data/authentication_manager.dart';
 import '../../../../server.dart';
 import '../../../../style/color.dart';
 import '../../../../style/font.dart';
@@ -20,21 +24,22 @@ class LearnStatementPage extends StatefulWidget {
 }
 
 class _LearnStatementPageState extends State<LearnStatementPage> {
-  Future<dynamic>? statement;
-  List<String> tagList = []; //서버에서 넘겨받을 리스트
+  final AuthenticationManager _authManager = Get.find();
+
+  Future<dynamic>? statementData;
+  List<Tag> tagList = [];
   final List<ChipData> _chipList = [];
   int? _selectedIndex;
 
   late TextEditingController _textEditingController;
-  var value = Get.arguments;
 
   bool _chipSectionVisibility = false;
   bool _categorySectionVisibility = false;
 
   bool checkChipList(String categoryName) {
     bool isExist = false;
-    for(int i = _chipList.length-1; i >= 0; i--) { //리스트 검사해서
-      if (_chipList[i].name == categoryName) { //버튼 눌렀을 때 이름이 같은게 있으면
+    for(int i = _chipList.length-1; i >= 0; i--) {
+      if (_chipList[i].name == categoryName) {
         isExist = true;
         break;
       } else {
@@ -79,17 +84,26 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
     });
   }
 
+  double listViewHeight() {
+    if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
+      return MediaQuery.of(context).size.height*0.49;
+    } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
+      return MediaQuery.of(context).size.height*0.59;
+    } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
+      return MediaQuery.of(context).size.height*0.55;
+    } else {
+      return MediaQuery.of(context).size.height*0.65;
+    }
+  }
+
   void _addChip(var chipText) {
     setState(() {
-      if (value != null) {
-        _chipList.add(ChipData(
+      _chipList.add(ChipData(
             id: DateTime.now().toString(),
             name: chipText,
             color: {tagList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
-        ));
-      } else {
-        Container();
-      }
+      ));
+      statementData = searchCustomStatement("");
       _setChipSectionVisibility();
     });
   }
@@ -97,6 +111,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
   void _deleteChip(String id) {
     setState(() {
       _chipList.removeWhere((element) => element.id == id);
+      statementData = searchCustomStatement("");
       _setChipSectionVisibility();
     });
   }
@@ -107,23 +122,76 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
     }
   }
 
-  void createBookmark (int id) async {
-    var url = Uri.parse('${serverHttp}/statements/${id}/bookmark');
-    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+  createBookmark (int id) async {
+    var url = Uri.parse('$serverHttp/bookmark?type=STATEMENT&fk=$id');
+    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     print("create : $response");
   }
 
-  void deleteBookmark (int id) async {
-    var url = Uri.parse('${serverHttp}/statements/bookmark/${id}');
-    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json" });
+  deleteBookmark (int id) async {
+    var url = Uri.parse('$serverHttp/bookmark?type=STATEMENT&fk=$id');
+    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     print("delete : $response");
+  }
+
+  Future<List<Tag>> getTag() async {
+    var url = Uri.parse('$serverHttp/customs/tags');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      for (dynamic i in body) {
+        int id = i["id"];
+        String name = i["name"];
+        tagList.add(Tag(id: id, name: name));
+      }
+    }
+    return tagList;
+  }
+
+  Future<List<Statement>> searchCustomStatement(String input) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    List<Statement> _list = [];
+    Uri url;
+    String tags = "";
+    for (int i = _chipList.length-1; i >= 0; i--) {
+      tags += 'tags=${_chipList[i].name}&';
+    }
+    if (input == "") {
+      url = Uri.parse('$serverHttp/customs?$tags');
+    } else {
+      url = Uri.parse('$serverHttp/customs?content=$input&$tags');
+    }
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      if (_list.isEmpty) {
+        for (dynamic i in body) {
+          int id = i["id"];
+          String content = i["content"];
+          List<String> tags = List.from(i["tags"]);
+          bool bookmarked = i["bookmarked"];
+          bool recommended = i["recommended"];
+          _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended));
+        }
+      }
+      return _list;
+    } else {
+      throw Exception("데이터를 불러오는데 실패했습니다.");
+    }
+  }
+
+  deleteCustomStatement(int id) async {
+    var url = Uri.parse('$serverHttp/customs/$id');
+    final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+    print("delete Custom : $response");
   }
 
   @override
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
-    _addChip(value);
+    getTag();
+    statementData = searchCustomStatement("");
   }
 
   @override
@@ -175,10 +243,14 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                   FilteringTextInputFormatter.allow(RegExp(r'[a-z|A-Z|0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ᆞ|ᆢ|ㆍ|ᆢ|ᄀᆞ|ᄂᆞ|ᄃᆞ|ᄅᆞ|ᄆᆞ|ᄇᆞ|ᄉᆞ|ᄋᆞ|ᄌᆞ|ᄎᆞ|ᄏᆞ|ᄐᆞ|ᄑᆞ|ᄒᆞ]'))
                 ],
                 maxLines: 1,
-                onSubmitted: null, //수정
+                onSubmitted: (s) {
+                  setState(() {
+                    statementData = searchCustomStatement(s);
+                  });
+                },
                 decoration: InputDecoration(
                   prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
-                  hintText: 'OO님이 만든 문장 내에서 검색합니다.',
+                  hintText: '${_authManager.getName()}님이 만든 문장 내에서 검색합니다.',
                   hintStyle: TextStyles.mediumAATextStyle,
                   enabledBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(99.0)),
@@ -264,13 +336,9 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
               ),
               child: Wrap(
-                children: [
-                  selectStatementCategory('태그1'),
-                  selectStatementCategory('태그2'),
-                  selectStatementCategory('태그3'),
-                  selectStatementCategory('태그4'),
-                  selectStatementCategory('태그5'),
-                ],
+                children: tagList.map((tag){
+                  return selectStatementCategory(tag.name);
+                }).toList()
               )
             )
             : Container()
@@ -307,6 +375,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               onPressed: () => {
                 if (_chipList.isNotEmpty) {
                   _deleteAllChip(),
+                  statementData = searchCustomStatement("")
                 } else {
                   Container(),
                 }
@@ -336,96 +405,141 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       );
     }
 
-    Container existStatement(List<Statement> statements) {
-      return Container(
-        padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-        height: MediaQuery.of(context).size.height,
-        child: ListView.separated(
-            itemBuilder: ((context, index) {
-              Statement statement = statements[index];
-              return Dismissible(
-                  key: Key(statement.id.toString()),
-                  background: Container(color: Colors.red), //휴지통 아이콘이 들어가면 어떨지?
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) {
-                    setState(() {
-                      statements.removeAt(index); //삭제 시 확인 화면 구현?
-                    });
-                  },
-                  child: ListTile(
-                      contentPadding: EdgeInsets.only(left: 11),
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => AccentPracticePage(id: statement.id),
-                        ));
-                      },
-                      title: Transform.translate(
-                        offset: const Offset(0, 5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                    statement.content,
-                                    style: TextStyles.regular00TextStyle
-                                ),
-                                Row(
-                                  children: statement.tags.map((tag) {
-                                    return Container(
-                                      margin: EdgeInsets.only(right: 4),
-                                      child: Chip(
-                                        label: Text(tag),
-                                        labelStyle: TextStyles.small00TextStyle,
-                                      ),
-                                    );
-                                  }).toList(),
-                                )
-                              ],
-                            ),
-                            IconButton(
-                                onPressed: (){
-                                  if(statement.bookmarked){
-                                    setState(() {
-                                      statement.bookmarked = false;
-                                    });
-                                    deleteBookmark(statement.id);
-                                  }
-                                  else{
-                                    setState(() {
-                                      statement.bookmarked = true;
-                                    });
-                                    createBookmark(statement.id);
-                                  }
-                                },
-                                icon: statement.bookmarked?
-                                SvgPicture.asset(
-                                  'assets/icons/star_fill.svg',
-                                  fit: BoxFit.scaleDown,
-                                )
-                                    :
-                                SvgPicture.asset(
-                                  'assets/icons/star_unfill.svg',
-                                  fit: BoxFit.scaleDown,
-                                )
-                            )
-                          ],
-                        ),
-                      )
+    FutureBuilder existStatement(List<Statement> statements) {
+      return FutureBuilder(
+        future: statementData,
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Container(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                  child: LoadingAnimationWidget.waveDots(
+                      color: ColorStyles.expFillGray,
+                      size: 45.0
                   )
+              ),
+            );
+          } else if (snapshot.connectionState == ConnectionState.done){
+            if (snapshot.hasError) {
+              return Center(
+                child: Container(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                    child: LoadingAnimationWidget.waveDots(
+                        color: ColorStyles.expFillGray,
+                        size: 45.0
+                    )
+                ),
               );
-            }),
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider(thickness: 1,);
-            },
-            itemCount: statements.length
-        ),
+            } else {
+              return Container(
+                padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                height: listViewHeight(),
+                child: ListView.separated(
+                    itemBuilder: ((context, index) {
+                      Statement statement = statements[index];
+                      return Dismissible(
+                          key: Key(statement.id.toString()),
+                          background: Container(
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 28,
+                            )
+                          ),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (direction) {
+                            setState(() {
+                              statements.removeAt(index);
+                              deleteCustomStatement(statement.id);
+                              statementData = searchCustomStatement("");
+                            });
+                          },
+                          child: InkWell(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => AccentPracticePage(id: statement.id),
+                                ));
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(vertical: 3),
+                                        child: Text(
+                                            statement.content,
+                                            style: TextStyles.regular00TextStyle
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width*0.7,
+                                        child: Wrap(
+                                          spacing: 7.0,
+                                          children: statement.tags.map((tag) {
+                                            return Chip(
+                                                label: Text(tag),
+                                                labelStyle: TextStyles.small00TextStyle,
+                                                //backgroundColor: selectTagColor(tag)
+                                            );
+                                          }).toList(),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  IconButton(
+                                      onPressed: (){
+                                        if(statement.bookmarked){
+                                          setState(() {
+                                            statement.bookmarked = false;
+                                          });
+                                          deleteBookmark(statement.id);
+                                        }
+                                        else{
+                                          setState(() {
+                                            statement.bookmarked = true;
+                                          });
+                                          createBookmark(statement.id);
+                                        }
+                                      },
+                                      icon: statement.bookmarked?
+                                      SvgPicture.asset(
+                                        'assets/icons/star_fill.svg',
+                                        fit: BoxFit.scaleDown,
+                                      )
+                                          :
+                                      SvgPicture.asset(
+                                        'assets/icons/star_unfill.svg',
+                                        fit: BoxFit.scaleDown,
+                                      )
+                                  )
+                                ],
+                              ),
+                          )
+                      );
+                    }),
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(thickness: 1,);
+                    },
+                    itemCount: statements.length
+                ),
+              );
+            }
+          } else {
+            return throw Exception("오류");
+          }
+        })
       );
     }
 
     Widget statementSection = FutureBuilder(
-        future: statement,
+        future: statementData,
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
@@ -458,7 +572,9 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 
     return Stack(
       children: [
-        SearchLearnBackgroundImage(key: null,),
+        Container(
+          color: Colors.white,
+        ),
         SafeArea(
             child: Scaffold(
                 backgroundColor: Colors.transparent,
@@ -490,4 +606,10 @@ class ChipData {
   final String name;
   final Set<Color> color;
   ChipData({required this.id, required this.name, required this.color});
+}
+
+class Tag {
+  final int id;
+  final String name;
+  Tag({required this.id, required this.name});
 }
