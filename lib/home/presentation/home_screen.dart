@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AccentPracticePage(id: id))
+                  MaterialPageRoute(builder: (context) => AccentPracticePage(id: id, isCustom: false,))
               );
             },
             style: ButtonStyle(

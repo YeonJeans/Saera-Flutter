@@ -64,7 +64,9 @@ class CustomDonePage extends StatelessWidget {
       padding: EdgeInsets.only(top: 9.0),
       child: OutlinedButton(
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AccentPracticePage(id: id,)));
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AccentPracticePage(id: id, isCustom: true,)));
           },
           style: OutlinedButton.styleFrom(
             backgroundColor: ColorStyles.saeraAppBar,

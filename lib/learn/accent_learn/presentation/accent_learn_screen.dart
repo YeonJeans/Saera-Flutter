@@ -31,8 +31,9 @@ import '../../../login/presentation/widget/profile_image_clipper.dart';
 class AccentPracticePage extends StatefulWidget {
 
   final int id;
+  final bool isCustom;
 
-  const AccentPracticePage({Key? key, required this.id}) : super(key: key);
+  const AccentPracticePage({Key? key, required this.id, required this.isCustom}) : super(key: key);
 
   @override
   State<AccentPracticePage> createState() => _AccentPracticePageState();
@@ -143,11 +144,74 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     }
   }
 
+  getCustomExampleAccent() async {
+
+    var url = Uri.parse('${serverHttp}/customs/${widget.id}');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      x.clear();
+      y.clear();
+
+      setState(() {
+        content = body["content"];
+      });
+
+      setState(() {
+        _isBookmarked = body["bookmarked"];
+      });
+
+      for(int i in body["pitch_x"]){
+        double pitch  = i.toDouble();
+        x.add(pitch);
+      }
+
+      y = List.from(body["pitch_y"]);
+
+    }
+    else if(response.statusCode == 401){
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getExampleAccent();
+      }
+    }
+    else{
+      print(response.body);
+    }
+  }
 
 
   Future<dynamic> getTTS() async {
 
     var url = Uri.parse('${serverHttp}/statements/record/${widget.id}');
+
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}"});
+
+    if (response.statusCode == 200) {
+
+      Uint8List audioInUnit8List = response.bodyBytes;
+      final tempDir = await getTemporaryDirectory();
+
+      File file = await File('${tempDir.path}/exampleAudio${widget.id}.wav').create();
+      file.writeAsBytesSync(audioInUnit8List);
+
+      setState(() {
+        audioPath = file.path;
+      });
+
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  Future<dynamic> getCustomTTS() async {
+
+    var url = Uri.parse('${serverHttp}/customs/record/${widget.id}');
 
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "audio/wav", "authorization" : "Bearer ${_authManager.getToken()}"});
 
@@ -336,8 +400,15 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
   @override
   void initState(){
     initRecorder();
-    getExampleAccent();
-    _isAudioReady = getTTS();
+    if(widget.isCustom){
+      getCustomExampleAccent();
+      _isAudioReady = getCustomTTS();
+    }
+    else{
+      getExampleAccent();
+      _isAudioReady = getTTS();
+    }
+
     fToast = FToast();
     fToast.init(context);
 
