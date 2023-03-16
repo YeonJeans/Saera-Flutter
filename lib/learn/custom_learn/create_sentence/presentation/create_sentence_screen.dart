@@ -1,11 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/learn/custom_learn/create_sentence/presentation/custom_statement_done_screen.dart';
 import 'package:saera/learn/custom_learn/create_sentence/presentation/widgets/subtitle_section.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:saera/style/font.dart';
 import 'package:saera/style/color.dart';
+
+import '../../../../login/data/authentication_manager.dart';
+import '../../../../server.dart';
 
 class CreateSentenceScreen extends StatefulWidget {
   const CreateSentenceScreen({Key? key}) : super(key: key);
@@ -15,16 +21,41 @@ class CreateSentenceScreen extends StatefulWidget {
 }
 
 class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
+  final AuthenticationManager _authManager = Get.find();
 
   final TextEditingController _textEditingController = TextEditingController();
   bool isComplete = false;
   bool isExist = true;
   int inputFieldInfo = 0;
+  String customStatement = "";
 
   //late ScrollController _scrollController = ScrollController();
 
   final TextEditingController _controller = TextEditingController();
   List<String> _tags = [];
+
+  Future<int> createStatement() async {
+    var url = Uri.parse('$serverHttp/customs');
+    var data = {
+      "content" : customStatement,
+      "tags" : _tags
+    };
+    var body = json.encode(data);
+    final response = await http.post(
+        url,
+        headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" },
+        body: body
+    );
+    int customStatementId = 0;
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+        int id = body["id"];
+        customStatementId = id;
+    } else {
+      throw Exception("커스텀 문자 생성 오류 발생");
+    }
+    return customStatementId;
+  }
 
   // @override
   // void initState() {
@@ -38,7 +69,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   //   super.dispose();
   // }
 
-  Widget appBarSection (){
+  Widget appBarSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -124,7 +155,13 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   Widget createBtn(){
     return GestureDetector(
       onTap: (){
-        // TODO- 문장 생성 버튼 클릭시 진행될 내용을 이곳에 추가하면 됩니다!
+        Future<int> id;
+        id = createStatement();
+        id.then((id){
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+          );
+        });
       },
       child: Container(
           margin: const EdgeInsets.only(left: 14, right: 14, bottom: 15),
@@ -159,7 +196,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
         maxLines: 2,
         onChanged: (text){
           if(text.isNotEmpty){
-
+            customStatement = text;
             if(!hannum.hasMatch(text)){
               setState(() {
                 inputFieldInfo = 3;
@@ -294,7 +331,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                       return SizedBox(
                         width: 280,
                         child: TextField(
-                          autofocus: true,
+                          autofocus: false,
                           enabled: _tags.length >= 3 ? false : true,
                           controller: _controller,
                           onSubmitted: (_) => _addTag(),
@@ -396,11 +433,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                     ),
                   )
               ),
-
-        )
-
-
-
+            )
         )
       ],
     );
