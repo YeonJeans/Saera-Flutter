@@ -81,21 +81,21 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _setTypeVisibility(String categoryName) {
-    bool isTypeCategorySelected = false; //카테고리네임이랑 동일한 태그가 리스트에 있는가를 검사하는 변수
+    bool isTypeCategorySelected = false;
     setState(() {
-      if (_chipList.isEmpty) { //리스트가 비어있으면 처음이니까 칩 추가
+      if (_chipList.isEmpty) {
         _addChip(categoryName);
       }
-      for(int i = _chipList.length-1; i >= 0; i--) { //리스트 검사해서
-        if (_chipList[i].name == categoryName) { //버튼 눌렀을 때 이름이 같은게 있으면
-          isTypeCategorySelected = true; //이미 있음을 표시
+      for(int i = _chipList.length-1; i >= 0; i--) {
+        if (_chipList[i].name == categoryName) {
+          isTypeCategorySelected = true;
           return;
         } else {
           isTypeCategorySelected = false;
         }
       }
-      if (isTypeCategorySelected == false) { //얘가 위에 검사 뚫고 false면 리스트에 없다는 뜻
-        _addChip(categoryName); //추가해
+      if (isTypeCategorySelected == false) {
+        _addChip(categoryName);
         isTypeCategorySelected = true;
       } else {
         return;
@@ -163,13 +163,11 @@ class _SearchPageState extends State<SearchPage> {
     for (int i = _chipList.length-1; i >= 0; i--) {
       tags += 'tags=${_chipList[i].name}&';
     }
-    print("tags : $tags");
     if (input == "") {
       url = Uri.parse('$serverHttp/statements?$tags');
     } else {
       url = Uri.parse('$serverHttp/statements?content=$input&$tags');
     }
-    print("url : $url");
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
@@ -495,7 +493,12 @@ class _SearchPageState extends State<SearchPage> {
                     itemBuilder: ((context, index) {
                       Statement statement = statements[index];
                       return InkWell(
-                        onTap: () => Get.to(AccentPracticePage(id: statement.id)),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => AccentPracticePage(id: statement.id))
+                          );
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
