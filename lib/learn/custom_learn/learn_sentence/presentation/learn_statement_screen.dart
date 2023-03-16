@@ -462,7 +462,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                           child: InkWell(
                               onTap: (){
                                 Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => AccentPracticePage(id: statement.id),
+                                  builder: (context) => AccentPracticePage(id: statement.id, isCustom: true),
                                 ));
                               },
                               child: Row(

@@ -1,3 +1,4 @@
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -56,13 +57,23 @@ class _AccentLineChartState extends State<AccentLineChart> {
               lineBarsData: [
                 LineChartBarData(spots: (){
                   points.clear();
+                  
+                  points.add(AccentPoint(widget.x[0] - 1, 0.45));
+
+                  bool isPass = false;
 
                   for(int i = 0; i < widget.x.length; i++){
+                    if(!isPass && widget.y[i] == 0){
+                      isPass = true;
+                      continue;
+                    }
                     points.add(AccentPoint(widget.x[i], widget.y[i]));
                   }
 
+                  points.add(AccentPoint(widget.x[widget.x.length - 1] +1, 0.45));
+
                   return points.map(
-                          (point) => FlSpot(point.x, point.y)
+                          (point) => point.y == 0 ? FlSpot.nullSpot :FlSpot(point.x, point.y)
                   ).toList();
                 }(),
                   color: Colors.black,

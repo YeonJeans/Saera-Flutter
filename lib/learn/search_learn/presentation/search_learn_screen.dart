@@ -496,7 +496,7 @@ class _SearchPageState extends State<SearchPage> {
                         onTap: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => AccentPracticePage(id: statement.id))
+                              MaterialPageRoute(builder: (context) => AccentPracticePage(id: statement.id, isCustom: false))
                           );
                         },
                         child: Row(

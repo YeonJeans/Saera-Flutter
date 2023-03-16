@@ -123,7 +123,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                           return InkWell(
                             onTap: () {
                               Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => AccentPracticePage(id: statement.id),
+                                builder: (context) => AccentPracticePage(id: statement.id, isCustom: false),
                               ));
                             },
                             child: Row(
