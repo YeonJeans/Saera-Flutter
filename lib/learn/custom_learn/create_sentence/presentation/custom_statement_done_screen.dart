@@ -34,7 +34,7 @@ class CustomDonePage extends StatelessWidget {
     );
 
     Widget goLearnPageSection = Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.22),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.23),
       child: OutlinedButton(
         onPressed: () {
           Navigator.pop(context);
@@ -50,7 +50,7 @@ class CustomDonePage extends StatelessWidget {
           ),
         ),
         child: Container(
-          padding: EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(18.0),
           child: const Text(
             '학습 화면으로',
             style: TextStyles.mediumBlueBoldTextStyle,
@@ -77,7 +77,7 @@ class CustomDonePage extends StatelessWidget {
             ),
           ),
           child: Container(
-            padding: EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(18.0),
             child: const Text(
               '바로 학습',
               style: TextStyles.mediumWhiteBoldTextStyle,
