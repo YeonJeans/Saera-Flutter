@@ -36,8 +36,12 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
       return ColorStyles.saeraKhaki.withOpacity(0.5);
     } else if (tag == '두음법칙') {
       return ColorStyles.saeraPink3.withOpacity(0.5);
-    } else {
+    } else if (tag == '치조마찰음화') {
       return ColorStyles.saeraYellow.withOpacity(0.5);
+    } else if (tag == '단모음화') {
+      return ColorStyles.saeraOlive1.withOpacity(0.5);
+    } else {
+      return ColorStyles.saeraBeige.withOpacity(0.5);
     }
   }
 
