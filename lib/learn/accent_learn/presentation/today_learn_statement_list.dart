@@ -5,67 +5,61 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:saera/home/presentation/home_screen.dart';
+import 'package:saera/learn/accent_learn/presentation/accent_todaylearn_screen.dart';
+import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
 import 'package:saera/server.dart';
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
-import 'learn/pronounce_learn/pronounce_learn_screen.dart';
-import 'login/data/authentication_manager.dart';
+import '../../../home/presentation/home_screen.dart';
+import '../../../login/data/authentication_manager.dart';
 
-class TodayLearnWordListPage extends StatefulWidget {
+class TodayLearnStatementListPage extends StatefulWidget {
 
-  final List<int> wordList;
-  final bool isTodayWord;
+  final List<int> sentenceList;
 
-  const TodayLearnWordListPage({Key? key, required this.wordList, required this.isTodayWord});
+  const TodayLearnStatementListPage({Key? key, required this.sentenceList});
 
   @override
-  State<StatefulWidget> createState() => _TodayLearnWordListPageState();
+  State<StatefulWidget> createState() => _TodayLearnStatementListPageState();
 }
 
-class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
+class _TodayLearnStatementListPageState extends State<TodayLearnStatementListPage> {
   final AuthenticationManager _authManager = Get.find();
 
-  Future<dynamic>? word;
+  Future<dynamic>? statement;
 
-  Color selectTagColor(String tag) { // 태그별 컬러파레트 필요
-    if (tag == '구개음화') {
-      return ColorStyles.saeraBlue.withOpacity(0.5);
-    } else if (tag == "ㄴ첨가") {
-      return ColorStyles.saeraKhaki.withOpacity(0.5);
-    } else if (tag == '두음법칙') {
-      return ColorStyles.saeraPink3.withOpacity(0.5);
-    } else if (tag == '치조마찰음화') {
-      return ColorStyles.saeraYellow.withOpacity(0.5);
-    } else if (tag == '단모음화') {
-      return ColorStyles.saeraOlive1.withOpacity(0.5);
-    } else {
-      return ColorStyles.saeraBeige.withOpacity(0.5);
+  Future<List<Statement>> getStatement() async {
+    List<Statement> statementList = [];
+    String statement_id = "";
+    for(int i = 0; i<widget.sentenceList.length; i++) {
+      statement_id += 'idList=${widget.sentenceList[i]}&';
     }
-  }
-
-  Future<List<Word>> getWord() async {
-    List<Word> wordList = [];
-    String word_id = "";
-    for(int i = 0; i<widget.wordList.length; i++) {
-      word_id += 'idList=${widget.wordList[i]}&';
-    }
-    var url = Uri.parse('$serverHttp/complete?type=WORD&$word_id&isTodayStudy=${widget.isTodayWord}');
+    var url = Uri.parse('$serverHttp/complete?type=STATEMENT&$statement_id');
     print("url : $url");
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}"});
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
       for (dynamic i in body) {
         int id = i["id"];
-        String notation = i["notation"];
-        String pronunciation = i["pronunciation"];
-        String tag = i["tag"];
+        String content = i["content"];
+        List<String> tags = List.from(i["tags"]);
         bool bookmarked = i["bookmarked"];
-        wordList.add(Word(id: id, notation: notation, pronunciation: pronunciation, tag: tag, bookmarked: bookmarked));
+        bool recommended = i["recommended"];
+        statementList.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended));
       }
     }
-    return wordList;
+    return statementList;
+  }
+
+  Color selectTagColor(String tag) {
+    if (tag == '일상' || tag == '소비' || tag == '인사' || tag == '은행/공공기관' || tag == '회사') {
+      return ColorStyles.saeraBlue.withOpacity(0.5);
+    } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정 표현') {
+      return ColorStyles.saeraBeige.withOpacity(0.5);
+    } else {
+      return ColorStyles.saeraYellow.withOpacity(0.5);
+    }
   }
 
   createBookmark (int id) async {
@@ -82,7 +76,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
 
   @override
   void initState() {
-    word = getWord();
+    statement = getStatement();
     super.initState();
   }
 
@@ -112,13 +106,14 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
     Widget todayLearnWordTextSection = Container(
       margin: const EdgeInsets.only(left: 10.0),
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-      child: widget.isTodayWord == true
-          ? Text('오늘 학습한 단어 목록', style: TextStyles.xxLargeTextStyle,)
-          : Text('학습한 단어 목록', style: TextStyles.xxLargeTextStyle,),
+      child: const Text(
+        '오늘 학습한 문장 목록',
+        style: TextStyles.xxLargeTextStyle,
+      ),
     );
-    
+
     Widget wordListSection = FutureBuilder(
-        future: word,
+        future: statement,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -139,68 +134,63 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
                   )
               );
             } else {
-              List<Word> words = snapshot.data;
+              List<Statement> statements = snapshot.data;
               return Container(
                 height: MediaQuery.of(context).size.height*0.53,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 25),
                 child: ListView.separated(
                     itemBuilder: ((context, index) {
-                      Word word = words[index];
-                      return Row(
-                        children: [
-                          Text(
-                            word.notation,
+                      Statement statement = statements[index];
+                      return ListTile(
+                        title: Container(
+                          padding: EdgeInsets.symmetric(vertical: 3),
+                          child: Text(
+                            statement.content,
                             style: TextStyles.regular00TextStyle,
                           ),
-                          Text(
-                            '[${word.pronunciation}]',
-                            style: TextStyles.regularGreenTextStyle,
-                          ),
-                          Spacer(flex: 2,),
-                          Chip(
-                            label: Text(
-                              word.tag,
-                              style: TextStyles.small00TextStyle,
-                            ),
-                            backgroundColor: selectTagColor(word.tag),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
-                            child: IconButton(
-                                onPressed: (){
-                                  if(word.bookmarked){
-                                    setState(() {
-                                      word.bookmarked = false;
-                                    });
-                                    deleteBookmark(word.id);
-                                  }
-                                  else{
-                                    setState(() {
-                                      word.bookmarked = true;
-                                    });
-                                    createBookmark(word.id);
-                                  }
-                                },
-                                icon: word.bookmarked?
-                                SvgPicture.asset(
-                                  'assets/icons/star_fill.svg',
-                                  fit: BoxFit.scaleDown,
-                                )
-                                    :
-                                SvgPicture.asset(
-                                  'assets/icons/star_unfill.svg',
-                                  fit: BoxFit.scaleDown,
-                                )
-                            ),
-                          )
-                        ],
-
+                        ),
+                        subtitle: Wrap(
+                          spacing: 5,
+                          children: statement.tags.map((tag) {
+                            return Chip(
+                                label: Text(tag),
+                                labelStyle: TextStyles.small00TextStyle,
+                                backgroundColor: selectTagColor(tag)
+                            );
+                          }).toList(),
+                        ),
+                        trailing: IconButton(
+                            onPressed: (){
+                              if(statement.bookmarked){
+                                setState(() {
+                                  statement.bookmarked = false;
+                                });
+                                deleteBookmark(statement.id);
+                              }
+                              else{
+                                setState(() {
+                                  statement.bookmarked = true;
+                                });
+                                createBookmark(statement.id);
+                              }
+                            },
+                            icon: statement.bookmarked?
+                            SvgPicture.asset(
+                              'assets/icons/star_fill.svg',
+                              fit: BoxFit.scaleDown,
+                            )
+                                :
+                            SvgPicture.asset(
+                              'assets/icons/star_unfill.svg',
+                              fit: BoxFit.scaleDown,
+                            )
+                        )
                       );
                     }),
                     separatorBuilder: (BuildContext context, int index) {
                       return const Divider(thickness: 1, height: 3,);
                     },
-                    itemCount: snapshot.data!.length
+                    itemCount: widget.sentenceList.length
                 ),
               );
             }
@@ -210,47 +200,41 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
 
     Widget retryLearnButtonSection = Container(
       margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.02,
-        left: MediaQuery.of(context).size.width*0.04,
-        right: MediaQuery.of(context).size.width*0.04
+          top: MediaQuery.of(context).size.height*0.02,
+          left: MediaQuery.of(context).size.width*0.04,
+          right: MediaQuery.of(context).size.width*0.04
       ),
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 6,
-            blurRadius: 7,
-            offset: Offset(0, 3),
-          )
-        ]
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 6,
+              blurRadius: 7,
+              offset: Offset(0, 3),
+            )
+          ]
       ),
       child: OutlinedButton(
           onPressed: () {
-            if (widget.isTodayWord == true) {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: true, wordList: widget.wordList, pcList: [],), //이미 학습한것은 어떻게 처리? idx
-              ));
-            } else {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: false, wordList: widget.wordList, pcList: [],), //이미 학습한것은 어떻게 처리? idx
-              ));
-            }
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => AccentTodayPracticePage(idx: 0, sentenceList: widget.sentenceList)
+            ));
           },
           style: OutlinedButton.styleFrom(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0))
-            ),
-            side: const BorderSide(
-              width: 1.0,
-              color: Colors.transparent,
-            ),
-            backgroundColor: Colors.white
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0))
+              ),
+              side: const BorderSide(
+                width: 1.0,
+                color: Colors.transparent,
+              ),
+              backgroundColor: Colors.white
           ),
           child: Container(
             padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.023),
             child: const Text(
               '다시 학습',
-              style: TextStyles.mediumRecordTextStyle,
+              style: TextStyles.mediumSTextStyle,
               textAlign: TextAlign.center,
             ),
           )
@@ -259,22 +243,22 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
 
     Widget goMainPageSection = Container(
       margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.01,
-        left: MediaQuery.of(context).size.width*0.04,
-        right: MediaQuery.of(context).size.width*0.04
+          top: MediaQuery.of(context).size.height*0.01,
+          left: MediaQuery.of(context).size.width*0.04,
+          right: MediaQuery.of(context).size.width*0.04
       ),
       child: OutlinedButton(
           onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
               builder: (BuildContext context) =>
                   HomePage()), (route) => false),
           style: OutlinedButton.styleFrom(
-            backgroundColor: ColorStyles.saeraOlive1,
+            backgroundColor: ColorStyles.saeraRed,
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8.0))
             ),
             side: const BorderSide(
               width: 1.0,
-              color: ColorStyles.saeraOlive1,
+              color: ColorStyles.saeraRed,
             ),
           ),
           child: Container(
@@ -321,13 +305,4 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
     );
   }
 
-}
-
-class Word {
-  final int id;
-  final String notation;
-  final String pronunciation;
-  final String tag;
-  bool bookmarked;
-  Word({required this.id, required this.notation, required this.pronunciation, required this.tag, required this.bookmarked});
 }

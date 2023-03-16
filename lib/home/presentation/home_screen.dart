@@ -8,7 +8,7 @@ import 'package:saera/learn/pronounce_learn/pronounce_learn_screen.dart';
 import 'package:saera/tabbar.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:saera/today_learn_word_list.dart';
+import 'package:saera/learn/pronounce_learn/today_learn_word_list.dart';
 import 'dart:convert';
 
 import '../../learn/accent_learn/presentation/accent_todaylearn_screen.dart';
@@ -17,7 +17,7 @@ import '../../login/data/refresh_token.dart';
 import '../../server.dart';
 import '../../style/font.dart';
 import '../../style/color.dart';
-import '../../today_learn_statement_list.dart';
+import '../../learn/accent_learn/presentation/today_learn_statement_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

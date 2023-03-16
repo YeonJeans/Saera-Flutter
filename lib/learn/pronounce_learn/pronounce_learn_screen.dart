@@ -20,7 +20,7 @@ import 'package:saera/server.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:saera/today_learn_word_list.dart';
+import 'package:saera/learn/pronounce_learn/today_learn_word_list.dart';
 import 'dart:convert';
 
 import '../../../login/data/authentication_manager.dart';

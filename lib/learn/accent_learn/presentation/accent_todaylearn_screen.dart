@@ -26,7 +26,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../../login/data/authentication_manager.dart';
 import '../../../login/presentation/widget/profile_image_clipper.dart';
-import '../../../today_learn_statement_list.dart';
+import 'today_learn_statement_list.dart';
 
 
 class AccentTodayPracticePage extends StatefulWidget {
