@@ -97,6 +97,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   getTop5SentenceList() async {
+    await Future.delayed(const Duration(seconds: 1));
     var url = Uri.parse('$serverHttp/top5-statement');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
@@ -108,6 +109,8 @@ class _HomePageState extends State<HomePage> {
         String name = i["name"];
         top5StatementList.add(top5Statement(id: id, content: name));
       }
+    } else {
+      throw Exception("top5 불러오기 오류 발생");
     }
   }
 
@@ -230,26 +233,31 @@ class _HomePageState extends State<HomePage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: Container(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
                   child: LoadingAnimationWidget.waveDots(
                       color: ColorStyles.expFillGray,
                       size: 45.0
                   )
               ),
             );
-          } else {
+          } else if (snapshot.connectionState == ConnectionState.done){
             if (snapshot.hasError) {
               return Center(
                 child: Container(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
-                  child: const Text("서버 연결이 불안정합니다.", style: TextStyles.regular25TextStyle,),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                  child: LoadingAnimationWidget.waveDots(
+                      color: ColorStyles.expFillGray,
+                      size: 45.0
+                  )
                 )
               );
             } else {
               return Container(
                 margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
                 child: CarouselSlider.builder(
-                  itemCount: 5,
+                  itemCount: top5StatementList.length,
                   options: CarouselOptions(
                       height: MediaQuery.of(context).size.height*0.09,
                       initialPage: 0,
@@ -258,11 +266,17 @@ class _HomePageState extends State<HomePage> {
                       autoPlay: true
                   ),
                   itemBuilder: (BuildContext context, int index, int realIndex) {
-                    return statementSection(top5StatementList[index].id, top5StatementList[index].content);
+                    if (top5StatementList.length != 5) {
+                      return getTop5SentenceList();
+                    } else {
+                      return statementSection(top5StatementList[index].id, top5StatementList[index].content);
+                    }
                   },
                 ),
               );
             }
+          } else {
+            return Container();
           }
         }
     );
@@ -399,6 +413,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Container(
         child: ListView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
             searchSection,
             mostLearnTextSection,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:saera/style/font.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,6 +26,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Future<dynamic>? statement1;
 
   Future<List<Statement>> searchStatement() async {
+    await Future.delayed(const Duration(seconds: 1));
     List<Statement> _list = [];
     var url = Uri.parse('$serverHttp/statements');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
@@ -44,10 +46,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
           }
         }
       }
-      print("_list : ${_list.length}");
       return _list;
     } else {
-      throw Exception("데이터를 불러오는데 실패했습니다.");
+      throw Exception("북마크 문장을 불러오는데 실패했습니다.");
     }
   }
 
@@ -96,7 +97,14 @@ class _BookmarkPageState extends State<BookmarkPage> {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
                 return Center(
-                  child: Text(snapshot.error.toString()),
+                    child: Container(
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                        margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                        child: LoadingAnimationWidget.waveDots(
+                            color: ColorStyles.expFillGray,
+                            size: 45.0
+                        )
+                    )
                 );
               } else {
                 List<Statement>? statements = snapshot.data;
