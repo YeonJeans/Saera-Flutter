@@ -149,7 +149,7 @@ class _SearchPageState extends State<SearchPage> {
   Color selectTagColor(String tag) {
     if (tag == '일상' || tag == '소비' || tag == '인사' || tag == '은행/공공기관' || tag == '회사') {
       return ColorStyles.saeraBlue.withOpacity(0.5);
-    } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정 표현') {
+    } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정표현') {
       return ColorStyles.saeraBeige.withOpacity(0.5);
     } else {
       return ColorStyles.saeraYellow.withOpacity(0.5);
