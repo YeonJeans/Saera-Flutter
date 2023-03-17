@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:saera/style/font.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -6,6 +7,8 @@ class CustomLoadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
     Widget loadingSpinnerSection = Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.35),
         margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.4),

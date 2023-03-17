@@ -1052,6 +1052,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Stack(
       children: [
         SafeArea(

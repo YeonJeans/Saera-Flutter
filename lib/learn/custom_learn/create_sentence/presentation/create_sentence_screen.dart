@@ -392,6 +392,8 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
     return Stack(
       children: [
         SafeArea(

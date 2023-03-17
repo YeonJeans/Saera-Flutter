@@ -215,6 +215,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     Widget appBarSection = Container(
         padding: const EdgeInsets.symmetric(vertical: 5),
