@@ -249,7 +249,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                   });
                 },
                 decoration: InputDecoration(
-                  prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  prefixIcon: Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    child: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  ),
                   hintText: '${_authManager.getName()}님이 만든 문장 내에서 검색합니다.',
                   hintStyle: TextStyles.mediumAATextStyle,
                   enabledBorder: const OutlineInputBorder(
@@ -543,9 +547,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              return Center(
-                child: Text(snapshot.error.toString()),
-              );
+              return notExistStatement();
             } else {
               List<Statement> statements = snapshot.data;
               if (statements.isEmpty) {
@@ -555,7 +557,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               }
             }
           } else {
-            return Container();
+            return notExistStatement();
           }
         })
     );

@@ -250,7 +250,6 @@ class _SearchPageState extends State<SearchPage> {
         children: <Widget>[
           Flexible(
               child: TextField(
-                //autofocus: true,
                 controller: _textEditingController,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.allow(RegExp(r'[a-z|A-Z|0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ᆞ|ᆢ|ㆍ|ᆢ|ᄀᆞ|ᄂᆞ|ᄃᆞ|ᄅᆞ|ᄆᆞ|ᄇᆞ|ᄉᆞ|ᄋᆞ|ᄌᆞ|ᄎᆞ|ᄏᆞ|ᄐᆞ|ᄑᆞ|ᄒᆞ]'))
@@ -262,7 +261,11 @@ class _SearchPageState extends State<SearchPage> {
                   });
                 },
                 decoration: InputDecoration(
-                  prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  prefixIcon: Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    child: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  ),
                   hintText: '어떤 문장을 학습할까요?',
                   hintStyle: TextStyles.mediumAATextStyle,
                   enabledBorder: const OutlineInputBorder(

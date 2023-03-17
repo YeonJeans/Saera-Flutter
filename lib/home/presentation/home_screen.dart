@@ -162,7 +162,11 @@ class _HomePageState extends State<HomePage> {
                   TabBarMainPage.myTabbedPageKey.currentState?.tabController.animateTo(1);
                 },
                 decoration: InputDecoration(
-                  prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  prefixIcon: Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    child: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  ),
                   hintText: '무엇을 학습할까요?',
                   hintStyle: TextStyles.mediumAATextStyle,
                   enabledBorder: const OutlineInputBorder(
