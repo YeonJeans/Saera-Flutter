@@ -73,8 +73,13 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      bottomNavigationBar: SizedBox(
+      bottomNavigationBar: Container(
         height: 60.0,
+        decoration: BoxDecoration(
+            border: Border(
+                top: BorderSide(color: ColorStyles.tabGray.withOpacity(0.25), width: 1)
+            )
+        ),
         child: TabBar(
           controller: tabController,
           tabs: <Widget>[
