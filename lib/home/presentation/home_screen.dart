@@ -309,102 +309,107 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ElevatedButton(
-              onPressed: (){
-                todayWordProgressIdx = _authManager.getTodayWordIdx()!;
-                if(todayWordProgressIdx == 5){
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => TodayLearnWordListPage(wordList: wordList, isTodayWord: true),
-                  ));
-                }
-                else{
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList, pcList: [],)
-                  ));
-                }
-                //Get.to(PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList));
-                },
-              style: ButtonStyle(
-                  elevation: MaterialStateProperty.all(8),
-                  backgroundColor: MaterialStateProperty.all(Colors.white),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      )
-                  )
+          InkWell(
+            onTap: (){
+              todayWordProgressIdx = _authManager.getTodayWordIdx()!;
+              if(todayWordProgressIdx == 5){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => TodayLearnWordListPage(wordList: wordList, isTodayWord: true),
+                ));
+              }
+              else{
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => PronouncePracticePage(idx: todayWordProgressIdx, isTodayLearn: true, wordList: wordList, pcList: [],)
+                ));
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                    )
+                  ]
               ),
-              child: Container(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width*0.015,
-                    right: MediaQuery.of(context).size.width*0.17
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
-                    SvgPicture.asset('assets/icons/today_word.svg'),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015)),
-                    const Text(
-                      '오늘의\n단어 학습',
-                      style: TextStyles.medium25TextStyle,
-                    ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.010)),
-                    const Text(
-                      '약 3분 소요',
-                      style: TextStyles.tiny82TextStyle,
-                    ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
-                  ],
-                ),
-              )
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width*0.05,
+                  right: MediaQuery.of(context).size.width*0.19
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
+                  SvgPicture.asset('assets/icons/today_word.svg'),
+                  Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015)),
+                  const Text(
+                    '오늘의\n단어 학습',
+                    style: TextStyles.medium25TextStyle,
+                  ),
+                  Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.010)),
+                  const Text(
+                    '약 3분 소요',
+                    style: TextStyles.tiny82TextStyle,
+                  ),
+                  Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
+                ],
+              ),
+            ),
           ),
-          ElevatedButton(
-              onPressed: (){
-                todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
-                if(todayStatementProgressIdx == 5){
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => TodayLearnStatementListPage(sentenceList: statementList,),
-                  ));
-                }else{
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => AccentTodayPracticePage(idx: todayStatementProgressIdx, sentenceList: statementList)
-                  ));
-                }
-                },
-              style: ButtonStyle(
-                  elevation: MaterialStateProperty.all(8),
-                  backgroundColor: MaterialStateProperty.all(Colors.white),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      )
-                  )
+          InkWell(
+            onTap: (){
+              todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
+              if(todayStatementProgressIdx == 5){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => TodayLearnStatementListPage(sentenceList: statementList,),
+                ));
+              }else{
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => AccentTodayPracticePage(idx: todayStatementProgressIdx, sentenceList: statementList)
+                ));
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                    )
+                  ]
               ),
-              child: Container(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width*0.015,
-                    right: MediaQuery.of(context).size.width*0.17
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
-                    SvgPicture.asset('assets/icons/today_statement.svg'),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015)),
-                    const Text(
-                      '오늘의\n문장 학습',
-                      style: TextStyles.medium25TextStyle,
-                    ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.010)),
-                    const Text(
-                      '약 5분 소요',
-                      style: TextStyles.tiny82TextStyle,
-                    ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
-                  ],
-                ),
-              )
-          )
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width*0.05,
+                  right: MediaQuery.of(context).size.width*0.19
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
+                  SvgPicture.asset('assets/icons/today_statement.svg'),
+                  Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015)),
+                  const Text(
+                    '오늘의\n문장 학습',
+                    style: TextStyles.medium25TextStyle,
+                  ),
+                  Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.010)),
+                  const Text(
+                    '약 5분 소요',
+                    style: TextStyles.tiny82TextStyle,
+                  ),
+                  Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025)),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
