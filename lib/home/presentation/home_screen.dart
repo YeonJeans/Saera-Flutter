@@ -316,7 +316,7 @@ class _HomePageState extends State<HomePage> {
               todayWordProgressIdx = _authManager.getTodayWordIdx()!;
               if(todayWordProgressIdx == 5){
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => TodayLearnWordListPage(wordList: wordList, isTodayWord: true),
+                  builder: (context) => TodayLearnWordListPage(wordList: wordList, isTodayWord: true, tagList: [],),
                 ));
               }
               else{
