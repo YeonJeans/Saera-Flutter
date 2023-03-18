@@ -27,6 +27,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
   final AuthenticationManager _authManager = Get.find();
 
   Future<dynamic>? statementData;
+  int tagCount = 0;
   List<Tag> tagList = [];
   final List<ChipData> _chipList = [];
   int? _selectedIndex;
@@ -86,13 +87,27 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 
   double listViewHeight() {
     if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.49;
+      return MediaQuery.of(context).size.height*0.51;
     } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.59;
+      return MediaQuery.of(context).size.height*0.61;
     } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.55;
+      if (tagCount == 0) {
+        return MediaQuery.of(context).size.height*0.57;
+      } else if (tagCount >= 1 && tagCount < 3) {
+        return MediaQuery.of(context).size.height*0.56;
+      } else if (tagCount >= 3 && tagCount < 5) {
+        return MediaQuery.of(context).size.height*0.55;
+      } else if (tagCount >= 5 && tagCount < 7) {
+        return MediaQuery.of(context).size.height*0.54;
+      } else if (tagCount >= 7 && tagCount < 9) {
+        return MediaQuery.of(context).size.height*0.53;
+      } else if (tagCount >= 9 && tagCount < 11) {
+        return MediaQuery.of(context).size.height*0.52;
+      } else {
+        return MediaQuery.of(context).size.height*0.51;
+      }
     } else {
-      return MediaQuery.of(context).size.height*0.65;
+      return MediaQuery.of(context).size.height*0.67;
     }
   }
 
@@ -143,6 +158,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         int id = i["id"];
         String name = i["name"];
         tagList.add(Tag(id: id, name: name));
+        tagCount++;
       }
     }
     return tagList;
@@ -250,7 +266,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                   });
                 },
                 decoration: InputDecoration(
-                  prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  prefixIcon: Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    child: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  ),
                   hintText: '${_authManager.getName()}님이 만든 문장 내에서 검색합니다.',
                   hintStyle: TextStyles.mediumAATextStyle,
                   enabledBorder: const OutlineInputBorder(
@@ -437,30 +457,36 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               return Container(
                 padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                 height: listViewHeight(),
-                child: ListView.separated(
-                    itemBuilder: ((context, index) {
-                      Statement statement = statements[index];
-                      return Dismissible(
-                          key: Key(statement.id.toString()),
-                          background: Container(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            child: const Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                              size: 28,
-                            )
-                          ),
-                          direction: DismissDirection.endToStart,
-                          onDismissed: (direction) {
-                            setState(() {
-                              statements.removeAt(index);
-                              deleteCustomStatement(statement.id);
-                              statementData = searchCustomStatement("");
-                            });
-                          },
-                          child: InkWell(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      statementData = searchCustomStatement("");
+                    });
+                  },
+                  child: ListView.separated(
+                      itemBuilder: ((context, index) {
+                        Statement statement = statements[index];
+                        return Dismissible(
+                            key: Key(statement.id.toString()),
+                            background: Container(
+                                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                                color: Colors.red,
+                                alignment: Alignment.centerRight,
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                  size: 28,
+                                )
+                            ),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (direction) {
+                              setState(() {
+                                statements.removeAt(index);
+                                deleteCustomStatement(statement.id);
+                                statementData = searchCustomStatement("");
+                              });
+                            },
+                            child: InkWell(
                               onTap: (){
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => AccentPracticePage(id: statement.id, isCustom: true),
@@ -485,9 +511,9 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                                           spacing: 7.0,
                                           children: statement.tags.map((tag) {
                                             return Chip(
-                                                label: Text(tag),
-                                                labelStyle: TextStyles.small00TextStyle,
-                                                //backgroundColor: selectTagColor(tag)
+                                              label: Text(tag),
+                                              labelStyle: TextStyles.small00TextStyle,
+                                              //backgroundColor: selectTagColor(tag)
                                             );
                                           }).toList(),
                                         ),
@@ -522,14 +548,15 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                                   )
                                 ],
                               ),
-                          )
-                      );
-                    }),
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider(thickness: 1,);
-                    },
-                    itemCount: statements.length
-                ),
+                            )
+                        );
+                      }),
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider(thickness: 1,);
+                      },
+                      itemCount: statements.length
+                  ),
+                )
               );
             }
           } else {
@@ -544,9 +571,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              return Center(
-                child: Text(snapshot.error.toString()),
-              );
+              return notExistStatement();
             } else {
               List<Statement> statements = snapshot.data;
               if (statements.isEmpty) {
@@ -556,7 +581,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               }
             }
           } else {
-            return Container();
+            return notExistStatement();
           }
         })
     );

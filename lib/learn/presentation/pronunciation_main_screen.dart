@@ -142,7 +142,7 @@ class PronunciationMainPage extends StatelessWidget {
                 ],
               ),
               Container(
-                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03),
                 child: IconButton(
                     onPressed: null,
                     icon: SvgPicture.asset('assets/icons/word_main_next.svg')

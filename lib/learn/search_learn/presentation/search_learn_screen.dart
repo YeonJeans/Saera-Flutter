@@ -105,13 +105,13 @@ class _SearchPageState extends State<SearchPage> {
 
   double listViewHeight() {
     if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.48;
+      return MediaQuery.of(context).size.height*0.5;
     } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.6;
+      return MediaQuery.of(context).size.height*0.62;
     } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.55;
+      return MediaQuery.of(context).size.height*0.57;
     } else {
-      return MediaQuery.of(context).size.height*0.65;
+      return MediaQuery.of(context).size.height*0.67;
     }
   }
 
@@ -149,7 +149,7 @@ class _SearchPageState extends State<SearchPage> {
   Color selectTagColor(String tag) {
     if (tag == '일상' || tag == '소비' || tag == '인사' || tag == '은행/공공기관' || tag == '회사') {
       return ColorStyles.saeraBlue.withOpacity(0.5);
-    } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정 표현') {
+    } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정표현') {
       return ColorStyles.saeraBeige.withOpacity(0.5);
     } else {
       return ColorStyles.saeraYellow.withOpacity(0.5);
@@ -251,7 +251,6 @@ class _SearchPageState extends State<SearchPage> {
         children: <Widget>[
           Flexible(
               child: TextField(
-                //autofocus: true,
                 controller: _textEditingController,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.allow(RegExp(r'[a-z|A-Z|0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ᆞ|ᆢ|ㆍ|ᆢ|ᄀᆞ|ᄂᆞ|ᄃᆞ|ᄅᆞ|ᄆᆞ|ᄇᆞ|ᄉᆞ|ᄋᆞ|ᄌᆞ|ᄎᆞ|ᄏᆞ|ᄐᆞ|ᄑᆞ|ᄒᆞ]'))
@@ -263,7 +262,11 @@ class _SearchPageState extends State<SearchPage> {
                   });
                 },
                 decoration: InputDecoration(
-                  prefixIcon: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  prefixIcon: Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    child: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                  ),
                   hintText: '어떤 문장을 학습할까요?',
                   hintStyle: TextStyles.mediumAATextStyle,
                   enabledBorder: const OutlineInputBorder(
@@ -315,7 +318,6 @@ class _SearchPageState extends State<SearchPage> {
         child: Container(
           padding: EdgeInsets.symmetric(
             vertical: MediaQuery.of(context).size.height*0.01,
-            horizontal: MediaQuery.of(context).size.width*0.02
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -490,84 +492,91 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                 height: listViewHeight(),
-                child: ListView.separated(
-                    itemBuilder: ((context, index) {
-                      Statement statement = statements[index];
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => AccentPracticePage(id: statement.id, isCustom: false))
-                          );
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(vertical: 3),
-                                      child: Text(
-                                          statement.content,
-                                          style: TextStyles.regular00TextStyle
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      statement = searchStatement("");
+                    });
+                  },
+                  child: ListView.separated(
+                      itemBuilder: ((context, index) {
+                        Statement statement = statements[index];
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => AccentPracticePage(id: statement.id, isCustom: false))
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(vertical: 3),
+                                        child: Text(
+                                            statement.content,
+                                            style: TextStyles.regular00TextStyle
+                                        ),
                                       ),
-                                    ),
-                                    recommendedStatement(statement)
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width*0.7,
-                                  child: Wrap(
-                                    spacing: 7.0,
-                                    children: statement.tags.map((tag) {
-                                      return Chip(
-                                          label: Text(tag),
-                                          labelStyle: TextStyles.small00TextStyle,
-                                          backgroundColor: selectTagColor(tag)
-                                      );
-                                    }).toList(),
+                                      recommendedStatement(statement)
+                                    ],
                                   ),
-                                )
-                              ],
-                            ),
-                            IconButton(
-                                onPressed: (){
-                                  if(statement.bookmarked){
-                                    setState(() {
-                                      statement.bookmarked = false;
-                                    });
-                                    deleteBookmark(statement.id);
-                                  }
-                                  else{
-                                    setState(() {
-                                      statement.bookmarked = true;
-                                    });
-                                    createBookmark(statement.id);
-                                  }
-                                },
-                                icon: statement.bookmarked?
-                                SvgPicture.asset(
-                                  'assets/icons/star_fill.svg',
-                                  fit: BoxFit.scaleDown,
-                                )
-                                    :
-                                SvgPicture.asset(
-                                  'assets/icons/star_unfill.svg',
-                                  fit: BoxFit.scaleDown,
-                                )
-                            )
-                          ],
-                        ),
-                      );
-                    }),
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider(thickness: 1,);
-                    },
-                    itemCount: statements.length
-                ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width*0.7,
+                                    child: Wrap(
+                                      spacing: 7.0,
+                                      children: statement.tags.map((tag) {
+                                        return Chip(
+                                            label: Text(tag),
+                                            labelStyle: TextStyles.small00TextStyle,
+                                            backgroundColor: selectTagColor(tag)
+                                        );
+                                      }).toList(),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              IconButton(
+                                  onPressed: (){
+                                    if(statement.bookmarked){
+                                      setState(() {
+                                        statement.bookmarked = false;
+                                      });
+                                      deleteBookmark(statement.id);
+                                    }
+                                    else{
+                                      setState(() {
+                                        statement.bookmarked = true;
+                                      });
+                                      createBookmark(statement.id);
+                                    }
+                                  },
+                                  icon: statement.bookmarked?
+                                  SvgPicture.asset(
+                                    'assets/icons/star_fill.svg',
+                                    fit: BoxFit.scaleDown,
+                                  )
+                                      :
+                                  SvgPicture.asset(
+                                    'assets/icons/star_unfill.svg',
+                                    fit: BoxFit.scaleDown,
+                                  )
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider(thickness: 1,);
+                      },
+                      itemCount: statements.length
+                  ),
+                )
               );
             }
           } else {
