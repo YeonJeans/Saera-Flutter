@@ -16,9 +16,10 @@ import '../../login/data/authentication_manager.dart';
 class TodayLearnWordListPage extends StatefulWidget {
 
   final List<int> wordList;
+  final List<int> tagList;
   final bool isTodayWord;
 
-  const TodayLearnWordListPage({Key? key, required this.wordList, required this.isTodayWord});
+  const TodayLearnWordListPage({Key? key, required this.wordList, required this.isTodayWord, required this.tagList});
 
   @override
   State<StatefulWidget> createState() => _TodayLearnWordListPageState();
@@ -227,12 +228,15 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
       child: OutlinedButton(
           onPressed: () {
             if (widget.isTodayWord == true) {
+              Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: true, wordList: widget.wordList, pcList: [],), //이미 학습한것은 어떻게 처리? idx
               ));
-            } else {
+            }
+            else {
+              Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(
-                builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: false, wordList: widget.wordList, pcList: [],), //이미 학습한것은 어떻게 처리? idx
+                builder: (context) => PronouncePracticePage(idx: 0, isTodayLearn: false, wordList: widget.tagList, pcList: [],), //이미 학습한것은 어떻게 처리? idx
               ));
             }
           },
@@ -264,9 +268,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
         right: MediaQuery.of(context).size.width*0.04
       ),
       child: OutlinedButton(
-          onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  HomePage()), (route) => false),
+          onPressed: () => Navigator.pop(context),
           style: OutlinedButton.styleFrom(
             backgroundColor: ColorStyles.saeraOlive1,
             shape: const RoundedRectangleBorder(

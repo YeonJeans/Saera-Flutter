@@ -434,7 +434,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                     _authManager.saveTodayStatementIdx(widget.idx + 1);
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => TodayLearnWordListPage(wordList: [], isTodayWord: true),
+                      builder: (context) => TodayLearnWordListPage(wordList: [], isTodayWord: true, tagList: [],),
                     ));
                   }
                 },
@@ -564,7 +564,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TodayLearnWordListPage(wordList: practicedList.toSet().toList(), isTodayWord: widget.isTodayLearn)),
+                MaterialPageRoute(builder: (context) => TodayLearnWordListPage(wordList: practicedList.toSet().toList(), isTodayWord: widget.isTodayLearn, tagList: widget.wordList,)),
               );
             },
             child: Container(
