@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/learn/custom_learn/create_sentence/presentation/custom_statement_loading_screen.dart';
 import 'package:saera/style/color.dart';
@@ -14,6 +15,8 @@ class CustomDonePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
 
     Future<void> initializeSettings() async {
       await Future.delayed(Duration(seconds: 3));

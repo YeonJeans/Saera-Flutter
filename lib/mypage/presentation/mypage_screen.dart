@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:saera/mypage/presentation/widgets/mypage_userInfo.dart';
@@ -120,6 +121,7 @@ class _MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Stack(
       children: [
         SafeArea(
@@ -134,7 +136,10 @@ class _MyPageState extends State<MyPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          UserInfo(exp: xp,),
+                          (){
+                            return UserInfo(exp: xp,);
+                          }(),
+
                           Container(
                             margin: EdgeInsets.only(top: 52, bottom: 4),
                             child: _mypageButton("프로필 수정", "edit.svg", true, (){

@@ -55,22 +55,26 @@ class _AccentLineChartState extends State<AccentLineChart> {
 
               borderData: FlBorderData(show: false),
               lineBarsData: [
+
                 LineChartBarData(spots: (){
                   points.clear();
-                  
-                  points.add(AccentPoint(widget.x[0] - 1, 0.45));
 
-                  bool isPass = false;
+                  if(widget.isRecord){
+                    points.add(AccentPoint(0, 0.45));
 
-                  for(int i = 0; i < widget.x.length; i++){
-                    if(!isPass && widget.y[i] == 0){
-                      isPass = true;
-                      continue;
+                    for(int i = 4; i < widget.x[0]; i++){
+                      points.add(AccentPoint(i + 0.0, 0));
                     }
-                    points.add(AccentPoint(widget.x[i], widget.y[i]));
-                  }
 
-                  points.add(AccentPoint(widget.x[widget.x.length - 1] +1, 0.45));
+                    for(int i = 0; i < widget.x.length; i++){
+                      points.add(AccentPoint(widget.x[i], widget.y[i]));
+                    }
+                  }
+                  else{
+                    for(int i = 0; i < widget.x.length; i++){
+                      points.add(AccentPoint(widget.x[i], widget.y[i]));
+                    }
+                  }
 
                   return points.map(
                           (point) => point.y == 0 ? FlSpot.nullSpot :FlSpot(point.x, point.y)

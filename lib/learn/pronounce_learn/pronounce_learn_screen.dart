@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -433,7 +434,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                     _authManager.saveTodayStatementIdx(widget.idx + 1);
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => TodayLearnWordListPage(wordList: [], isTodayWord: true),
+                      builder: (context) => TodayLearnWordListPage(wordList: [], isTodayWord: true, tagList: [],),
                     ));
                   }
                 },
@@ -563,7 +564,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TodayLearnWordListPage(wordList: practicedList.toSet().toList(), isTodayWord: widget.isTodayLearn)),
+                MaterialPageRoute(builder: (context) => TodayLearnWordListPage(wordList: practicedList.toSet().toList(), isTodayWord: widget.isTodayLearn, tagList: widget.wordList,)),
               );
             },
             child: Container(
@@ -996,6 +997,8 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
     return Stack(
       children: [
         Container(

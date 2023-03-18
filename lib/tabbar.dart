@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart';
 
 import 'package:saera/home/presentation/home_screen.dart';
@@ -73,13 +74,18 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      bottomNavigationBar: SizedBox(
+      bottomNavigationBar: Container(
         height: 60.0,
+        decoration: BoxDecoration(
+            border: Border(
+                top: BorderSide(color: ColorStyles.tabGray.withOpacity(0.25), width: 1)
+            )
+        ),
         child: TabBar(
           controller: tabController,
           tabs: <Widget>[
             Tab(
-              icon: selectedIndex == 0 ? Icon(Icons.home, color: ColorStyles.tabGray) : Icon(Icons.home_outlined, color: ColorStyles.tabGray),
+              icon: selectedIndex == 0 ?  SvgPicture.asset("assets/icons/home_filled.svg", color: ColorStyles.tabGray, width: 16, height: 16,): SvgPicture.asset("assets/icons/home_outlined.svg", color: ColorStyles.tabGray, width: 16, height: 16,),
               iconMargin: EdgeInsets.only(bottom: 5.0),
               child: Text(
                 '홈',
@@ -87,7 +93,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
               ),
             ),
             Tab(
-              icon: selectedIndex == 1 ? Icon(Icons.view_list, color: ColorStyles.tabGray) : Icon(Icons.view_list_outlined, color: ColorStyles.tabGray),
+              icon: selectedIndex == 1 ? SvgPicture.asset("assets/icons/learn_filled.svg", color: ColorStyles.tabGray, width: 16, height: 16,): SvgPicture.asset("assets/icons/learn_outlined.svg", color: ColorStyles.tabGray, width: 16, height: 16,),
               iconMargin: EdgeInsets.only(bottom: 5.0),
               child: Text(
                 '학습',
@@ -95,7 +101,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
               ),
             ),
             Tab(
-              icon: selectedIndex == 2? Icon(Icons.star, color: ColorStyles.tabGray) : Icon(Icons.star_border, color: ColorStyles.tabGray),
+              icon: selectedIndex == 2? SvgPicture.asset("assets/icons/star_filled.svg", color: ColorStyles.tabGray, width: 16, height: 16,): SvgPicture.asset("assets/icons/star_outlined.svg", color: ColorStyles.tabGray, width: 16, height: 16,),
               iconMargin: EdgeInsets.only(bottom: 5.0),
               child: Text(
                 '북마크',
@@ -103,7 +109,7 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
               ),
             ),
             Tab(
-              icon: selectedIndex == 3? Icon(Icons.person, color: ColorStyles.tabGray) : Icon(Icons.person_2_outlined, color: ColorStyles.tabGray),
+              icon: selectedIndex == 3? SvgPicture.asset("assets/icons/user_filled.svg", color: ColorStyles.tabGray, width: 16, height: 16,): SvgPicture.asset("assets/icons/user_outlined.svg", color: ColorStyles.tabGray, width: 16, height: 16,),
               iconMargin: EdgeInsets.only(bottom: 5.0),
               child: Text(
                 '내 정보',

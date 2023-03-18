@@ -216,6 +216,7 @@ class _TodayLearnStatementListPageState extends State<TodayLearnStatementListPag
       ),
       child: OutlinedButton(
           onPressed: () {
+            Navigator.pop(context);
             Navigator.push(context, MaterialPageRoute(
               builder: (context) => AccentTodayPracticePage(idx: 0, sentenceList: widget.sentenceList)
             ));
@@ -248,9 +249,7 @@ class _TodayLearnStatementListPageState extends State<TodayLearnStatementListPag
           right: MediaQuery.of(context).size.width*0.04
       ),
       child: OutlinedButton(
-          onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  HomePage()), (route) => false),
+          onPressed: () => Navigator.pop(context),
           style: OutlinedButton.styleFrom(
             backgroundColor: ColorStyles.saeraRed,
             shape: const RoundedRectangleBorder(

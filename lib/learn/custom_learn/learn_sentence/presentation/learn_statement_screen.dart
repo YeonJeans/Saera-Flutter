@@ -218,6 +218,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     Widget appBarSection = Container(
       padding: const EdgeInsets.symmetric(vertical: 5),

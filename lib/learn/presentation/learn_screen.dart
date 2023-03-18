@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:saera/learn/presentation/accent_main_screen.dart';
@@ -17,6 +18,7 @@ class LearnPage extends StatefulWidget {
 class _LearnPageState extends State<LearnPage> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     Widget backSection = Row(
       mainAxisAlignment: MainAxisAlignment.start,
