@@ -105,13 +105,13 @@ class _SearchPageState extends State<SearchPage> {
 
   double listViewHeight() {
     if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.48;
+      return MediaQuery.of(context).size.height*0.5;
     } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.6;
+      return MediaQuery.of(context).size.height*0.62;
     } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.55;
+      return MediaQuery.of(context).size.height*0.57;
     } else {
-      return MediaQuery.of(context).size.height*0.65;
+      return MediaQuery.of(context).size.height*0.67;
     }
   }
 
