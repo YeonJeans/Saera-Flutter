@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -1190,6 +1191,8 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
     return Stack(
       children: [
         SafeArea(

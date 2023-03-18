@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:saera/learn/custom_learn/learn_sentence/presentation/learn_statement_screen.dart';
@@ -11,6 +12,7 @@ class AccentMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     Widget backSection = Row(
       mainAxisAlignment: MainAxisAlignment.start,
