@@ -27,6 +27,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
   final AuthenticationManager _authManager = Get.find();
 
   Future<dynamic>? statementData;
+  int tagCount = 0;
   List<Tag> tagList = [];
   final List<ChipData> _chipList = [];
   int? _selectedIndex;
@@ -86,13 +87,27 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 
   double listViewHeight() {
     if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.49;
+      return MediaQuery.of(context).size.height*0.51;
     } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.59;
+      return MediaQuery.of(context).size.height*0.61;
     } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.55;
+      if (tagCount == 0) {
+        return MediaQuery.of(context).size.height*0.57;
+      } else if (tagCount >= 1 && tagCount < 3) {
+        return MediaQuery.of(context).size.height*0.56;
+      } else if (tagCount >= 3 && tagCount < 5) {
+        return MediaQuery.of(context).size.height*0.55;
+      } else if (tagCount >= 5 && tagCount < 7) {
+        return MediaQuery.of(context).size.height*0.54;
+      } else if (tagCount >= 7 && tagCount < 9) {
+        return MediaQuery.of(context).size.height*0.53;
+      } else if (tagCount >= 9 && tagCount < 11) {
+        return MediaQuery.of(context).size.height*0.52;
+      } else {
+        return MediaQuery.of(context).size.height*0.51;
+      }
     } else {
-      return MediaQuery.of(context).size.height*0.65;
+      return MediaQuery.of(context).size.height*0.67;
     }
   }
 
@@ -143,6 +158,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         int id = i["id"];
         String name = i["name"];
         tagList.add(Tag(id: id, name: name));
+        tagCount++;
       }
     }
     return tagList;
