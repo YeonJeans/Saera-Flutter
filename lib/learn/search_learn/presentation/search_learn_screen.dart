@@ -491,84 +491,91 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                 height: listViewHeight(),
-                child: ListView.separated(
-                    itemBuilder: ((context, index) {
-                      Statement statement = statements[index];
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => AccentPracticePage(id: statement.id, isCustom: false))
-                          );
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(vertical: 3),
-                                      child: Text(
-                                          statement.content,
-                                          style: TextStyles.regular00TextStyle
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      statement = searchStatement("");
+                    });
+                  },
+                  child: ListView.separated(
+                      itemBuilder: ((context, index) {
+                        Statement statement = statements[index];
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => AccentPracticePage(id: statement.id, isCustom: false))
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(vertical: 3),
+                                        child: Text(
+                                            statement.content,
+                                            style: TextStyles.regular00TextStyle
+                                        ),
                                       ),
-                                    ),
-                                    recommendedStatement(statement)
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width*0.7,
-                                  child: Wrap(
-                                    spacing: 7.0,
-                                    children: statement.tags.map((tag) {
-                                      return Chip(
-                                          label: Text(tag),
-                                          labelStyle: TextStyles.small00TextStyle,
-                                          backgroundColor: selectTagColor(tag)
-                                      );
-                                    }).toList(),
+                                      recommendedStatement(statement)
+                                    ],
                                   ),
-                                )
-                              ],
-                            ),
-                            IconButton(
-                                onPressed: (){
-                                  if(statement.bookmarked){
-                                    setState(() {
-                                      statement.bookmarked = false;
-                                    });
-                                    deleteBookmark(statement.id);
-                                  }
-                                  else{
-                                    setState(() {
-                                      statement.bookmarked = true;
-                                    });
-                                    createBookmark(statement.id);
-                                  }
-                                },
-                                icon: statement.bookmarked?
-                                SvgPicture.asset(
-                                  'assets/icons/star_fill.svg',
-                                  fit: BoxFit.scaleDown,
-                                )
-                                    :
-                                SvgPicture.asset(
-                                  'assets/icons/star_unfill.svg',
-                                  fit: BoxFit.scaleDown,
-                                )
-                            )
-                          ],
-                        ),
-                      );
-                    }),
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider(thickness: 1,);
-                    },
-                    itemCount: statements.length
-                ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width*0.7,
+                                    child: Wrap(
+                                      spacing: 7.0,
+                                      children: statement.tags.map((tag) {
+                                        return Chip(
+                                            label: Text(tag),
+                                            labelStyle: TextStyles.small00TextStyle,
+                                            backgroundColor: selectTagColor(tag)
+                                        );
+                                      }).toList(),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              IconButton(
+                                  onPressed: (){
+                                    if(statement.bookmarked){
+                                      setState(() {
+                                        statement.bookmarked = false;
+                                      });
+                                      deleteBookmark(statement.id);
+                                    }
+                                    else{
+                                      setState(() {
+                                        statement.bookmarked = true;
+                                      });
+                                      createBookmark(statement.id);
+                                    }
+                                  },
+                                  icon: statement.bookmarked?
+                                  SvgPicture.asset(
+                                    'assets/icons/star_fill.svg',
+                                    fit: BoxFit.scaleDown,
+                                  )
+                                      :
+                                  SvgPicture.asset(
+                                    'assets/icons/star_unfill.svg',
+                                    fit: BoxFit.scaleDown,
+                                  )
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider(thickness: 1,);
+                      },
+                      itemCount: statements.length
+                  ),
+                )
               );
             }
           } else {

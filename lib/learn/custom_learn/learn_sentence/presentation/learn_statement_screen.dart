@@ -456,30 +456,36 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               return Container(
                 padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                 height: listViewHeight(),
-                child: ListView.separated(
-                    itemBuilder: ((context, index) {
-                      Statement statement = statements[index];
-                      return Dismissible(
-                          key: Key(statement.id.toString()),
-                          background: Container(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            child: const Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                              size: 28,
-                            )
-                          ),
-                          direction: DismissDirection.endToStart,
-                          onDismissed: (direction) {
-                            setState(() {
-                              statements.removeAt(index);
-                              deleteCustomStatement(statement.id);
-                              statementData = searchCustomStatement("");
-                            });
-                          },
-                          child: InkWell(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      statementData = searchCustomStatement("");
+                    });
+                  },
+                  child: ListView.separated(
+                      itemBuilder: ((context, index) {
+                        Statement statement = statements[index];
+                        return Dismissible(
+                            key: Key(statement.id.toString()),
+                            background: Container(
+                                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                                color: Colors.red,
+                                alignment: Alignment.centerRight,
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                  size: 28,
+                                )
+                            ),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (direction) {
+                              setState(() {
+                                statements.removeAt(index);
+                                deleteCustomStatement(statement.id);
+                                statementData = searchCustomStatement("");
+                              });
+                            },
+                            child: InkWell(
                               onTap: (){
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => AccentPracticePage(id: statement.id, isCustom: true),
@@ -504,9 +510,9 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                                           spacing: 7.0,
                                           children: statement.tags.map((tag) {
                                             return Chip(
-                                                label: Text(tag),
-                                                labelStyle: TextStyles.small00TextStyle,
-                                                //backgroundColor: selectTagColor(tag)
+                                              label: Text(tag),
+                                              labelStyle: TextStyles.small00TextStyle,
+                                              //backgroundColor: selectTagColor(tag)
                                             );
                                           }).toList(),
                                         ),
@@ -541,14 +547,15 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                                   )
                                 ],
                               ),
-                          )
-                      );
-                    }),
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider(thickness: 1,);
-                    },
-                    itemCount: statements.length
-                ),
+                            )
+                        );
+                      }),
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider(thickness: 1,);
+                      },
+                      itemCount: statements.length
+                  ),
+                )
               );
             }
           } else {
