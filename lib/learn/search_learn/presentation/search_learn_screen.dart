@@ -317,7 +317,6 @@ class _SearchPageState extends State<SearchPage> {
         child: Container(
           padding: EdgeInsets.symmetric(
             vertical: MediaQuery.of(context).size.height*0.01,
-            horizontal: MediaQuery.of(context).size.width*0.02
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
