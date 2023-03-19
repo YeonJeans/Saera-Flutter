@@ -30,7 +30,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
 
   Future<dynamic>? word;
 
-  Color selectTagColor(String tag) { // 태그별 컬러파레트 필요
+  Color selectTagColor(String tag) {
     if (tag == '구개음화') {
       return ColorStyles.saeraBlue.withOpacity(0.5);
     } else if (tag == "ㄴ첨가") {
@@ -164,6 +164,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
                               style: TextStyles.small00TextStyle,
                             ),
                             backgroundColor: selectTagColor(word.tag),
+                            visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
                           ),
                           Container(
                             margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),

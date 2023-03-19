@@ -155,7 +155,8 @@ class _TodayLearnStatementListPageState extends State<TodayLearnStatementListPag
                             return Chip(
                                 label: Text(tag),
                                 labelStyle: TextStyles.small00TextStyle,
-                                backgroundColor: selectTagColor(tag)
+                                backgroundColor: selectTagColor(tag),
+                                visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
                             );
                           }).toList(),
                         ),
