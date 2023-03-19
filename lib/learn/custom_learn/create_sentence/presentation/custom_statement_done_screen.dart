@@ -23,7 +23,7 @@ class CustomDonePage extends StatelessWidget {
     }
 
     Widget checkIconSection = Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.28),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
       child: SvgPicture.asset('assets/icons/check_round_fill.svg', fit: BoxFit.scaleDown,),
     );
 
@@ -37,7 +37,8 @@ class CustomDonePage extends StatelessWidget {
     );
 
     Widget goLearnPageSection = Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.23),
+      margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
+      height: 56,
       child: OutlinedButton(
         onPressed: () {
           Navigator.pop(context);
@@ -52,9 +53,8 @@ class CustomDonePage extends StatelessWidget {
             color: ColorStyles.saeraAppBar,
           ),
         ),
-        child: Container(
-          padding: EdgeInsets.all(18.0),
-          child: const Text(
+        child: const Center(
+          child: Text(
             '학습 화면으로',
             style: TextStyles.mediumBlueBoldTextStyle,
             textAlign: TextAlign.center,
@@ -64,7 +64,8 @@ class CustomDonePage extends StatelessWidget {
     );
 
     Widget goAccentPageSection = Container(
-      padding: EdgeInsets.only(top: 9.0),
+      margin: const EdgeInsets.only(left: 14, right: 14),
+      height: 56,
       child: OutlinedButton(
           onPressed: () {
             Navigator.pop(context);
@@ -81,14 +82,23 @@ class CustomDonePage extends StatelessWidget {
               color: ColorStyles.saeraAppBar,
             ),
           ),
-          child: Container(
-            padding: EdgeInsets.all(18.0),
-            child: const Text(
+          child: const Center(
+            child: Text(
               '바로 학습',
               style: TextStyles.mediumWhiteBoldTextStyle,
               textAlign: TextAlign.center,
             ),
           )
+      ),
+    );
+
+    Widget bottomButtonSection = SizedBox(
+      height: 142,
+      child: Column(
+        children: [
+          goLearnPageSection,
+          goAccentPageSection
+        ],
       ),
     );
 
@@ -120,10 +130,9 @@ class CustomDonePage extends StatelessWidget {
                           children: [
                             checkIconSection,
                             doneSection,
-                            goLearnPageSection,
-                            goAccentPageSection
                           ],
                         ),
+                        bottomSheet: bottomButtonSection,
                       )
                   )
                 ],
