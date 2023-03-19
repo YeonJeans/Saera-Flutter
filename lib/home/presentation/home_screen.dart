@@ -197,38 +197,42 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Container statementSection(int id, String statement) {
-      return Container(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.03),
-        child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AccentPracticePage(id: id, isCustom: false,))
-              );
-            },
-            style: ButtonStyle(
-                elevation: MaterialStateProperty.all(8),
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    )
+    InkWell statementSection(int id, String statement) {
+      return InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AccentPracticePage(id: id, isCustom: false,))
+          );
+        },
+        child: Container(
+          margin: EdgeInsets.only(
+            top: MediaQuery.of(context).size.height*0.01,
+            bottom: MediaQuery.of(context).size.height*0.02
+          ),
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
                 )
-            ),
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    statement,
-                    style: TextStyles.regular25TextStyle,
-                  ),
-                  SvgPicture.asset('assets/icons/expand_right.svg'),
-                ],
+              ]
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                statement,
+                style: TextStyles.regular25TextStyle,
               ),
-            )
+              SvgPicture.asset('assets/icons/expand_right.svg'),
+            ],
+          ),
         ),
       );
     }
@@ -340,7 +344,7 @@ class _HomePageState extends State<HomePage> {
               ),
               padding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width*0.05,
-                  right: MediaQuery.of(context).size.width*0.19
+                  right: MediaQuery.of(context).size.width*0.2
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,7 +394,7 @@ class _HomePageState extends State<HomePage> {
               ),
               padding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width*0.05,
-                  right: MediaQuery.of(context).size.width*0.19
+                  right: MediaQuery.of(context).size.width*0.2
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
