@@ -138,13 +138,13 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
   }
 
   createBookmark (int id) async {
-    var url = Uri.parse('$serverHttp/bookmark?type=STATEMENT&fk=$id');
+    var url = Uri.parse('$serverHttp/bookmark?type=CUSTOM&fk=$id');
     final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     print("create : $response");
   }
 
   deleteBookmark (int id) async {
-    var url = Uri.parse('$serverHttp/bookmark?type=STATEMENT&fk=$id');
+    var url = Uri.parse('$serverHttp/bookmark?type=CUSTOM&fk=$id');
     final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     print("delete : $response");
   }
