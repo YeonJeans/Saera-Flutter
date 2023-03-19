@@ -25,16 +25,24 @@ class _BookmarkPageState extends State<BookmarkPage> {
   final AuthenticationManager _authManager = Get.find();
 
   Future<dynamic>? statement1;
+  int _selectedIndex = 1;
 
-  Future<List<Statement>> searchStatement() async {
-    await Future.delayed(const Duration(seconds: 1));
+  Future<List<Statement>> getStatement(int _selectedIndex) async {
+    print("selectedIndex : $_selectedIndex");
     List<Statement> _list = [];
-    var url = Uri.parse('$serverHttp/statements');
+    var url;
+    if (_selectedIndex == 0) {
+      //단어 전체 조회 api가 없는 것 같은데
+      url = Uri.parse('$serverHttp/words');
+    } else if (_selectedIndex == 1) {
+      url = Uri.parse('$serverHttp/statements');
+    } else {
+      url = Uri.parse('$serverHttp/customs');
+    }
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
-    if (response.statusCode == 200) {
 
+    if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
-      _list.clear();
       if (_list.isEmpty) {
         for (dynamic i in body) {
           if (i["bookmarked"] == true) {
@@ -49,18 +57,21 @@ class _BookmarkPageState extends State<BookmarkPage> {
       }
       return _list;
     } else {
-      throw Exception("북마크 문장을 불러오는데 실패했습니다.");
+      print(response.body);
+      return throw Exception("북마크 서버 오류");
     }
   }
 
-  createBookmark (int id) async {
-    var url = Uri.parse('$serverHttp/bookmark?type=STATEMENT&fk=$id');
-    final response = await http.post(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
-    print("create : $response");
-  }
+  void deleteBookmark (int id, int _selectedIndex) async {
+    var url;
+    if (_selectedIndex == 0) {
+      url = Uri.parse('$serverHttp/bookmark?type=WORD&fk=$id');
+    } else if (_selectedIndex == 1) {
+      url = Uri.parse('$serverHttp/bookmark?type=STATEMENT&fk=$id');
+    } else {
+      url = Uri.parse('$serverHttp/bookmark?type=CUSTOM&fk=$id');
+    }
 
-  void deleteBookmark (int id) async {
-    var url = Uri.parse('$serverHttp/bookmark?type=STATEMENT&fk=$id');
     final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     print("delete : $response");
   }
@@ -78,7 +89,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   @override
   void initState() {
     super.initState();
-    statement1 = searchStatement();
+    statement1 = getStatement(_selectedIndex);
   }
 
   @override
@@ -93,9 +104,38 @@ class _BookmarkPageState extends State<BookmarkPage> {
       )
     );
 
+    List<String> filterList = ['발음', '억양', '사용자 정의'];
+    Widget filterSection = Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height*0.01,
+        left: 10.0,
+        right: 10.0
+      ),
+      child: Wrap(
+          spacing: 7,
+          children: List.generate(filterList.length, (index) {
+            return ChoiceChip(
+              label: Text(filterList[index]),
+              labelStyle: TextStyles.small25TextStyle,
+              //avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
+              selectedColor: ColorStyles.saeraBeige,
+              backgroundColor: Colors.white,
+              side: BorderSide(color: ColorStyles.disableGray),
+              visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
+              selected: _selectedIndex == index,
+              onSelected: (bool selected) {
+                setState(() {
+                  _selectedIndex = selected ? index : _selectedIndex;
+                });
+              },
+            );
+          }).toList()
+      ),
+    );
+
     Widget bookmarkStatementSection(){
       return FutureBuilder(
-          future: statement1 = searchStatement(),
+          future: statement1 = getStatement(_selectedIndex),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
@@ -112,12 +152,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
               } else {
                 List<Statement>? statements = snapshot.data;
                 return Container(
-                  padding: EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
+                  padding: EdgeInsets.only(top: 16.0, left: 10.0, right: 10.0),
                   height: MediaQuery.of(context).size.height*0.72,
                   child: RefreshIndicator(
                     onRefresh: () async => (
                         setState(() {
-                          statement1 = searchStatement();
+                          statement1 = getStatement(_selectedIndex);
                         })
                     ),
                     child: ListView.separated(
@@ -150,7 +190,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                           return Chip(
                                               label: Text(tag),
                                               labelStyle: TextStyles.small00TextStyle,
-                                              backgroundColor: selectTagColor(tag)
+                                              backgroundColor: selectTagColor(tag),
+                                              visualDensity: const VisualDensity(vertical: -4),
                                           );
                                         }).toList(),
                                       ),
@@ -162,8 +203,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                       setState(() {
                                         statement.bookmarked = false;
                                       });
-                                      deleteBookmark(statement.id);
-                                      statement1 = searchStatement();
+                                      deleteBookmark(statement.id, _selectedIndex);
+                                      statement1 = getStatement(_selectedIndex);
                                     },
                                     icon: SvgPicture.asset(
                                       'assets/icons/star_fill.svg',
@@ -202,6 +243,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   children: <Widget>[
                     textSection,
+                    filterSection,
                     bookmarkStatementSection()
                   ],
                 ),
