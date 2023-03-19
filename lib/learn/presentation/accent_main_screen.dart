@@ -139,7 +139,7 @@ class AccentMainPage extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height*0.017,
-                      left: MediaQuery.of(context).size.width*0.025
+                      left: MediaQuery.of(context).size.width*0.02
                   ),
                   child: SvgPicture.asset(icon),
                 ),
@@ -147,7 +147,7 @@ class AccentMainPage extends StatelessWidget {
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height*0.02,
                       bottom: MediaQuery.of(context).size.height*0.02,
-                      left: MediaQuery.of(context).size.width*0.025
+                      left: MediaQuery.of(context).size.width*0.02
                   ),
                   child: Text(
                     situation,

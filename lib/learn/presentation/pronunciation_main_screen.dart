@@ -121,7 +121,7 @@ class PronunciationMainPage extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(
                         top: MediaQuery.of(context).size.height*0.02,
-                        left: MediaQuery.of(context).size.width*0.05
+                        left: MediaQuery.of(context).size.width*0.04
                     ),
                     child: Text(
                       word,
@@ -132,7 +132,7 @@ class PronunciationMainPage extends StatelessWidget {
                     margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height*0.01,
                       bottom: MediaQuery.of(context).size.height*0.02,
-                      left: MediaQuery.of(context).size.width*0.05,
+                      left: MediaQuery.of(context).size.width*0.04,
                     ),
                     child: Text(
                       description,
