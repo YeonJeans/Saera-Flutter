@@ -588,14 +588,17 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         })
     );
 
-    Widget floatingButtonSection = FloatingActionButton(
-      onPressed: (){
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CreateSentenceScreen(),
-        ));
-      },
-      backgroundColor: ColorStyles.saeraAppBar,
-      child: SvgPicture.asset('assets/icons/plus.svg'),
+    Widget floatingButtonSection = Container(
+      margin: EdgeInsets.only(right: 8, bottom: 8),
+      child: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => CreateSentenceScreen(),
+          ));
+        },
+        backgroundColor: ColorStyles.saeraAppBar,
+        child: SvgPicture.asset('assets/icons/plus.svg'),
+      ),
     );
 
     return Stack(
