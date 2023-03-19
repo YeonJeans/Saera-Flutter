@@ -39,6 +39,16 @@ class CustomDonePage extends StatelessWidget {
     Widget goLearnPageSection = Container(
       margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
       height: 56,
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 6,
+              blurRadius: 7,
+              offset: Offset(0, 3),
+            )
+          ]
+      ),
       child: OutlinedButton(
         onPressed: () {
           Navigator.pop(context);
@@ -50,8 +60,9 @@ class CustomDonePage extends StatelessWidget {
           ),
           side: const BorderSide(
             width: 1.0,
-            color: ColorStyles.saeraAppBar,
+            color: Colors.transparent,
           ),
+          backgroundColor: Colors.white
         ),
         child: const Center(
           child: Text(
