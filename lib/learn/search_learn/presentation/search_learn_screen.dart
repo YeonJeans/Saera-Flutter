@@ -105,13 +105,13 @@ class _SearchPageState extends State<SearchPage> {
 
   double listViewHeight() {
     if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.5;
+      return MediaQuery.of(context).size.height*0.52;
     } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.62;
+      return MediaQuery.of(context).size.height*0.63;
     } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
       return MediaQuery.of(context).size.height*0.57;
     } else {
-      return MediaQuery.of(context).size.height*0.67;
+      return MediaQuery.of(context).size.height*0.69;
     }
   }
 
@@ -297,6 +297,7 @@ class _SearchPageState extends State<SearchPage> {
               avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
               selectedColor: filterList[index] == "상황" ? ColorStyles.saeraBlue : ColorStyles.saeraBeige,
               backgroundColor: Colors.white,
+              visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
               side: BorderSide(color: ColorStyles.disableGray),
               selected: _selectedIndex == index,
               onSelected: (bool selected) {
@@ -437,6 +438,7 @@ class _SearchPageState extends State<SearchPage> {
                           chip.name,
                         ),
                         backgroundColor: chip.color.first,
+                        visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
                         onDeleted: () => _deleteChip(chip.id),
                       )).toList()
                   )
@@ -534,7 +536,8 @@ class _SearchPageState extends State<SearchPage> {
                                         return Chip(
                                             label: Text(tag),
                                             labelStyle: TextStyles.small00TextStyle,
-                                            backgroundColor: selectTagColor(tag)
+                                            backgroundColor: selectTagColor(tag),
+                                            visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
                                         );
                                       }).toList(),
                                     ),

@@ -107,7 +107,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         return MediaQuery.of(context).size.height*0.51;
       }
     } else {
-      return MediaQuery.of(context).size.height*0.67;
+      return MediaQuery.of(context).size.height*0.68;
     }
   }
 
@@ -301,6 +301,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
             selectedColor: ColorStyles.saeraBlue,
             backgroundColor: Colors.white,
             side: BorderSide(color: ColorStyles.disableGray),
+            visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
             selected: _selectedIndex == index,
             onSelected: (bool selected) {
               setState(() {
@@ -386,6 +387,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                             chip.name,
                           ),
                           backgroundColor: chip.color.first,
+                          visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
                           onDeleted: () => _deleteChip(chip.id),
                         )).toList()
                     )
@@ -513,7 +515,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                                             return Chip(
                                               label: Text(tag),
                                               labelStyle: TextStyles.small00TextStyle,
-                                              //backgroundColor: selectTagColor(tag)
+                                              visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
                                             );
                                           }).toList(),
                                         ),
