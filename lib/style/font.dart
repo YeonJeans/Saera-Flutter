@@ -20,6 +20,8 @@ class TextStyles {
   static const smallGreenTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xff1AAA3A));
   static const smallRedTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xffEC5D77));
 
+  static const littleBit25TextStyleHeight = TextStyle(fontFamily: "NotoSansKR", fontSize: 13, fontWeight: FontWeight.normal, color: Color(0xff252525), height: 1.7);
+
   static const regular00TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff000000));
   static const regular00BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xff000000));
   static const regular25TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff252525));

@@ -79,7 +79,7 @@ class PronunciationMainPage extends StatelessWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: 10, right: 10),
       child: const Text(
         '북한 조선어의 발음과 차이가 있는 남한 표준어의 발음을\n발음법에 따라 집중적으로 학습할 수 있어요.',
-        style: TextStyles.regular25TextStyleHeight,
+        style: TextStyles.littleBit25TextStyleHeight,
       ),
     );
 
