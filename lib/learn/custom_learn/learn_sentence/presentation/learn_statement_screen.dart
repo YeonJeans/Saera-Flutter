@@ -87,27 +87,25 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 
   double listViewHeight() {
     if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.51;
-    } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.61;
-    } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
       if (tagCount == 0) {
-        return MediaQuery.of(context).size.height*0.57;
+        return MediaQuery.of(context).size.height*0.58;
       } else if (tagCount >= 1 && tagCount < 3) {
         return MediaQuery.of(context).size.height*0.56;
-      } else if (tagCount >= 3 && tagCount < 5) {
-        return MediaQuery.of(context).size.height*0.55;
-      } else if (tagCount >= 5 && tagCount < 7) {
-        return MediaQuery.of(context).size.height*0.54;
-      } else if (tagCount >= 7 && tagCount < 9) {
-        return MediaQuery.of(context).size.height*0.53;
-      } else if (tagCount >= 9 && tagCount < 11) {
-        return MediaQuery.of(context).size.height*0.52;
       } else {
-        return MediaQuery.of(context).size.height*0.51;
+        return MediaQuery.of(context).size.height*0.54;
+      }
+    } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
+      return MediaQuery.of(context).size.height*0.63;
+    } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
+      if (tagCount == 0) {
+        return MediaQuery.of(context).size.height*0.65;
+      } else if (tagCount >= 1 && tagCount < 3) {
+        return MediaQuery.of(context).size.height*0.62;
+      } else {
+        return MediaQuery.of(context).size.height*0.6;
       }
     } else {
-      return MediaQuery.of(context).size.height*0.68;
+      return MediaQuery.of(context).size.height*0.7;
     }
   }
 
@@ -355,10 +353,23 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                 color: ColorStyles.tagGray,
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
               ),
-              child: Wrap(
-                children: tagList.map((tag){
-                  return selectStatementCategory(tag.name);
-                }).toList()
+              child: tagList.length >= 5
+                  ? SizedBox(
+                  height: 40,
+                  child: ListView(
+                    children: [
+                      Wrap(
+                          children: tagList.map((tag){
+                            return selectStatementCategory(tag.name);
+                          }).toList()
+                      )
+                    ],
+                  ),
+              )
+                  : Wrap(
+                  children: tagList.map((tag){
+                    return selectStatementCategory(tag.name);
+                  }).toList()
               )
             )
             : Container()
