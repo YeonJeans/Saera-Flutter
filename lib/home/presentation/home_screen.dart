@@ -139,16 +139,43 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Widget studyTextSection = Container(
+    Widget learnDateTextSection = Container(
       margin: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height*0.1,
-          left: MediaQuery.of(context).size.width*0.63
+          top: MediaQuery.of(context).size.height*0.07,
+          right: MediaQuery.of(context).size.width*0.11
       ),
-      child: const Text(
-        '갑자일주 3월 10일 운세\n빨간색을 조심하세요',
-        style: TextStyles.small25TextStyleWithHeight,
-        textAlign: TextAlign.right,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(bottom: 30),
+            child: const Text(
+              '11',
+              style: TextStyles.xxxLargeTextStyle,
+              textAlign: TextAlign.right,
+            ),
+          ),
+          const Text(
+            '일째\n학습 중',
+            style: TextStyles.small25TextStyleWithHeight,
+            textAlign: TextAlign.right,
+          ),
+        ],
+      )
+    );
+
+    Widget speechImageSection = Container(
+      margin: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height*0.04,
+          left: MediaQuery.of(context).size.width*0.62
       ),
+      child: const SizedBox(
+        width: 128,
+        height: 128,
+        child: Image(
+            image: AssetImage('assets/images/speech_bubble.png')
+        ),
+      )
     );
 
     Widget searchSection = Container(
@@ -453,7 +480,8 @@ class _HomePageState extends State<HomePage> {
               body: Stack(
                 children: [
                   greetingTextSection,
-                  studyTextSection,
+                  speechImageSection,
+                  learnDateTextSection,
                   container,
                   imageSection,
                 ],

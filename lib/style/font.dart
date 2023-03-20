@@ -76,4 +76,6 @@ class TextStyles {
 
   static const xxLargeTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xff000000));
 
+  static const xxxLargeTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xff000000));
+
 }
