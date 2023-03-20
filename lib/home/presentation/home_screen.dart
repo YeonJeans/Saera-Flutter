@@ -139,16 +139,40 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Widget studyTextSection = Container(
+    Widget learnDateTextSection = Container(
       margin: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height*0.1,
-          left: MediaQuery.of(context).size.width*0.63
+        top: MediaQuery.of(context).size.height*0.127,
+        left: MediaQuery.of(context).size.width*0.66
       ),
-      child: const Text(
-        '갑자일주 3월 10일 운세\n빨간색을 조심하세요',
-        style: TextStyles.small25TextStyleWithHeight,
-        textAlign: TextAlign.right,
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: '8일 연속',
+              style: TextStyles.small55BoldTextStyle,
+            ),
+            TextSpan(
+                text: '으로\n학습 중이에요',
+                style: TextStyles.small55TextStyle
+            )
+          ]
+        ),
+        textAlign: TextAlign.center,
+      )
+    );
+
+    Widget speechImageSection = Container(
+      margin: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height*0.12,
+          left: MediaQuery.of(context).size.width*0.6
       ),
+      child: const SizedBox(
+        width: 116,
+        height: 54,
+        child: Image(
+            image: AssetImage('assets/images/home_speech_bubble.png')
+        ),
+      )
     );
 
     Widget searchSection = Container(
@@ -197,38 +221,42 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Container statementSection(int id, String statement) {
-      return Container(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.03),
-        child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AccentPracticePage(id: id, isCustom: false,))
-              );
-            },
-            style: ButtonStyle(
-                elevation: MaterialStateProperty.all(8),
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    )
+    InkWell statementSection(int id, String statement) {
+      return InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AccentPracticePage(id: id, isCustom: false,))
+          );
+        },
+        child: Container(
+          margin: EdgeInsets.only(
+            top: MediaQuery.of(context).size.height*0.01,
+            bottom: MediaQuery.of(context).size.height*0.02
+          ),
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
                 )
-            ),
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    statement,
-                    style: TextStyles.regular25TextStyle,
-                  ),
-                  SvgPicture.asset('assets/icons/expand_right.svg'),
-                ],
+              ]
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                statement,
+                style: TextStyles.regular25TextStyle,
               ),
-            )
+              SvgPicture.asset('assets/icons/expand_right.svg'),
+            ],
+          ),
         ),
       );
     }
@@ -340,7 +368,7 @@ class _HomePageState extends State<HomePage> {
               ),
               padding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width*0.05,
-                  right: MediaQuery.of(context).size.width*0.19
+                  right: MediaQuery.of(context).size.width*0.2
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,7 +418,7 @@ class _HomePageState extends State<HomePage> {
               ),
               padding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width*0.05,
-                  right: MediaQuery.of(context).size.width*0.19
+                  right: MediaQuery.of(context).size.width*0.2
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -440,7 +468,7 @@ class _HomePageState extends State<HomePage> {
     return Stack(
       children: [
         Container(
-          color: Color(0xffBBE0CE),
+          color: Color(0xff8DDDB6),
         ),
         SafeArea(
             child: Scaffold(
@@ -449,7 +477,8 @@ class _HomePageState extends State<HomePage> {
               body: Stack(
                 children: [
                   greetingTextSection,
-                  studyTextSection,
+                  speechImageSection,
+                  learnDateTextSection,
                   container,
                   imageSection,
                 ],

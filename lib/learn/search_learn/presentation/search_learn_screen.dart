@@ -69,6 +69,8 @@ class _SearchPageState extends State<SearchPage> {
         for (int j = 0; j < situationList.length; j++) {
           if (_chipList[i].name == situationList[j]) {
             isSituationCategorySelected = true;
+            _deleteChip(_chipList[i].id);
+            _addChip(categoryName);
             break;
           }
         }
@@ -83,13 +85,11 @@ class _SearchPageState extends State<SearchPage> {
   void _setTypeVisibility(String categoryName) {
     bool isTypeCategorySelected = false;
     setState(() {
-      if (_chipList.isEmpty) {
-        _addChip(categoryName);
-      }
       for(int i = _chipList.length-1; i >= 0; i--) {
         if (_chipList[i].name == categoryName) {
           isTypeCategorySelected = true;
-          return;
+          _deleteChip(_chipList[i].id);
+          break;
         } else {
           isTypeCategorySelected = false;
         }
@@ -105,13 +105,13 @@ class _SearchPageState extends State<SearchPage> {
 
   double listViewHeight() {
     if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.5;
+      return MediaQuery.of(context).size.height*0.52;
     } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.62;
+      return MediaQuery.of(context).size.height*0.63;
     } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
       return MediaQuery.of(context).size.height*0.57;
     } else {
-      return MediaQuery.of(context).size.height*0.67;
+      return MediaQuery.of(context).size.height*0.69;
     }
   }
 
@@ -121,7 +121,7 @@ class _SearchPageState extends State<SearchPage> {
         _chipList.add(ChipData(
             id: DateTime.now().toString(),
             name: chipText,
-            color: {situationList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
+            color: {situationList.contains(chipText) ? ColorStyles.saeraPink2 : ColorStyles.saeraBeige}
         ));
         statement = searchStatement("");
       } else {
@@ -148,9 +148,9 @@ class _SearchPageState extends State<SearchPage> {
 
   Color selectTagColor(String tag) {
     if (tag == '일상' || tag == '소비' || tag == '인사' || tag == '은행/공공기관' || tag == '회사') {
-      return ColorStyles.saeraBlue.withOpacity(0.5);
+      return ColorStyles.saeraPink2;
     } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정표현') {
-      return ColorStyles.saeraBeige.withOpacity(0.5);
+      return ColorStyles.saeraBeige;
     } else {
       return ColorStyles.saeraYellow.withOpacity(0.5);
     }
@@ -295,9 +295,10 @@ class _SearchPageState extends State<SearchPage> {
               label: Text(filterList[index]),
               labelStyle: TextStyles.small25TextStyle,
               avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
-              selectedColor: filterList[index] == "상황" ? ColorStyles.saeraBlue : ColorStyles.saeraBeige,
+              selectedColor: filterList[index] == "상황" ? ColorStyles.saeraPink2 : ColorStyles.saeraBeige,
               backgroundColor: Colors.white,
-              side: BorderSide(color: ColorStyles.disableGray),
+              visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
+              side: _selectedIndex == index ? BorderSide(color: Colors.transparent) : BorderSide(color: ColorStyles.disableGray),
               selected: _selectedIndex == index,
               onSelected: (bool selected) {
                 setState(() {
@@ -437,6 +438,7 @@ class _SearchPageState extends State<SearchPage> {
                           chip.name,
                         ),
                         backgroundColor: chip.color.first,
+                        visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
                         onDeleted: () => _deleteChip(chip.id),
                       )).toList()
                   )
@@ -490,7 +492,7 @@ class _SearchPageState extends State<SearchPage> {
             } else {
               List<Statement> statements = snapshot.data;
               return Container(
-                padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
                 height: listViewHeight(),
                 child: RefreshIndicator(
                   onRefresh: () async {
@@ -534,7 +536,8 @@ class _SearchPageState extends State<SearchPage> {
                                         return Chip(
                                             label: Text(tag),
                                             labelStyle: TextStyles.small00TextStyle,
-                                            backgroundColor: selectTagColor(tag)
+                                            backgroundColor: selectTagColor(tag),
+                                            visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
                                         );
                                       }).toList(),
                                     ),
@@ -598,6 +601,7 @@ class _SearchPageState extends State<SearchPage> {
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 21.0),
+                  physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
                     appBarSection,
                     searchSection,

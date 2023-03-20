@@ -65,13 +65,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
   void _setTypeVisibility(String categoryName) {
     bool isTypeCategorySelected = false;
     setState(() {
-      if (_chipList.isEmpty) {
-        _addChip(categoryName);
-      }
       for(int i = _chipList.length-1; i >= 0; i--) {
         if (_chipList[i].name == categoryName) {
           isTypeCategorySelected = true;
-          return;
+          _deleteChip(_chipList[i].id);
+          break;
         } else {
           isTypeCategorySelected = false;
         }
@@ -87,27 +85,25 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 
   double listViewHeight() {
     if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.51;
-    } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.61;
-    } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
       if (tagCount == 0) {
-        return MediaQuery.of(context).size.height*0.57;
+        return MediaQuery.of(context).size.height*0.58;
       } else if (tagCount >= 1 && tagCount < 3) {
         return MediaQuery.of(context).size.height*0.56;
-      } else if (tagCount >= 3 && tagCount < 5) {
-        return MediaQuery.of(context).size.height*0.55;
-      } else if (tagCount >= 5 && tagCount < 7) {
-        return MediaQuery.of(context).size.height*0.54;
-      } else if (tagCount >= 7 && tagCount < 9) {
-        return MediaQuery.of(context).size.height*0.53;
-      } else if (tagCount >= 9 && tagCount < 11) {
-        return MediaQuery.of(context).size.height*0.52;
       } else {
-        return MediaQuery.of(context).size.height*0.51;
+        return MediaQuery.of(context).size.height*0.54;
+      }
+    } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
+      return MediaQuery.of(context).size.height*0.63;
+    } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
+      if (tagCount == 0) {
+        return MediaQuery.of(context).size.height*0.65;
+      } else if (tagCount >= 1 && tagCount < 3) {
+        return MediaQuery.of(context).size.height*0.62;
+      } else {
+        return MediaQuery.of(context).size.height*0.6;
       }
     } else {
-      return MediaQuery.of(context).size.height*0.67;
+      return MediaQuery.of(context).size.height*0.7;
     }
   }
 
@@ -116,7 +112,6 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       _chipList.add(ChipData(
             id: DateTime.now().toString(),
             name: chipText,
-            color: {tagList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
       ));
       statementData = searchCustomStatement("");
       _setChipSectionVisibility();
@@ -298,9 +293,9 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
             label: Text(filterList[index]),
             labelStyle: TextStyles.small25TextStyle,
             avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
-            selectedColor: ColorStyles.saeraBlue,
             backgroundColor: Colors.white,
-            side: BorderSide(color: ColorStyles.disableGray),
+            side: _selectedIndex == index? BorderSide(color: Colors.transparent) : BorderSide(color: ColorStyles.disableGray),
+            visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
             selected: _selectedIndex == index,
             onSelected: (bool selected) {
               setState(() {
@@ -356,10 +351,23 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                 color: ColorStyles.tagGray,
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
               ),
-              child: Wrap(
-                children: tagList.map((tag){
-                  return selectStatementCategory(tag.name);
-                }).toList()
+              child: tagList.length >= 5
+                  ? SizedBox(
+                  height: 40,
+                  child: ListView(
+                    children: [
+                      Wrap(
+                          children: tagList.map((tag){
+                            return selectStatementCategory(tag.name);
+                          }).toList()
+                      )
+                    ],
+                  ),
+              )
+                  : Wrap(
+                  children: tagList.map((tag){
+                    return selectStatementCategory(tag.name);
+                  }).toList()
               )
             )
             : Container()
@@ -385,7 +393,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                           label: Text(
                             chip.name,
                           ),
-                          backgroundColor: chip.color.first,
+                          visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
                           onDeleted: () => _deleteChip(chip.id),
                         )).toList()
                     )
@@ -455,7 +463,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               );
             } else {
               return Container(
-                padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
                 height: listViewHeight(),
                 child: RefreshIndicator(
                   onRefresh: () async {
@@ -513,7 +521,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                                             return Chip(
                                               label: Text(tag),
                                               labelStyle: TextStyles.small00TextStyle,
-                                              //backgroundColor: selectTagColor(tag)
+                                              visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
                                             );
                                           }).toList(),
                                         ),
@@ -586,14 +594,17 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         })
     );
 
-    Widget floatingButtonSection = FloatingActionButton(
-      onPressed: (){
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CreateSentenceScreen(),
-        ));
-      },
-      backgroundColor: ColorStyles.saeraAppBar,
-      child: SvgPicture.asset('assets/icons/plus.svg'),
+    Widget floatingButtonSection = Container(
+      margin: EdgeInsets.only(right: 8, bottom: 8),
+      child: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => CreateSentenceScreen(),
+          ));
+        },
+        backgroundColor: ColorStyles.saeraAppBar,
+        child: SvgPicture.asset('assets/icons/plus.svg'),
+      ),
     );
 
     return Stack(
@@ -608,6 +619,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                 body: GestureDetector(
                   onTap: () => FocusScope.of(context).unfocus(),
                   child: ListView(
+                    physics: NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 21.0),
                     children: <Widget>[
                       appBarSection,
@@ -630,8 +642,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 class ChipData {
   final String id;
   final String name;
-  final Set<Color> color;
-  ChipData({required this.id, required this.name, required this.color});
+  ChipData({required this.id, required this.name});
 }
 
 class Tag {

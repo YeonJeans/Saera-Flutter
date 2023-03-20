@@ -30,7 +30,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
 
   Future<dynamic>? word;
 
-  Color selectTagColor(String tag) { // 태그별 컬러파레트 필요
+  Color selectTagColor(String tag) {
     if (tag == '구개음화') {
       return ColorStyles.saeraBlue.withOpacity(0.5);
     } else if (tag == "ㄴ첨가") {
@@ -164,6 +164,7 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
                               style: TextStyles.small00TextStyle,
                             ),
                             backgroundColor: selectTagColor(word.tag),
+                            visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
                           ),
                           Container(
                             margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
@@ -210,11 +211,8 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
     );
 
     Widget retryLearnButtonSection = Container(
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.02,
-        left: MediaQuery.of(context).size.width*0.04,
-        right: MediaQuery.of(context).size.width*0.04
-      ),
+      margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
+      height: 56,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -250,23 +248,18 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
             ),
             backgroundColor: Colors.white
           ),
-          child: Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.023),
-            child: const Text(
+          child: const Center(
+            child: Text(
               '다시 학습',
               style: TextStyles.mediumRecordTextStyle,
-              textAlign: TextAlign.center,
             ),
           )
       ),
     );
 
     Widget goMainPageSection = Container(
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.01,
-        left: MediaQuery.of(context).size.width*0.04,
-        right: MediaQuery.of(context).size.width*0.04
-      ),
+      margin: const EdgeInsets.only(left: 14, right: 14),
+      height: 56,
       child: OutlinedButton(
           onPressed: () => Navigator.pop(context),
           style: OutlinedButton.styleFrom(
@@ -279,14 +272,23 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
               color: ColorStyles.saeraOlive1,
             ),
           ),
-          child: Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.023),
-            child: const Text(
+          child: const Center(
+            child: Text(
               '메인 화면으로',
               style: TextStyles.mediumWhiteBoldTextStyle,
               textAlign: TextAlign.center,
             ),
           )
+      ),
+    );
+
+    Widget bottomButtonSection = SizedBox(
+      height: 142,
+      child: Column(
+        children: [
+          retryLearnButtonSection,
+          goMainPageSection
+        ],
       ),
     );
 
@@ -314,10 +316,9 @@ class _TodayLearnWordListPageState extends State<TodayLearnWordListPage> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 wordListSection,
-                retryLearnButtonSection,
-                goMainPageSection
               ],
             ),
+            bottomSheet: bottomButtonSection,
           ),
         )
     );

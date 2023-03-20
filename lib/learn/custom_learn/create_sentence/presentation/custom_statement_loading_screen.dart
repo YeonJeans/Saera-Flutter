@@ -10,7 +10,7 @@ class CustomLoadingPage extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     Widget loadingSpinnerSection = Container(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.35),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.32),
         margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.4),
         child: LoadingAnimationWidget.staggeredDotsWave(
             color: Color(0xff2D2D2D),

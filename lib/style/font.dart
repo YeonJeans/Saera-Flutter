@@ -12,6 +12,7 @@ class TextStyles {
   static const small25TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.normal, color: Color(0xff252525));
   static const small25TextStyleWithHeight = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.normal, color: Color(0xff252525), height: 1.6);
   static const small55TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.normal, color: Color(0xff555555));
+  static const small55BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xff555555));
   static const small66TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.normal, color: Color(0xff666666));
   static const small66BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xff666666));
   static const small82TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xff828282));
@@ -19,6 +20,8 @@ class TextStyles {
   static const smallFFTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.normal, color: Color(0xffFFFFFF));
   static const smallGreenTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xff1AAA3A));
   static const smallRedTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xffEC5D77));
+
+  static const littleBit25TextStyleHeight = TextStyle(fontFamily: "NotoSansKR", fontSize: 13, fontWeight: FontWeight.normal, color: Color(0xff252525), height: 1.7);
 
   static const regular00TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff000000));
   static const regular00BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xff000000));
@@ -75,5 +78,7 @@ class TextStyles {
   static const xLarge25TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xff252525));
 
   static const xxLargeTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xff000000));
+
+  static const xxxLargeTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xff000000));
 
 }

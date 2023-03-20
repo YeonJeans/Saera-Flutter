@@ -52,7 +52,7 @@ class _LearnPageState extends State<LearnPage> {
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: 10, right: 10),
       child: const Text(
         '발음 학습으로 올바른 남한 표준어 발음을,\n문장 학습으로 자주 사용하는 표현과 억양을 익힐 수 있어요.',
-        style: TextStyles.regular25TextStyleHeight,
+        style: TextStyles.littleBit25TextStyleHeight,
       ),
     );
 
@@ -127,7 +127,7 @@ class _LearnPageState extends State<LearnPage> {
         ));
         },
       child: Container(
-        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.035),
         decoration: BoxDecoration(
             color: ColorStyles.saeraAccent,

@@ -46,7 +46,7 @@ class AccentMainPage extends StatelessWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: 10, right: 10),
       child: const Text(
         '연습하고 싶은 문장을 직접 만들어 억양을 학습하거나,\n새라가 제공하는 다양한 문장 표현을 학습할 수 있어요.',
-        style: TextStyles.regular25TextStyleHeight,
+        style: TextStyles.littleBit25TextStyleHeight,
       ),
     );
 
@@ -139,7 +139,7 @@ class AccentMainPage extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height*0.017,
-                      left: MediaQuery.of(context).size.width*0.025
+                      left: MediaQuery.of(context).size.width*0.02
                   ),
                   child: SvgPicture.asset(icon),
                 ),
@@ -147,7 +147,7 @@ class AccentMainPage extends StatelessWidget {
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height*0.02,
                       bottom: MediaQuery.of(context).size.height*0.02,
-                      left: MediaQuery.of(context).size.width*0.025
+                      left: MediaQuery.of(context).size.width*0.02
                   ),
                   child: Text(
                     situation,
