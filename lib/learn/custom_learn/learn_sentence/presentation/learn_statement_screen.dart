@@ -454,7 +454,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               );
             } else {
               return Container(
-                padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
                 height: listViewHeight(),
                 child: RefreshIndicator(
                   onRefresh: () async {
@@ -610,6 +610,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                 body: GestureDetector(
                   onTap: () => FocusScope.of(context).unfocus(),
                   child: ListView(
+                    physics: NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 21.0),
                     children: <Widget>[
                       appBarSection,

@@ -492,7 +492,7 @@ class _SearchPageState extends State<SearchPage> {
             } else {
               List<Statement> statements = snapshot.data;
               return Container(
-                padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
                 height: listViewHeight(),
                 child: RefreshIndicator(
                   onRefresh: () async {
@@ -601,6 +601,7 @@ class _SearchPageState extends State<SearchPage> {
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 21.0),
+                  physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
                     appBarSection,
                     searchSection,
