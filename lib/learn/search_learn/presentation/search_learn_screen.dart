@@ -85,13 +85,11 @@ class _SearchPageState extends State<SearchPage> {
   void _setTypeVisibility(String categoryName) {
     bool isTypeCategorySelected = false;
     setState(() {
-      if (_chipList.isEmpty) {
-        _addChip(categoryName);
-      }
       for(int i = _chipList.length-1; i >= 0; i--) {
         if (_chipList[i].name == categoryName) {
           isTypeCategorySelected = true;
-          return;
+          _deleteChip(_chipList[i].id);
+          break;
         } else {
           isTypeCategorySelected = false;
         }
