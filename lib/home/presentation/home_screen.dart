@@ -141,39 +141,36 @@ class _HomePageState extends State<HomePage> {
 
     Widget learnDateTextSection = Container(
       margin: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height*0.07,
-          right: MediaQuery.of(context).size.width*0.11
+        top: MediaQuery.of(context).size.height*0.127,
+        left: MediaQuery.of(context).size.width*0.66
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 30),
-            child: const Text(
-              '11',
-              style: TextStyles.xxxLargeTextStyle,
-              textAlign: TextAlign.right,
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: '8일 연속',
+              style: TextStyles.small55BoldTextStyle,
             ),
-          ),
-          const Text(
-            '일째\n학습 중',
-            style: TextStyles.small25TextStyleWithHeight,
-            textAlign: TextAlign.right,
-          ),
-        ],
+            TextSpan(
+                text: '으로\n학습 중이에요',
+                style: TextStyles.small55TextStyle
+            )
+          ]
+        ),
+        textAlign: TextAlign.center,
       )
     );
 
     Widget speechImageSection = Container(
       margin: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height*0.04,
-          left: MediaQuery.of(context).size.width*0.62
+          top: MediaQuery.of(context).size.height*0.12,
+          left: MediaQuery.of(context).size.width*0.6
       ),
       child: const SizedBox(
-        width: 128,
-        height: 128,
+        width: 116,
+        height: 54,
         child: Image(
-            image: AssetImage('assets/images/speech_bubble.png')
+            image: AssetImage('assets/images/home_speech_bubble.png')
         ),
       )
     );
