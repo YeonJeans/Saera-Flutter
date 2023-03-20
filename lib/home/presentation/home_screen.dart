@@ -471,7 +471,7 @@ class _HomePageState extends State<HomePage> {
     return Stack(
       children: [
         Container(
-          color: Color(0xffBBE0CE),
+          color: Color(0xff8DDDB6),
         ),
         SafeArea(
             child: Scaffold(
