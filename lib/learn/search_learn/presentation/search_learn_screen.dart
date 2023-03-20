@@ -121,7 +121,7 @@ class _SearchPageState extends State<SearchPage> {
         _chipList.add(ChipData(
             id: DateTime.now().toString(),
             name: chipText,
-            color: {situationList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
+            color: {situationList.contains(chipText) ? ColorStyles.saeraPink2 : ColorStyles.saeraBeige}
         ));
         statement = searchStatement("");
       } else {
@@ -148,9 +148,9 @@ class _SearchPageState extends State<SearchPage> {
 
   Color selectTagColor(String tag) {
     if (tag == '일상' || tag == '소비' || tag == '인사' || tag == '은행/공공기관' || tag == '회사') {
-      return ColorStyles.saeraBlue.withOpacity(0.5);
+      return ColorStyles.saeraPink2;
     } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정표현') {
-      return ColorStyles.saeraBeige.withOpacity(0.5);
+      return ColorStyles.saeraBeige;
     } else {
       return ColorStyles.saeraYellow.withOpacity(0.5);
     }
@@ -295,10 +295,10 @@ class _SearchPageState extends State<SearchPage> {
               label: Text(filterList[index]),
               labelStyle: TextStyles.small25TextStyle,
               avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
-              selectedColor: filterList[index] == "상황" ? ColorStyles.saeraBlue : ColorStyles.saeraBeige,
+              selectedColor: filterList[index] == "상황" ? ColorStyles.saeraPink2 : ColorStyles.saeraBeige,
               backgroundColor: Colors.white,
               visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
-              side: BorderSide(color: ColorStyles.disableGray),
+              side: _selectedIndex == index ? BorderSide(color: Colors.transparent) : BorderSide(color: ColorStyles.disableGray),
               selected: _selectedIndex == index,
               onSelected: (bool selected) {
                 setState(() {

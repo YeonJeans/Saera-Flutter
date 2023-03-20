@@ -116,7 +116,6 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       _chipList.add(ChipData(
             id: DateTime.now().toString(),
             name: chipText,
-            color: {tagList.contains(chipText) ? ColorStyles.saeraBlue : ColorStyles.saeraBeige}
       ));
       statementData = searchCustomStatement("");
       _setChipSectionVisibility();
@@ -298,9 +297,8 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
             label: Text(filterList[index]),
             labelStyle: TextStyles.small25TextStyle,
             avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
-            selectedColor: ColorStyles.saeraBlue,
             backgroundColor: Colors.white,
-            side: BorderSide(color: ColorStyles.disableGray),
+            side: _selectedIndex == index? BorderSide(color: Colors.transparent) : BorderSide(color: ColorStyles.disableGray),
             visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
             selected: _selectedIndex == index,
             onSelected: (bool selected) {
@@ -386,7 +384,6 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                           label: Text(
                             chip.name,
                           ),
-                          backgroundColor: chip.color.first,
                           visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
                           onDeleted: () => _deleteChip(chip.id),
                         )).toList()
@@ -635,8 +632,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 class ChipData {
   final String id;
   final String name;
-  final Set<Color> color;
-  ChipData({required this.id, required this.name, required this.color});
+  ChipData({required this.id, required this.name});
 }
 
 class Tag {
