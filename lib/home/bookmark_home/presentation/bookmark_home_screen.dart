@@ -25,40 +25,55 @@ class _BookmarkPageState extends State<BookmarkPage> {
   final AuthenticationManager _authManager = Get.find();
 
   Future<dynamic>? statement1;
+  Future<dynamic>? word1;
   int _selectedIndex = 1;
 
   Future<List<Statement>> getStatement(int _selectedIndex) async {
-    print("selectedIndex : $_selectedIndex");
     List<Statement> _list = [];
     var url;
-    if (_selectedIndex == 0) {
-      //단어 전체 조회 api가 없는 것 같은데
-      url = Uri.parse('$serverHttp/words');
-    } else if (_selectedIndex == 1) {
-      url = Uri.parse('$serverHttp/statements');
+    if (_selectedIndex == 1) {
+      url = Uri.parse('$serverHttp/statements?bookmarked=true');
     } else {
-      url = Uri.parse('$serverHttp/customs');
+      url = Uri.parse('$serverHttp/customs?bookmarked=true');
     }
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
-      if (_list.isEmpty) {
-        for (dynamic i in body) {
-          if (i["bookmarked"] == true) {
-            int id = i["id"];
-            String content = i["content"];
-            List<String> tags = List.from(i["tags"]);
-            bool bookmarked = i["bookmarked"];
-            bool recommended = i["recommended"];
-            _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, ));
-          }
-        }
+      for (dynamic i in body) {
+        int id = i["id"];
+        String content = i["content"];
+        List<String> tags = List.from(i["tags"]);
+        bool bookmarked = i["bookmarked"];
+        bool recommended = i["recommended"];
+        _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, ));
       }
       return _list;
     } else {
       print(response.body);
-      return throw Exception("북마크 서버 오류");
+      return throw Exception("북마크 서버 문장 로딩 오류");
+    }
+  }
+
+  Future<List<Word>> getWord(int _selectedIndex) async {
+    List<Word> wordList = [];
+    var url = Uri.parse('$serverHttp/words?bookmarked=true');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      for (dynamic i in body) {
+        int id = i["id"];
+        String notation = i["notation"];
+        String pronunciation = i["pronunciation"];
+        String tag = i["tag"];
+        bool bookmarked = i["bookmarked"];
+        wordList.add(Word(id: id, notation: notation, pronunciation: pronunciation, tag: tag, bookmarked: bookmarked));
+      }
+      return wordList;
+    } else {
+      print(response.body);
+      return throw Exception("북마크 서버 단어 로딩 오류");
     }
   }
 
@@ -78,11 +93,27 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   Color selectTagColor(String tag) {
     if (tag == '일상' || tag == '소비' || tag == '인사' || tag == '은행/공공기관' || tag == '회사') {
-      return ColorStyles.saeraBlue.withOpacity(0.5);
+      return ColorStyles.saeraPink2;
     } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정 표현') {
-      return ColorStyles.saeraBeige.withOpacity(0.5);
+      return ColorStyles.saeraBeige;
     } else {
       return ColorStyles.saeraYellow.withOpacity(0.5);
+    }
+  }
+
+  Color selectWordTagColor(String tag) {
+    if (tag == '구개음화') {
+      return ColorStyles.saeraBlue.withOpacity(0.5);
+    } else if (tag == "ㄴ첨가") {
+      return ColorStyles.saeraKhaki.withOpacity(0.5);
+    } else if (tag == '두음법칙') {
+      return ColorStyles.saeraPink3.withOpacity(0.5);
+    } else if (tag == '치조마찰음화') {
+      return ColorStyles.saeraYellow.withOpacity(0.5);
+    } else if (tag == '단모음화') {
+      return ColorStyles.saeraOlive1.withOpacity(0.5);
+    } else {
+      return ColorStyles.saeraBeige.withOpacity(0.5);
     }
   }
 
@@ -107,7 +138,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
     List<String> filterList = ['발음', '억양', '사용자 정의'];
     Widget filterSection = Container(
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.01,
+        top: MediaQuery.of(context).size.height*0.02,
         left: 10.0,
         right: 10.0
       ),
@@ -117,10 +148,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
             return ChoiceChip(
               label: Text(filterList[index]),
               labelStyle: TextStyles.small25TextStyle,
-              //avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
               selectedColor: ColorStyles.saeraBeige,
               backgroundColor: Colors.white,
-              side: BorderSide(color: ColorStyles.disableGray),
+              side: _selectedIndex == index ? BorderSide(color: Colors.transparent) : BorderSide(color: ColorStyles.disableGray),
               visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
               selected: _selectedIndex == index,
               onSelected: (bool selected) {
@@ -153,7 +183,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                 List<Statement>? statements = snapshot.data;
                 return Container(
                   padding: EdgeInsets.only(top: 16.0, left: 10.0, right: 10.0),
-                  height: MediaQuery.of(context).size.height*0.72,
+                  height: MediaQuery.of(context).size.height*0.65,
                   child: RefreshIndicator(
                     onRefresh: () async => (
                         setState(() {
@@ -230,6 +260,101 @@ class _BookmarkPageState extends State<BookmarkPage> {
       );
     }
 
+    Widget bookmarkWordSection() {
+      return FutureBuilder(
+          future: word1 = getWord(_selectedIndex),
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return Center(
+                    child: Container(
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                        margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                        child: LoadingAnimationWidget.waveDots(
+                            color: ColorStyles.expFillGray,
+                            size: 45.0
+                        )
+                    )
+                );
+              } else {
+                List<Word>? words = snapshot.data;
+                return Container(
+                    padding: EdgeInsets.only(top: 16.0, left: 10.0, right: 10.0),
+                    height: MediaQuery.of(context).size.height*0.65,
+                    child: RefreshIndicator(
+                      onRefresh: () async => (
+                          setState(() {
+                            word1 = getWord(_selectedIndex);
+                          })
+                      ),
+                      child: ListView.separated(
+                          itemBuilder: ((context, index) {
+                            Word word = words[index];
+                            return InkWell(
+                              onTap: null,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    word.notation,
+                                    style: TextStyles.regular00TextStyle,
+                                  ),
+                                  Text(
+                                    '[${word.pronunciation}]',
+                                    style: TextStyles.regularGreenTextStyle,
+                                  ),
+                                  Spacer(flex: 2,),
+                                  Chip(
+                                    label: Text(
+                                      word.tag,
+                                      style: TextStyles.small00TextStyle,
+                                    ),
+                                    backgroundColor: selectWordTagColor(word.tag),
+                                    visualDensity: const VisualDensity(vertical: -4),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                                    child: IconButton(
+                                        onPressed: (){
+                                          setState(() {
+                                            word.bookmarked = false;
+                                          });
+                                          deleteBookmark(word.id, _selectedIndex);
+                                          word1 = getWord(_selectedIndex);
+                                        },
+                                        icon: SvgPicture.asset(
+                                          'assets/icons/star_fill.svg',
+                                          fit: BoxFit.scaleDown,
+                                        )
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          }),
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const Divider(thickness: 1,);
+                          },
+                          itemCount: words!.length
+                      ),
+                    )
+                );
+              }
+            } else {
+              return Container();
+            }
+          })
+      );
+    }
+
+    Widget listSection() {
+      if (_selectedIndex == 0) {
+        return bookmarkWordSection();
+      } else {
+        return bookmarkStatementSection();
+      }
+    }
+
     return Stack(
       children: [
         Container(
@@ -241,10 +366,11 @@ class _BookmarkPageState extends State<BookmarkPage> {
               resizeToAvoidBottomInset: false,
               body: ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
+                  physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
                     textSection,
                     filterSection,
-                    bookmarkStatementSection()
+                    listSection()
                   ],
                 ),
 
@@ -253,4 +379,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
       ],
     );
   }
+}
+
+class Word {
+  final int id;
+  final String notation;
+  final String pronunciation;
+  final String tag;
+  bool bookmarked;
+  Word({required this.id, required this.notation, required this.pronunciation, required this.tag, required this.bookmarked});
 }
