@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   getTop5SentenceList() async {
-    await Future.delayed(const Duration(seconds: 1));
     var url = Uri.parse('$serverHttp/top5-statement');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
@@ -110,8 +109,13 @@ class _HomePageState extends State<HomePage> {
         String name = i["name"];
         top5StatementList.add(top5Statement(id: id, content: name));
       }
-    } else {
-      throw Exception("top5 불러오기 오류 발생");
+    } else if(response.statusCode == 401){
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getTop5SentenceList();
+      }
     }
   }
 
@@ -281,10 +285,7 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
                   margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
-                  child: LoadingAnimationWidget.waveDots(
-                      color: ColorStyles.expFillGray,
-                      size: 45.0
-                  )
+                  child: Text(snapshot.error.toString())
                 )
               );
             } else {
@@ -300,11 +301,7 @@ class _HomePageState extends State<HomePage> {
                       autoPlay: true
                   ),
                   itemBuilder: (BuildContext context, int index, int realIndex) {
-                    if (top5StatementList.length != 5) {
-                      return getTop5SentenceList();
-                    } else {
-                      return statementSection(top5StatementList[index].id, top5StatementList[index].content);
-                    }
+                    return statementSection(top5StatementList[index].id, top5StatementList[index].content);
                   },
                 ),
               );

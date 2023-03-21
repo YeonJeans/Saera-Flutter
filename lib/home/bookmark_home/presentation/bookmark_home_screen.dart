@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import '../../../learn/accent_learn/presentation/accent_learn_screen.dart';
 import '../../../learn/search_learn/presentation/widgets/response_statement.dart';
 import '../../../login/data/authentication_manager.dart';
+import '../../../login/data/refresh_token.dart';
 import '../../../server.dart';
 import '../../../style/color.dart';
 
@@ -28,8 +29,10 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Future<dynamic>? word1;
   int _selectedIndex = 1;
 
-  Future<List<Statement>> getStatement(int _selectedIndex) async {
-    List<Statement> _list = [];
+  List<Statement> statementList = [];
+  List<Word> wordList = [];
+
+  getStatement(int _selectedIndex) async {
     var url;
     if (_selectedIndex == 1) {
       url = Uri.parse('$serverHttp/statements?bookmarked=true');
@@ -40,28 +43,32 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
+      statementList.clear();
       for (dynamic i in body) {
         int id = i["id"];
         String content = i["content"];
         List<String> tags = List.from(i["tags"]);
         bool bookmarked = i["bookmarked"];
         bool recommended = i["recommended"];
-        _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, ));
+        statementList.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, ));
       }
-      return _list;
-    } else {
-      print(response.body);
-      return throw Exception("북마크 서버 문장 로딩 오류");
+    } else if (response.statusCode == 401) {
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getStatement(_selectedIndex);
+      }
     }
   }
 
-  Future<List<Word>> getWord(int _selectedIndex) async {
-    List<Word> wordList = [];
+  getWord(int _selectedIndex) async {
     var url = Uri.parse('$serverHttp/words?bookmarked=true');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
+      wordList.clear();
       for (dynamic i in body) {
         int id = i["id"];
         String notation = i["notation"];
@@ -70,10 +77,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
         bool bookmarked = i["bookmarked"];
         wordList.add(Word(id: id, notation: notation, pronunciation: pronunciation, tag: tag, bookmarked: bookmarked));
       }
-      return wordList;
-    } else {
-      print(response.body);
-      return throw Exception("북마크 서버 단어 로딩 오류");
+    } else if (response.statusCode == 401){
+      String? before = _authManager.getToken();
+      await RefreshToken(context);
+
+      if(before != _authManager.getToken()){
+        getWord(_selectedIndex);
+      }
     }
   }
 
@@ -167,90 +177,97 @@ class _BookmarkPageState extends State<BookmarkPage> {
       return FutureBuilder(
           future: statement1 = getStatement(_selectedIndex),
           builder: ((context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Container(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                    child: LoadingAnimationWidget.waveDots(
+                        color: ColorStyles.expFillGray,
+                        size: 45.0
+                    )
+                ),
+              );
+            } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
                 return Center(
                     child: Container(
                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
                         margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
-                        child: LoadingAnimationWidget.waveDots(
-                            color: ColorStyles.expFillGray,
-                            size: 45.0
-                        )
+                        child: Text(snapshot.error.toString())
                     )
                 );
               } else {
-                List<Statement>? statements = snapshot.data;
                 return Container(
-                  padding: EdgeInsets.only(top: 16.0, left: 10.0, right: 10.0),
-                  height: MediaQuery.of(context).size.height*0.65,
-                  child: RefreshIndicator(
-                    onRefresh: () async => (
-                        setState(() {
-                          statement1 = getStatement(_selectedIndex);
-                        })
-                    ),
-                    child: ListView.separated(
-                        itemBuilder: ((context, index) {
-                          Statement statement = statements[index];
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => AccentPracticePage(id: statement.id, isCustom: false),
-                              ));
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 3),
-                                      child: Text(
-                                          statement.content,
-                                          style: TextStyles.regular00TextStyle
+                    padding: EdgeInsets.only(top: 16.0, left: 10.0, right: 10.0),
+                    height: MediaQuery.of(context).size.height*0.65,
+                    child: RefreshIndicator(
+                      onRefresh: () async => (
+                          setState(() {
+                            getStatement(_selectedIndex);
+                          })
+                      ),
+                      child: ListView.separated(
+                          itemBuilder: ((context, index) {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => AccentPracticePage(id: statementList[index].id, isCustom: false),
+                                ));
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 3),
+                                        child: Text(
+                                            statementList[index].content,
+                                            style: TextStyles.regular00TextStyle
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width*0.7,
-                                      child: Wrap(
-                                        spacing: 7.0,
-                                        children: statement.tags.map((tag) {
-                                          return Chip(
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width*0.7,
+                                        child: Wrap(
+                                          spacing: 7.0,
+                                          children: statementList[index].tags.map((tag) {
+                                            return Chip(
                                               label: Text(tag),
                                               labelStyle: TextStyles.small00TextStyle,
                                               backgroundColor: selectTagColor(tag),
                                               visualDensity: const VisualDensity(vertical: -4),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                IconButton(
-                                    onPressed: (){
-                                      setState(() {
-                                        statement.bookmarked = false;
-                                      });
-                                      deleteBookmark(statement.id, _selectedIndex);
-                                      statement1 = getStatement(_selectedIndex);
-                                    },
-                                    icon: SvgPicture.asset(
-                                      'assets/icons/star_fill.svg',
-                                      fit: BoxFit.scaleDown,
-                                    )
-                                )
-                              ],
-                            ),
-                          );
-                        }),
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const Divider(thickness: 1,);
-                        },
-                        itemCount: statements!.length
-                    ),
-                  )
+                                            );
+                                          }).toList(),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  IconButton(
+                                      onPressed: (){
+                                        setState(() {
+                                          statementList[index].bookmarked = false;
+                                          deleteBookmark(statementList[index].id, _selectedIndex);
+                                          getStatement(_selectedIndex);
+                                        });
+
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/icons/star_fill.svg',
+                                        fit: BoxFit.scaleDown,
+                                      )
+                                  )
+                                ],
+                              ),
+                            );
+                          }),
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const Divider(thickness: 1,);
+                          },
+                          itemCount: statementList.length
+                      ),
+                    )
                 );
               }
             } else {
@@ -262,25 +279,32 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
     Widget bookmarkWordSection() {
       return FutureBuilder(
-          future: word1 = getWord(_selectedIndex),
+          future: word1,
           builder: ((context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Container(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                    child: LoadingAnimationWidget.waveDots(
+                        color: ColorStyles.expFillGray,
+                        size: 45.0
+                    )
+                ),
+              );
+            } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
                 return Center(
                     child: Container(
                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
                         margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
-                        child: LoadingAnimationWidget.waveDots(
-                            color: ColorStyles.expFillGray,
-                            size: 45.0
-                        )
+                        child: Text(snapshot.error.toString())
                     )
                 );
               } else {
-                List<Word>? words = snapshot.data;
                 return Container(
                     padding: EdgeInsets.only(top: 16.0, left: 10.0, right: 10.0),
-                    height: MediaQuery.of(context).size.height*0.65,
+                    height: MediaQuery.of(context).size.height * 0.65,
                     child: RefreshIndicator(
                       onRefresh: () async => (
                           setState(() {
@@ -289,38 +313,43 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       ),
                       child: ListView.separated(
                           itemBuilder: ((context, index) {
-                            Word word = words[index];
                             return InkWell(
                               onTap: null,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
                                 children: [
                                   Text(
-                                    word.notation,
+                                    wordList[index].notation,
                                     style: TextStyles.regular00TextStyle,
                                   ),
                                   Text(
-                                    '[${word.pronunciation}]',
+                                    '[${wordList[index].pronunciation}]',
                                     style: TextStyles.regularGreenTextStyle,
                                   ),
                                   Spacer(flex: 2,),
                                   Chip(
                                     label: Text(
-                                      word.tag,
+                                      wordList[index].tag,
                                       style: TextStyles.small00TextStyle,
                                     ),
-                                    backgroundColor: selectWordTagColor(word.tag),
-                                    visualDensity: const VisualDensity(vertical: -4),
+                                    backgroundColor: selectWordTagColor(
+                                        wordList[index].tag),
+                                    visualDensity: const VisualDensity(
+                                        vertical: -4),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                                    margin: EdgeInsets.only(left: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.02),
                                     child: IconButton(
-                                        onPressed: (){
+                                        onPressed: () {
                                           setState(() {
-                                            word.bookmarked = false;
+                                            wordList[index].bookmarked = false;
+                                            deleteBookmark(wordList[index].id, _selectedIndex);
+                                            word1 = getWord(_selectedIndex);
                                           });
-                                          deleteBookmark(word.id, _selectedIndex);
-                                          word1 = getWord(_selectedIndex);
                                         },
                                         icon: SvgPicture.asset(
                                           'assets/icons/star_fill.svg',
@@ -335,7 +364,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                           separatorBuilder: (BuildContext context, int index) {
                             return const Divider(thickness: 1,);
                           },
-                          itemCount: words!.length
+                          itemCount: wordList.length
                       ),
                     )
                 );
