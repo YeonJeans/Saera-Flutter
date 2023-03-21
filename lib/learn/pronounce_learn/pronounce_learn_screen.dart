@@ -646,6 +646,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
             Text(
               contentInfo,
               style: TextStyles.regular55TextStyle,
+              textAlign: TextAlign.center,
             ),
           ],
         )
@@ -874,7 +875,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                 color: ColorStyles.saeraOlive1.withOpacity(0.2),
                 //spreadRadius: 0.1,
                 blurRadius: 16,
-                offset: const Offset(0, 4), // changes position of shadow
+                offset: const Offset(0, 8), // changes position of shadow
               ),
             ],
           ),
@@ -898,7 +899,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
 
   Widget infoSection(){
     return Container(
-      margin: const EdgeInsets.only(top: 24),
+      margin: const EdgeInsets.only(top: 16),
       child: const Text(
         "단어 학습은 억양 그래프와 점수를 제공하지 않습니다.\n목표로 하는 발음이 나올 때까지 자유롭게 연습해 보세요!",
         textAlign: TextAlign.center,
