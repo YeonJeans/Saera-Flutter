@@ -93,7 +93,7 @@ class _LearnPageState extends State<LearnPage> {
                 color: ColorStyles.saeraPronunciation.withOpacity(0.2),
                 spreadRadius: 5,
                 blurRadius: 7,
-                offset: Offset(0, 3),
+                offset: Offset(0, 8),
               )
             ]
         ),
@@ -137,7 +137,7 @@ class _LearnPageState extends State<LearnPage> {
                 color: ColorStyles.saeraAccent.withOpacity(0.2),
                 spreadRadius: 5,
                 blurRadius: 7,
-                offset: Offset(0, 3),
+                offset: Offset(0, 8),
               )
             ]
         ),

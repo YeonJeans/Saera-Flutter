@@ -108,7 +108,7 @@ class PronunciationMainPage extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.2),
                 spreadRadius: 5,
                 blurRadius: 7,
-                offset: Offset(0, 3),
+                offset: Offset(0, 8),
               )
             ],
           ),

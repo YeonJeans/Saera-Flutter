@@ -173,7 +173,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                 BoxShadow(
                   color: ColorStyles.black00.withOpacity(0.1),
                   blurRadius: 16,
-                  offset: const Offset(0, 4), // changes position of shadow
+                  offset: const Offset(0, 8), // changes position of shadow
                 ),
               ],
           ),
