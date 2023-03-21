@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:saera/home/presentation/home_screen.dart';
 import 'package:saera/style/font.dart';
 import 'package:http/http.dart' as http;
 
@@ -33,6 +34,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   List<Word> wordList = [];
 
   getStatement(int _selectedIndex) async {
+    await Future.delayed(const Duration(milliseconds: 300));
     var url;
     if (_selectedIndex == 1) {
       url = Uri.parse('$serverHttp/statements?bookmarked=true');
@@ -63,6 +65,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   }
 
   getWord(int _selectedIndex) async {
+    await Future.delayed(const Duration(milliseconds: 300));
     var url = Uri.parse('$serverHttp/words?bookmarked=true');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
@@ -96,7 +99,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
     } else {
       url = Uri.parse('$serverHttp/bookmark?type=CUSTOM&fk=$id');
     }
-
     final response = await http.delete(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
     print("delete : $response");
   }
@@ -175,7 +177,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
     Widget bookmarkStatementSection(){
       return FutureBuilder(
-          future: statement1 = getStatement(_selectedIndex),
+          future: getStatement(_selectedIndex),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -279,7 +281,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
     Widget bookmarkWordSection() {
       return FutureBuilder(
-          future: word1 = getWord(_selectedIndex),
+          future: getWord(_selectedIndex),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
