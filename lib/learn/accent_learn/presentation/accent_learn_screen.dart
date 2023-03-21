@@ -572,7 +572,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
           BoxShadow(
             color: ColorStyles.black00.withOpacity(0.1),
             blurRadius: 20,
-            offset: const Offset(0, 4), // changes position of shadow
+            offset: const Offset(0, 8), // changes position of shadow
           ),
         ],
       ),
@@ -691,7 +691,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               BoxShadow(
                 color: ColorStyles.saeraRed.withOpacity(0.2),
                 blurRadius: 16,
-                offset: const Offset(0, 4), // changes position of shadow
+                offset: const Offset(0, 8), // changes position of shadow
               ),
             ],
           ),
@@ -726,7 +726,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               BoxShadow(
                 color: ColorStyles.saeraPink.withOpacity(0.2),
                 blurRadius: 16,
-                offset: const Offset(0, 4), // changes position of shadow
+                offset: const Offset(0, 8), // changes position of shadow
               ),
             ],
           ),
@@ -770,7 +770,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
               BoxShadow(
                 color: ColorStyles.saeraPink2.withOpacity(0.2),
                 blurRadius: 16,
-                offset: const Offset(0, 4), // changes position of shadow
+                offset: const Offset(0, 8), // changes position of shadow
               ),
             ],
           ),
@@ -810,7 +810,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                 BoxShadow(
                   color: ColorStyles.saeraRed.withOpacity(0.2),
                   blurRadius: 16,
-                  offset: const Offset(0, 4), // changes position of shadow
+                  offset: const Offset(0, 8), // changes position of shadow
                 ),
               ],
             ),
@@ -857,7 +857,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             BoxShadow(
               color: ColorStyles.saeraRed.withOpacity(0.2),
               blurRadius: 16,
-              offset: const Offset(0, 4), // changes position of shadow
+              offset: const Offset(0, 8), // changes position of shadow
             ),
           ],
         ),
@@ -921,7 +921,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             BoxShadow(
               color: ColorStyles.saeraRed.withOpacity(0.2),
               blurRadius: 16,
-              offset: const Offset(0, 4), // changes position of shadow
+              offset: const Offset(0, 8), // changes position of shadow
             ),
           ],
         ),

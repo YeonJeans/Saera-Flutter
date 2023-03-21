@@ -69,9 +69,11 @@ class _AudioBarState extends State<AudioBar> {
         });
         if(widget.isRecording){
           _lineController.rsetting(newDuration.inMicroseconds.toDouble());
+          _lineController.rpositionChanged(0.0);
         }
         else{
           _lineController.setting(newDuration.inMicroseconds.toDouble());
+          _lineController.positionChanged(0.0);
         }
       }
     });
@@ -200,7 +202,12 @@ class _AudioBarState extends State<AudioBar> {
               ),
               Container(
                 margin: const EdgeInsets.only(left: 5.0),
-                child: Text(formatTime(duration),
+                child: duration.inSeconds == 0.0 ?
+                const Text("00:01",
+                  style: TextStyles.small66TextStyle,
+                )
+                    :
+                Text(formatTime(duration),
                   style: TextStyles.small66TextStyle,
                 ),
               ),

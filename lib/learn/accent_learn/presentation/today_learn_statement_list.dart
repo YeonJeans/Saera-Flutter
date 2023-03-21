@@ -208,7 +208,7 @@ class _TodayLearnStatementListPageState extends State<TodayLearnStatementListPag
               color: Colors.grey.withOpacity(0.2),
               spreadRadius: 6,
               blurRadius: 7,
-              offset: Offset(0, 3),
+              offset: Offset(0, 8),
             )
           ]
       ),

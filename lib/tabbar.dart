@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart';
+import 'package:device_info/device_info.dart' show DeviceInfoPlugin, IosDeviceInfo;
 
 import 'package:saera/home/presentation/home_screen.dart';
 import 'package:saera/learn/presentation/learn_screen.dart';
@@ -40,12 +41,16 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
   late TabController tabController;
 
   int selectedIndex = 0;
+  int prevIndex = 0;
+
+
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 4, vsync: this);
     tabController.addListener(_handleTabSelection);
+
   }
 
   _handleTabSelection() {
@@ -71,11 +76,25 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+
+    bool isNeedSafeArea = MediaQuery.of(context).viewPadding.bottom > 0;
+
+    return WillPopScope(
+        onWillPop: () async {
+        if (_navigatorKeys[tabController.index].currentState?.canPop() ?? false) {
+          _navigatorKeys[tabController.index].currentState?.pop();
+          return false;
+        }
+        else {
+        return true;
+      }
+    },
+    child: Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       bottomNavigationBar: Container(
-        height: 60.0,
+        height: isNeedSafeArea ? 72.0 : 60.0,
+        padding: isNeedSafeArea ? EdgeInsets.only(bottom: 16.0) : EdgeInsets.all(0.0),
         decoration: BoxDecoration(
             border: Border(
                 top: BorderSide(color: ColorStyles.tabGray.withOpacity(0.25), width: 1)
@@ -83,6 +102,12 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
         ),
         child: TabBar(
           controller: tabController,
+          onTap: (index){
+            if(prevIndex == tabController.index){
+              _navigatorKeys[tabController.index].currentState?.popUntil((route) => route.isFirst);
+            }
+            prevIndex = selectedIndex;
+          },
           tabs: <Widget>[
             Tab(
               icon: selectedIndex == 0 ?  SvgPicture.asset("assets/icons/home_filled.svg", color: ColorStyles.tabGray, width: 16, height: 16,): SvgPicture.asset("assets/icons/home_outlined.svg", color: ColorStyles.tabGray, width: 16, height: 16,),
@@ -120,14 +145,16 @@ class _BottomNavigatorState extends State<BottomNavigator> with SingleTickerProv
           indicatorColor: Colors.transparent,
         ),
       ),
-      body: Stack(
-          children: [
-            _buildOffstageNavigator(0),
-            _buildOffstageNavigator(1),
-            _buildOffstageNavigator(2),
-            _buildOffstageNavigator(3),
-          ],
-        ),
+      body:
+      Stack(
+        children: [
+          _buildOffstageNavigator(0),
+          _buildOffstageNavigator(1),
+          _buildOffstageNavigator(2),
+          _buildOffstageNavigator(3),
+        ],
+      ),
+    )
     );
   }
 
