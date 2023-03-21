@@ -142,7 +142,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
     Widget textSection = Container(
       padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
       child: Text(
-        "${_authManager.getName()}님이 즐겨찾기한\n문장들이에요.",
+        _selectedIndex == 0 ? "${_authManager.getName()}님이 즐겨찾기한\n단어들이에요." : "${_authManager.getName()}님이 즐겨찾기한\n문장들이에요.",
         style: TextStyles.xxLargeTextStyle
       )
     );
