@@ -452,14 +452,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
           } else if (snapshot.connectionState == ConnectionState.done){
             if (snapshot.hasError) {
               return Center(
-                child: Container(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
-                    child: LoadingAnimationWidget.waveDots(
-                        color: ColorStyles.expFillGray,
-                        size: 45.0
-                    )
-                ),
+                  child: Container(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                      child: Text(snapshot.error.toString())
+                  )
               );
             } else {
               return Container(
@@ -579,7 +576,13 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              return notExistStatement();
+              return Center(
+                  child: Container(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                      child: Text(snapshot.error.toString())
+                  )
+              );
             } else {
               List<Statement> statements = snapshot.data;
               if (statements.isEmpty) {

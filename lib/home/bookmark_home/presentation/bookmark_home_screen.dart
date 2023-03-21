@@ -279,7 +279,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
     Widget bookmarkWordSection() {
       return FutureBuilder(
-          future: word1,
+          future: word1 = getWord(_selectedIndex),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -316,8 +316,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                             return InkWell(
                               onTap: null,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     wordList[index].notation,
@@ -333,16 +332,11 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                       wordList[index].tag,
                                       style: TextStyles.small00TextStyle,
                                     ),
-                                    backgroundColor: selectWordTagColor(
-                                        wordList[index].tag),
-                                    visualDensity: const VisualDensity(
-                                        vertical: -4),
+                                    backgroundColor: selectWordTagColor(wordList[index].tag),
+                                    visualDensity: const VisualDensity(vertical: -4),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.only(left: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.02),
+                                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
