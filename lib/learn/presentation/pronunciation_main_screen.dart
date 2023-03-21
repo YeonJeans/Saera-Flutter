@@ -33,7 +33,7 @@ class PronunciationMainPage extends StatelessWidget {
 
   Future<List<int>> getWordList(int id) async {
     List<int> wordList = [];
-    var url = Uri.parse('${serverHttp}/words?tag_id=$id');
+    var url = Uri.parse('$serverHttp/word-id?tag_id=$id');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}"});
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
