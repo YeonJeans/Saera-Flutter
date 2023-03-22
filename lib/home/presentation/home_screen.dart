@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
       }
       return top5StatementList;
     } else {
-      return throw Exception("오류");
+      return throw Exception("top5StatementList 서버 에러");
     }
   }
 
@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
     Widget learnDateTextSection = Container(
       margin: EdgeInsets.only(
         top: MediaQuery.of(context).size.height*0.127,
-        left: MediaQuery.of(context).size.width*0.66
+        left: MediaQuery.of(context).size.width*0.657
       ),
       child: Text.rich(
         TextSpan(
@@ -230,11 +230,11 @@ class _HomePageState extends State<HomePage> {
           );
         },
         child: Container(
-          margin: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height*0.01,
-            bottom: MediaQuery.of(context).size.height*0.02
+          margin: const EdgeInsets.only(
+            top: 12,
+            bottom: 12
           ),
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(12.0)),
