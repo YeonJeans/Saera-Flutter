@@ -29,7 +29,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<dynamic>? statement;
   final List<ChipData> _chipList = [];
   List<String> situationList = ["일상", "소비", "인사", "은행/공공기관", "회사"];
-  List<String> statementTypeList = ["의문문", "존댓말", "부정문", "감정 표현"];
+  List<String> statementTypeList = ["의문문", "존댓말", "부정문", "감정표현"];
   int? _selectedIndex;
 
   late TextEditingController _textEditingController;
@@ -411,7 +411,7 @@ class _SearchPageState extends State<SearchPage> {
                 selectStatementCategory('의문문'),
                 selectStatementCategory('존댓말'),
                 selectStatementCategory('부정문'),
-                selectStatementCategory('감정 표현'),
+                selectStatementCategory('감정표현'),
               ],
             )
         )

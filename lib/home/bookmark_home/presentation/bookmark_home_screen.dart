@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:saera/home/presentation/home_screen.dart';
 import 'package:saera/style/font.dart';
 import 'package:http/http.dart' as http;
 
@@ -106,7 +105,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Color selectTagColor(String tag) {
     if (tag == '일상' || tag == '소비' || tag == '인사' || tag == '은행/공공기관' || tag == '회사') {
       return ColorStyles.saeraPink2;
-    } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정 표현') {
+    } else if (tag == '의문문' || tag == '존댓말' || tag == '부정문' || tag == '감정표현') {
       return ColorStyles.saeraBeige;
     } else {
       return ColorStyles.saeraYellow.withOpacity(0.5);
