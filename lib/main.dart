@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:saera/learn/accent_learn/data/line_controller.dart';
@@ -69,14 +70,34 @@ class _SplashScreenState extends State<SplashScreen> {
   Scaffold waitingView() {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/images/splash_bg.png',),
-                fit: BoxFit.fill
+        body: Stack(
+          children: [
+            SvgPicture.asset(
+              'assets/images/saera_splash.svg',
+              alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
             ),
-          ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/saera_title.svg',
+                  alignment: Alignment.center,
+                ),
+              ),
+            )
+          ],
         )
+        // Container(
+        //   decoration: const BoxDecoration(
+        //     image: DecorationImage(
+        //         image: AssetImage('assets/images/splash_bg.png',),
+        //         fit: BoxFit.cover
+        //     ),
+        //   ),
+        // )
     );
   }
 

@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:saera/login/data/login_platform.dart';
 import 'package:saera/server.dart';
@@ -115,16 +116,23 @@ class _LoginPageState extends State<LoginPage> {
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Image(
-              image: AssetImage('assets/icons/google_logo.png'),
-              width: 18,
-              height: 18,
+          children:[
+            Container(
+              child: Image(
+                image: AssetImage('assets/icons/google_logo.png'),
+                width: 18,
+                height: 18,
+              ),
             ),
+            // Image(
+            //   image: AssetImage('assets/icons/google_logo.png'),
+            //   width: 18,
+            //   height: 18,
+            // ),
             SizedBox(width: 24,),
             Text(
               "Google 계정으로 로그인",
-              style: TextStyles.medium25TextStyle,
+              style: TextStyles.medium25400TextStyle,
             ),
           ],
         ),
@@ -174,22 +182,41 @@ class _LoginPageState extends State<LoginPage> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     return Scaffold(
-      body: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/splash_bg.png'),
-                  fit: BoxFit.fill
-              )
-          ),
-          padding: const EdgeInsets.only(left: 21, right: 21, bottom: 180),
-          child: Column(
+      body: Stack(
+        children: [
+          Stack(
             children: [
-              const Spacer(),
-              googleLoginBtn(),
-              // appleLoginBtn()
+              SvgPicture.asset(
+                'assets/images/saera_splash.svg',
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/images/saera_title.svg',
+                    alignment: Alignment.center,
+                  ),
+                ),
+              ),
+
+              Container(
+                  padding: const EdgeInsets.only(left: 21, right: 21, bottom: 180),
+                  child: Column(
+                    children: [
+                      const Spacer(),
+                      googleLoginBtn(),
+                      // appleLoginBtn()
+                    ],
+                  )
+              ),
             ],
           )
-      ),
+        ],
+      )
     );
   }
 }
