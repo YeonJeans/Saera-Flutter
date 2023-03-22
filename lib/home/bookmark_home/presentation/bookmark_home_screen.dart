@@ -216,51 +216,56 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                   builder: (context) => AccentPracticePage(id: statementList[index].id, isCustom: false),
                                 ));
                               },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 3),
-                                        child: Text(
-                                            statementList[index].content,
-                                            style: TextStyles.regular00TextStyle
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    bottom: statementList.length - 1 == index ? 120 : 0
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(vertical: 3),
+                                          child: Text(
+                                              statementList[index].content,
+                                              style: TextStyles.regular00TextStyle
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width*0.7,
-                                        child: Wrap(
-                                          spacing: 7.0,
-                                          children: statementList[index].tags.map((tag) {
-                                            return Chip(
-                                              label: Text(tag),
-                                              labelStyle: TextStyles.small00TextStyle,
-                                              backgroundColor: selectTagColor(tag),
-                                              visualDensity: const VisualDensity(vertical: -4),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  IconButton(
-                                      onPressed: (){
-                                        setState(() {
-                                          statementList[index].bookmarked = false;
-                                          deleteBookmark(statementList[index].id, _selectedIndex);
-                                          getStatement(_selectedIndex);
-                                        });
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width*0.7,
+                                          child: Wrap(
+                                            spacing: 7.0,
+                                            children: statementList[index].tags.map((tag) {
+                                              return Chip(
+                                                label: Text(tag),
+                                                labelStyle: TextStyles.small00TextStyle,
+                                                backgroundColor: selectTagColor(tag),
+                                                visualDensity: const VisualDensity(vertical: -4),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    IconButton(
+                                        onPressed: (){
+                                          setState(() {
+                                            statementList[index].bookmarked = false;
+                                            deleteBookmark(statementList[index].id, _selectedIndex);
+                                            getStatement(_selectedIndex);
+                                          });
 
-                                      },
-                                      icon: SvgPicture.asset(
-                                        'assets/icons/star_fill.svg',
-                                        fit: BoxFit.scaleDown,
-                                      )
-                                  )
-                                ],
-                              ),
+                                        },
+                                        icon: SvgPicture.asset(
+                                          'assets/icons/star_fill.svg',
+                                          fit: BoxFit.scaleDown,
+                                        )
+                                    )
+                                  ],
+                                ),
+                              )
                             );
                           }),
                           separatorBuilder: (BuildContext context, int index) {
@@ -316,44 +321,49 @@ class _BookmarkPageState extends State<BookmarkPage> {
                           itemBuilder: ((context, index) {
                             return InkWell(
                               onTap: null,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    wordList[index].notation,
-                                    style: TextStyles.regular00TextStyle,
-                                  ),
-                                  Text(
-                                    '[${wordList[index].pronunciation}]',
-                                    style: TextStyles.regularGreenTextStyle,
-                                  ),
-                                  Spacer(flex: 2,),
-                                  Chip(
-                                    label: Text(
-                                      wordList[index].tag,
-                                      style: TextStyles.small00TextStyle,
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    bottom: wordList.length - 1 == index ? 120 : 0
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      wordList[index].notation,
+                                      style: TextStyles.regular00TextStyle,
                                     ),
-                                    backgroundColor: selectWordTagColor(wordList[index].tag),
-                                    visualDensity: const VisualDensity(vertical: -4),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
-                                    child: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            wordList[index].bookmarked = false;
-                                            deleteBookmark(wordList[index].id, _selectedIndex);
-                                            word1 = getWord(_selectedIndex);
-                                          });
-                                        },
-                                        icon: SvgPicture.asset(
-                                          'assets/icons/star_fill.svg',
-                                          fit: BoxFit.scaleDown,
-                                        )
+                                    Text(
+                                      '[${wordList[index].pronunciation}]',
+                                      style: TextStyles.regularGreenTextStyle,
                                     ),
-                                  )
-                                ],
-                              ),
+                                    Spacer(flex: 2,),
+                                    Chip(
+                                      label: Text(
+                                        wordList[index].tag,
+                                        style: TextStyles.small00TextStyle,
+                                      ),
+                                      backgroundColor: selectWordTagColor(wordList[index].tag),
+                                      visualDensity: const VisualDensity(vertical: -4),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
+                                      child: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              wordList[index].bookmarked = false;
+                                              deleteBookmark(wordList[index].id, _selectedIndex);
+                                              word1 = getWord(_selectedIndex);
+                                            });
+                                          },
+                                          icon: SvgPicture.asset(
+                                            'assets/icons/star_fill.svg',
+                                            fit: BoxFit.scaleDown,
+                                          )
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
                             );
                           }),
                           separatorBuilder: (BuildContext context, int index) {
