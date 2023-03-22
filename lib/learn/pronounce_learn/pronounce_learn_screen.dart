@@ -739,7 +739,13 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                 future: _isAudioReady,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData == false) {
-                    return before_audio_bar();
+                    return Column(
+                      children: [
+                        before_audio_bar(),
+                        pronounceSection(),
+                        pronounceMethodSection(),
+                      ],
+                    );
                   }
                   else if (snapshot.hasError) {
                     return Padding(
@@ -903,7 +909,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
       child: const Text(
         "단어 학습은 억양 그래프와 점수를 제공하지 않습니다.\n목표로 하는 발음이 나올 때까지 자유롭게 연습해 보세요!",
         textAlign: TextAlign.center,
-        style: TextStyles.small82TextStyle,
+        style: TextStyles.small82400TextStyle,
       ),
     );
   }

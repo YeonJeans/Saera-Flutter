@@ -45,5 +45,5 @@ String WordTip(int idx){
   else if(idx == 20){
     return "뒤 음절의 모음이 앞 음절 모음의 영향을 받아 아주 같거나 그에 가까운 성질의 모음이 어울리는 현상입니다";
   }
-  return "";
+  return "\n";
 }
