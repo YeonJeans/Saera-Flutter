@@ -393,6 +393,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    bool keyboardIsOpened = MediaQuery.of(context).viewInsets.bottom != 0.0;
 
     return Stack(
       children: [
@@ -402,6 +403,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                   FocusScope.of(context).unfocus();
                 },
               child: Scaffold(
+                  //primary: false,
                   resizeToAvoidBottomInset: false,
                   appBar: AppBar(
                     automaticallyImplyLeading: false,
@@ -411,8 +413,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                   ),
                   backgroundColor: Colors.white,
                   bottomSheet: Container(
-                    //padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom ),
-                    child: isComplete ? createBtn() : disableCreateBtn(),
+                  child: isComplete ? createBtn() : disableCreateBtn(),
                   ),
                   body: SingleChildScrollView(
                     //controller: _scrollController,
@@ -429,11 +430,23 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
 
                           SubTitleSection(subtitle: "이 문장에 대한 태그를 추가해 주세요.", desc: "최대 3개의 태그를 달 수 있으며, 각각의 태그는 띄어쓰기로 구분됩니다."),
                           enterTagSection(),
-                          const SizedBox(height: 250,),
+                          const SizedBox(height: 300,),
                         ],
                       ),
                     ),
-                  )
+                  ),
+                // floatingActionButton: (){
+                //     if(keyboardIsOpened){
+                //       return null;
+                //     }
+                //     else{
+                //       return Container(
+                //         child: isComplete ? createBtn() : disableCreateBtn(),
+                //       );
+                //     }
+                // }(),
+                //
+                // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
               ),
             )
         )
