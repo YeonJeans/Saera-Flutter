@@ -290,6 +290,36 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
       y2 = List.from(body["pitch_y"]);
 
+      if (!mounted) return;
+
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          contentPadding: EdgeInsets.only(left: 24.0, right: 24.0, top: 12.0, bottom: 4.0),
+          shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8))
+            ),
+            title: const Text("억양 등급",
+              style: TextStyles.large25TextStyle,
+              textAlign: TextAlign.center,
+            ),
+            content:  Container(
+              child: expSection(),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  '확인',
+                  style: TextStyles.medium25400TextStyle,
+                ),
+              ),
+            ],
+        ),
+      );
+
       return true;
     }
     else{
@@ -847,62 +877,61 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
 
   Widget expSection() {
     return Container(
-        margin: const EdgeInsets.only(top: 13, bottom: 25),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-        height: 80,
-        decoration: BoxDecoration(
-          color: ColorStyles.saeraWhite,
-          borderRadius: BorderRadius.circular(8), //border radius exactly to ClipRRect
-          boxShadow:[
-            BoxShadow(
-              color: ColorStyles.saeraRed.withOpacity(0.2),
-              blurRadius: 16,
-              offset: const Offset(0, 8), // changes position of shadow
-            ),
-          ],
-        ),
+        margin: const EdgeInsets.only(top: 8),
+        height: 56,
+        width: MediaQuery.of(context).size.width,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
 
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            Container(
+              height: 56,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
 
-                Row(
-                  children: [
-                    const Text("정확도 ",
-                      style: TextStyles.medium25TextStyle,
-                    ),
-                    accuracyRank(accuracyRate),
-                    const Text(
-                      " | ",
-                    style: TextStyles.mediumEFTextStyle,
-                    ),
-                    Text(
-                      accuracyComment(accuracyRate),
-                      style: TextStyles.medium25TextStyle,
-                    )
-                  ],
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 7),
-                  child: const Text("학습 완료 경험치 +100xp",
-                    style: TextStyles.small99TextStyle,
+                  Row(
+                    children: [
+                      const Text("정확도 ",
+                        style: TextStyles.medium25TextStyle,
+                      ),
+                      accuracyRank(accuracyRate),
+                      const Text(
+                        " | ",
+                        style: TextStyles.mediumEFTextStyle,
+                      ),
+                      Text(
+                        accuracyComment(accuracyRate),
+                        style: TextStyles.medium25TextStyle,
+                      )
+                    ],
                   ),
-                )
+                  Container(
+                    margin: const EdgeInsets.only(top: 7),
+                    child: const Text("학습 완료 경험치 +100xp",
+                      style: TextStyles.small99TextStyle,
+                    ),
+                  )
 
 
-              ],
+                ],
+              ),
             ),
 
-            Row(
-              children: [
-                rankIcon(accuracyRate),
-                const SizedBox(
-                  width: 16,
-                )
-              ],
+            Container(
+              height: 56,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 8,),
+                  rankIcon(accuracyRate),
+                  // const SizedBox(
+                  //   width: 16,
+                  // )
+                ],
+              ),
             )
           ],
         )
@@ -1036,15 +1065,15 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             }
             return practiceGraph();
           }(),
-
-          (){
-            if(accuracyRate  == 0){
-              return expInitSection();
-            }
-            else{
-              return expSection();
-            }
-          }(),
+          //
+          // (){
+          //   if(accuracyRate  == 0){
+          //     return expInitSection();
+          //   }
+          //   else{
+          //     return expSection();
+          //   }
+          // }(),
 
         ],
       ),

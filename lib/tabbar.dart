@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saera/home/bookmark_home/presentation/bookmark_home_screen.dart';
-import 'package:device_info/device_info.dart' show DeviceInfoPlugin, IosDeviceInfo;
 
 import 'package:saera/home/presentation/home_screen.dart';
 import 'package:saera/learn/presentation/learn_screen.dart';
@@ -12,7 +11,6 @@ import 'package:saera/style/font.dart';
 class TabBarMainPage extends StatelessWidget {
   const TabBarMainPage({super.key});
   static final myTabbedPageKey = GlobalKey<_BottomNavigatorState>();
-
 
   @override
   Widget build(BuildContext context) {
