@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  getTop5SentenceList() async {
+  Future<List<top5Statement>> getTop5SentenceList() async {
     var url = Uri.parse('$serverHttp/top5-statement');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
@@ -109,13 +109,9 @@ class _HomePageState extends State<HomePage> {
         String name = i["name"];
         top5StatementList.add(top5Statement(id: id, content: name));
       }
-    } else if(response.statusCode == 401){
-      String? before = _authManager.getToken();
-      await RefreshToken(context);
-
-      if(before != _authManager.getToken()){
-        getTop5SentenceList();
-      }
+      return top5StatementList;
+    } else {
+      return throw Exception("오류");
     }
   }
 
@@ -292,7 +288,7 @@ class _HomePageState extends State<HomePage> {
               return Container(
                 margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
                 child: CarouselSlider.builder(
-                  itemCount: top5StatementList.length,
+                  itemCount: snapshot.data?.length,
                   options: CarouselOptions(
                       height: MediaQuery.of(context).size.height*0.09,
                       initialPage: 0,
@@ -301,7 +297,7 @@ class _HomePageState extends State<HomePage> {
                       autoPlay: true
                   ),
                   itemBuilder: (BuildContext context, int index, int realIndex) {
-                    return statementSection(top5StatementList[index].id, top5StatementList[index].content);
+                    return statementSection(snapshot.data![index].id, snapshot.data![index].content);
                   },
                 ),
               );
