@@ -29,7 +29,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<dynamic>? statement;
   final List<ChipData> _chipList = [];
   List<String> situationList = ["일상", "소비", "인사", "은행/공공기관", "회사"];
-  List<String> statementTypeList = ["의문문", "존댓말", "부정문", "감정 표현"];
+  List<String> statementTypeList = ["의문문", "존댓말", "부정문", "감정표현"];
   int? _selectedIndex;
 
   late TextEditingController _textEditingController;
@@ -66,6 +66,13 @@ class _SearchPageState extends State<SearchPage> {
     bool isSituationCategorySelected = false;
     setState(() {
       for (int i = _chipList.length-1; i >= 0; i--) {
+        if (_chipList[i].name == categoryName) {
+          isSituationCategorySelected = true;
+          _deleteChip(_chipList[i].id);
+          break;
+        } else {
+          isSituationCategorySelected = false;
+        }
         for (int j = 0; j < situationList.length; j++) {
           if (_chipList[i].name == situationList[j]) {
             isSituationCategorySelected = true;
@@ -101,18 +108,6 @@ class _SearchPageState extends State<SearchPage> {
         return;
       }
     });
-  }
-
-  double listViewHeight() {
-    if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.52;
-    } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.63;
-    } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
-      return MediaQuery.of(context).size.height*0.57;
-    } else {
-      return MediaQuery.of(context).size.height*0.69;
-    }
   }
 
   void _addChip(var chipText) {
@@ -411,7 +406,7 @@ class _SearchPageState extends State<SearchPage> {
                 selectStatementCategory('의문문'),
                 selectStatementCategory('존댓말'),
                 selectStatementCategory('부정문'),
-                selectStatementCategory('감정 표현'),
+                selectStatementCategory('감정표현'),
               ],
             )
         )
@@ -492,8 +487,8 @@ class _SearchPageState extends State<SearchPage> {
             } else {
               List<Statement> statements = snapshot.data;
               return Container(
-                padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
-                height: listViewHeight(),
+                padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 20),
+                height: MediaQuery.of(context).size.height*0.7,
                 child: RefreshIndicator(
                   onRefresh: () async {
                     setState(() {
@@ -510,68 +505,73 @@ class _SearchPageState extends State<SearchPage> {
                                 MaterialPageRoute(builder: (context) => AccentPracticePage(id: statement.id, isCustom: false))
                             );
                           },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(vertical: 3),
-                                        child: Text(
-                                            statement.content,
-                                            style: TextStyles.regular00TextStyle
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              bottom: statements.length - 1 == index ? 120 : 0
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(vertical: 3),
+                                          child: Text(
+                                              statement.content,
+                                              style: TextStyles.regular00TextStyle
+                                          ),
                                         ),
-                                      ),
-                                      recommendedStatement(statement)
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width*0.7,
-                                    child: Wrap(
-                                      spacing: 7.0,
-                                      children: statement.tags.map((tag) {
-                                        return Chip(
-                                            label: Text(tag),
-                                            labelStyle: TextStyles.small00TextStyle,
-                                            backgroundColor: selectTagColor(tag),
-                                            visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
-                                        );
-                                      }).toList(),
+                                        recommendedStatement(statement)
+                                      ],
                                     ),
-                                  )
-                                ],
-                              ),
-                              IconButton(
-                                  onPressed: (){
-                                    if(statement.bookmarked){
-                                      setState(() {
-                                        statement.bookmarked = false;
-                                      });
-                                      deleteBookmark(statement.id);
-                                    }
-                                    else{
-                                      setState(() {
-                                        statement.bookmarked = true;
-                                      });
-                                      createBookmark(statement.id);
-                                    }
-                                  },
-                                  icon: statement.bookmarked?
-                                  SvgPicture.asset(
-                                    'assets/icons/star_fill.svg',
-                                    fit: BoxFit.scaleDown,
-                                  )
-                                      :
-                                  SvgPicture.asset(
-                                    'assets/icons/star_unfill.svg',
-                                    fit: BoxFit.scaleDown,
-                                  )
-                              )
-                            ],
-                          ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width*0.7,
+                                      child: Wrap(
+                                        spacing: 7.0,
+                                        children: statement.tags.map((tag) {
+                                          return Chip(
+                                              label: Text(tag),
+                                              labelStyle: TextStyles.small00TextStyle,
+                                              backgroundColor: selectTagColor(tag),
+                                              visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
+                                          );
+                                        }).toList(),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                IconButton(
+                                    onPressed: (){
+                                      if(statement.bookmarked){
+                                        setState(() {
+                                          statement.bookmarked = false;
+                                        });
+                                        deleteBookmark(statement.id);
+                                      }
+                                      else{
+                                        setState(() {
+                                          statement.bookmarked = true;
+                                        });
+                                        createBookmark(statement.id);
+                                      }
+                                    },
+                                    icon: statement.bookmarked?
+                                    SvgPicture.asset(
+                                      'assets/icons/star_fill.svg',
+                                      fit: BoxFit.scaleDown,
+                                    )
+                                        :
+                                    SvgPicture.asset(
+                                      'assets/icons/star_unfill.svg',
+                                      fit: BoxFit.scaleDown,
+                                    )
+                                )
+                              ],
+                            ),
+                          )
                         );
                       }),
                       separatorBuilder: (BuildContext context, int index) {
@@ -608,7 +608,7 @@ class _SearchPageState extends State<SearchPage> {
                     filterSection,
                     selectCategorySection,
                     chipSection,
-                    statementSection
+                    statementSection,
                   ],
                 ),
               )

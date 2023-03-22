@@ -83,30 +83,6 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
     });
   }
 
-  double listViewHeight() {
-    if (_chipSectionVisibility == true && _categorySectionVisibility == true) {
-      if (tagCount == 0) {
-        return MediaQuery.of(context).size.height*0.58;
-      } else if (tagCount >= 1 && tagCount < 3) {
-        return MediaQuery.of(context).size.height*0.56;
-      } else {
-        return MediaQuery.of(context).size.height*0.54;
-      }
-    } else if (_chipSectionVisibility == true && _categorySectionVisibility == false) {
-      return MediaQuery.of(context).size.height*0.63;
-    } else if (_chipSectionVisibility == false && _categorySectionVisibility == true) {
-      if (tagCount == 0) {
-        return MediaQuery.of(context).size.height*0.65;
-      } else if (tagCount >= 1 && tagCount < 3) {
-        return MediaQuery.of(context).size.height*0.62;
-      } else {
-        return MediaQuery.of(context).size.height*0.6;
-      }
-    } else {
-      return MediaQuery.of(context).size.height*0.7;
-    }
-  }
-
   void _addChip(var chipText) {
     setState(() {
       _chipList.add(ChipData(
@@ -452,19 +428,16 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
           } else if (snapshot.connectionState == ConnectionState.done){
             if (snapshot.hasError) {
               return Center(
-                child: Container(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
-                    child: LoadingAnimationWidget.waveDots(
-                        color: ColorStyles.expFillGray,
-                        size: 45.0
-                    )
-                ),
+                  child: Container(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                      child: Text(snapshot.error.toString())
+                  )
               );
             } else {
               return Container(
                 padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
-                height: listViewHeight(),
+                height: MediaQuery.of(context).size.height*0.72,
                 child: RefreshIndicator(
                   onRefresh: () async {
                     setState(() {
@@ -500,62 +473,67 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                                   builder: (context) => AccentPracticePage(id: statement.id, isCustom: true),
                                 ));
                               },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(vertical: 3),
-                                        child: Text(
-                                            statement.content,
-                                            style: TextStyles.regular00TextStyle
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    bottom: statements.length - 1 == index ? 120 : 0
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(vertical: 3),
+                                          child: Text(
+                                              statement.content,
+                                              style: TextStyles.regular00TextStyle
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width*0.7,
-                                        child: Wrap(
-                                          spacing: 7.0,
-                                          children: statement.tags.map((tag) {
-                                            return Chip(
-                                              label: Text(tag),
-                                              labelStyle: TextStyles.small00TextStyle,
-                                              visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
-                                            );
-                                          }).toList(),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  IconButton(
-                                      onPressed: (){
-                                        if(statement.bookmarked){
-                                          setState(() {
-                                            statement.bookmarked = false;
-                                          });
-                                          deleteBookmark(statement.id);
-                                        }
-                                        else{
-                                          setState(() {
-                                            statement.bookmarked = true;
-                                          });
-                                          createBookmark(statement.id);
-                                        }
-                                      },
-                                      icon: statement.bookmarked?
-                                      SvgPicture.asset(
-                                        'assets/icons/star_fill.svg',
-                                        fit: BoxFit.scaleDown,
-                                      )
-                                          :
-                                      SvgPicture.asset(
-                                        'assets/icons/star_unfill.svg',
-                                        fit: BoxFit.scaleDown,
-                                      )
-                                  )
-                                ],
-                              ),
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width*0.7,
+                                          child: Wrap(
+                                            spacing: 7.0,
+                                            children: statement.tags.map((tag) {
+                                              return Chip(
+                                                  label: Text(tag),
+                                                  labelStyle: TextStyles.small00TextStyle,
+                                                  visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
+                                              );
+                                            }).toList(),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    IconButton(
+                                        onPressed: (){
+                                          if(statement.bookmarked){
+                                            setState(() {
+                                              statement.bookmarked = false;
+                                            });
+                                            deleteBookmark(statement.id);
+                                          }
+                                          else{
+                                            setState(() {
+                                              statement.bookmarked = true;
+                                            });
+                                            createBookmark(statement.id);
+                                          }
+                                        },
+                                        icon: statement.bookmarked?
+                                        SvgPicture.asset(
+                                          'assets/icons/star_fill.svg',
+                                          fit: BoxFit.scaleDown,
+                                        )
+                                            :
+                                        SvgPicture.asset(
+                                          'assets/icons/star_unfill.svg',
+                                          fit: BoxFit.scaleDown,
+                                        )
+                                    )
+                                  ],
+                                ),
+                              )
                             )
                         );
                       }),
@@ -579,7 +557,13 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              return notExistStatement();
+              return Center(
+                  child: Container(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                      child: Text(snapshot.error.toString())
+                  )
+              );
             } else {
               List<Statement> statements = snapshot.data;
               if (statements.isEmpty) {

@@ -97,8 +97,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  getTop5SentenceList() async {
-    await Future.delayed(const Duration(seconds: 1));
+  Future<List<top5Statement>> getTop5SentenceList() async {
     var url = Uri.parse('$serverHttp/top5-statement');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
@@ -110,8 +109,9 @@ class _HomePageState extends State<HomePage> {
         String name = i["name"];
         top5StatementList.add(top5Statement(id: id, content: name));
       }
+      return top5StatementList;
     } else {
-      throw Exception("top5 불러오기 오류 발생");
+      return throw Exception("top5StatementList 서버 에러");
     }
   }
 
@@ -140,24 +140,35 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget learnDateTextSection = Container(
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.127,
-        left: MediaQuery.of(context).size.width*0.66
-      ),
-      child: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: '8일 연속',
-              style: TextStyles.small55BoldTextStyle,
-            ),
-            TextSpan(
-                text: '으로\n학습 중이에요',
-                style: TextStyles.small55TextStyle
-            )
-          ]
+      width: 116,
+      height: 54,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+           image: AssetImage('assets/images/home_speech_bubble.png'),
+           alignment: Alignment.center
         ),
-        textAlign: TextAlign.center,
+      ),
+      margin: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height*0.12,
+        left: MediaQuery.of(context).size.width*0.63
+      ),
+      child: Container(
+        margin: EdgeInsets.only(top: 6),
+        child: const Text.rich(
+          TextSpan(
+              children: [
+                TextSpan(
+                  text: '8일 연속',
+                  style: TextStyles.small55BoldTextStyle,
+                ),
+                TextSpan(
+                    text: '으로\n학습 중이에요',
+                    style: TextStyles.small55TextStyle
+                )
+              ]
+          ),
+          textAlign: TextAlign.center,
+        ),
       )
     );
 
@@ -230,11 +241,11 @@ class _HomePageState extends State<HomePage> {
           );
         },
         child: Container(
-          margin: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height*0.01,
-            bottom: MediaQuery.of(context).size.height*0.02
+          margin: const EdgeInsets.only(
+            top: 12,
+            bottom: 12
           ),
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(12.0)),
@@ -281,17 +292,14 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
                   margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
-                  child: LoadingAnimationWidget.waveDots(
-                      color: ColorStyles.expFillGray,
-                      size: 45.0
-                  )
+                  child: Text(snapshot.error.toString())
                 )
               );
             } else {
               return Container(
                 margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
                 child: CarouselSlider.builder(
-                  itemCount: top5StatementList.length,
+                  itemCount: snapshot.data?.length,
                   options: CarouselOptions(
                       height: MediaQuery.of(context).size.height*0.09,
                       initialPage: 0,
@@ -300,11 +308,7 @@ class _HomePageState extends State<HomePage> {
                       autoPlay: true
                   ),
                   itemBuilder: (BuildContext context, int index, int realIndex) {
-                    if (top5StatementList.length != 5) {
-                      return getTop5SentenceList();
-                    } else {
-                      return statementSection(top5StatementList[index].id, top5StatementList[index].content);
-                    }
+                    return statementSection(snapshot.data![index].id, snapshot.data![index].content);
                   },
                 ),
               );
@@ -477,7 +481,7 @@ class _HomePageState extends State<HomePage> {
               body: Stack(
                 children: [
                   greetingTextSection,
-                  speechImageSection,
+                  //speechImageSection,
                   learnDateTextSection,
                   container,
                   imageSection,
