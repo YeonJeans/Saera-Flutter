@@ -66,6 +66,13 @@ class _SearchPageState extends State<SearchPage> {
     bool isSituationCategorySelected = false;
     setState(() {
       for (int i = _chipList.length-1; i >= 0; i--) {
+        if (_chipList[i].name == categoryName) {
+          isSituationCategorySelected = true;
+          _deleteChip(_chipList[i].id);
+          break;
+        } else {
+          isSituationCategorySelected = false;
+        }
         for (int j = 0; j < situationList.length; j++) {
           if (_chipList[i].name == situationList[j]) {
             isSituationCategorySelected = true;
