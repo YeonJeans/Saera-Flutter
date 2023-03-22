@@ -140,24 +140,35 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget learnDateTextSection = Container(
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.127,
-        left: MediaQuery.of(context).size.width*0.657
-      ),
-      child: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: '8일 연속',
-              style: TextStyles.small55BoldTextStyle,
-            ),
-            TextSpan(
-                text: '으로\n학습 중이에요',
-                style: TextStyles.small55TextStyle
-            )
-          ]
+      width: 116,
+      height: 54,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+           image: AssetImage('assets/images/home_speech_bubble.png'),
+           alignment: Alignment.center
         ),
-        textAlign: TextAlign.center,
+      ),
+      margin: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height*0.12,
+        left: MediaQuery.of(context).size.width*0.63
+      ),
+      child: Container(
+        margin: EdgeInsets.only(top: 6),
+        child: const Text.rich(
+          TextSpan(
+              children: [
+                TextSpan(
+                  text: '8일 연속',
+                  style: TextStyles.small55BoldTextStyle,
+                ),
+                TextSpan(
+                    text: '으로\n학습 중이에요',
+                    style: TextStyles.small55TextStyle
+                )
+              ]
+          ),
+          textAlign: TextAlign.center,
+        ),
       )
     );
 
@@ -470,7 +481,7 @@ class _HomePageState extends State<HomePage> {
               body: Stack(
                 children: [
                   greetingTextSection,
-                  speechImageSection,
+                  //speechImageSection,
                   learnDateTextSection,
                   container,
                   imageSection,
