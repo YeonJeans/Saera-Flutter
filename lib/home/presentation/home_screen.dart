@@ -172,20 +172,6 @@ class _HomePageState extends State<HomePage> {
       )
     );
 
-    Widget speechImageSection = Container(
-      margin: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height*0.12,
-          left: MediaQuery.of(context).size.width*0.6
-      ),
-      child: const SizedBox(
-        width: 116,
-        height: 54,
-        child: Image(
-            image: AssetImage('assets/images/home_speech_bubble.png')
-        ),
-      )
-    );
-
     Widget searchSection = Container(
       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
       margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
@@ -481,7 +467,6 @@ class _HomePageState extends State<HomePage> {
               body: Stack(
                 children: [
                   greetingTextSection,
-                  //speechImageSection,
                   learnDateTextSection,
                   container,
                   imageSection,
