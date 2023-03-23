@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:saera/style/color.dart';
 
 import '../../../login/data/authentication_manager.dart';
+import '../../../login/data/user_info_controller.dart';
 import '../../../login/presentation/widget/profile_image_clipper.dart';
 import '../../../style/font.dart';
 
@@ -11,9 +12,7 @@ import 'liquid_custom_progress.dart';
 
 class UserInfo extends StatefulWidget {
 
-  final int exp;
-
-  const UserInfo({Key? key, required this.exp}) : super(key: key);
+  const UserInfo({Key? key}) : super(key: key);
 
   @override
   State<UserInfo> createState() => _UserInfoState();
@@ -22,6 +21,17 @@ class UserInfo extends StatefulWidget {
 class _UserInfoState extends State<UserInfo> {
 
   final AuthenticationManager _authManager = Get.find();
+  final UserInfoController _userController = Get.find();
+
+  @override
+  void initState() {
+    if(_userController.getExp() == null){
+      _userController.saveExp(0);
+    }
+
+
+    super.initState();
+  }
 
   Widget userProfileImage(){
     return Stack(
@@ -34,7 +44,7 @@ class _UserInfoState extends State<UserInfo> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               LiquidCustomProgressIndicator(
-                value: widget.exp == 0 ? 0.0 : widget.exp/1000 - ((widget.exp)/1000).floor(),
+                value: _userController.getExp() == 0 ? 0.0 : _userController.getExp()!/1000 - ((_userController.getExp()!)/1000).floor(),
                 valueColor: AlwaysStoppedAnimation(ColorStyles.backIconGreen),
                 backgroundColor: ColorStyles.searchFillGray,
                 direction: Axis.vertical,
@@ -78,7 +88,7 @@ class _UserInfoState extends State<UserInfo> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Lv. ${1+( widget.exp / 1000).floor()} ",
+          Text("Lv. ${1+( _userController.getExp() / 1000).floor()} ",
             style: TextStyles.largeGreenTextStyle,
           ),
           Text("${_authManager.getName()} ",
@@ -96,7 +106,7 @@ class _UserInfoState extends State<UserInfo> {
   Widget userLevelInfoSection(){
     return Container(
       margin: const EdgeInsets.only(top: 6.0),
-      child: Text("다음 레벨까지 ${widget.exp != 0 ? 1000 - widget.exp % 1000 : ""} xp 남았어요.",
+      child: Text("다음 레벨까지 ${_userController.getExp() != 0 ? 1000 - _userController.getExp()! % 1000 : ""} xp 남았어요.",
         style: TextStyles.medium55TextStyle,
       ),
     );
@@ -105,21 +115,13 @@ class _UserInfoState extends State<UserInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        userProfileImage(),
-        userInfoTextSection(),
-        userLevelInfoSection()
-      ],
-    );
+    return Obx(() => Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          userProfileImage(),
+          userInfoTextSection(),
+          userLevelInfoSection()
+        ]
+    ));
   }
 }
-
-
-
-
-
-
-
-

@@ -3,14 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:saera/mypage/presentation/widgets/mypage_userInfo.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:saera/style/color.dart';
 import 'package:saera/style/font.dart';
 
 import '../../login/data/authentication_manager.dart';
 import '../../login/data/login_platform.dart';
-import '../../login/data/refresh_token.dart';
+import '../../login/data/user_info_controller.dart';
 import '../../login/presentation/login_screen.dart';
 import '../../server.dart';
 
@@ -27,6 +26,7 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   final AuthenticationManager _authManager = Get.find();
+  final UserInfoController _userController = Get.find();
 
   LoginPlatform _loginPlatform = LoginPlatform.google;
 
@@ -53,14 +53,11 @@ class _MyPageState extends State<MyPage> {
         xp = body["xp"];
       });
 
-    }
-    else if(response.statusCode == 401){
-      String? before = _authManager.getToken();
-      await RefreshToken(context);
+      _userController.saveExp(xp);
 
-      if(before != _authManager.getToken()){
-        getUserExp();
-      }
+    }
+    else{
+      print(jsonDecode(utf8.decode(response.bodyBytes)));
     }
   }
 
@@ -137,13 +134,13 @@ class _MyPageState extends State<MyPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           (){
-                            return UserInfo(exp: xp,);
+                            return UserInfo();
                           }(),
 
                           Container(
                             margin: EdgeInsets.only(top: 52, bottom: 4),
                             child: _mypageButton("프로필 수정", "edit.svg", true, (){
-                              print("here");
+                              return print("here");
                             }),
                           ),
                           _mypageButton("로그아웃", "signout.svg", false, signOut())
