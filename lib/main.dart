@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:saera/learn/accent_learn/data/line_controller.dart';
+import 'package:saera/login/data/user_info_controller.dart';
 
 import 'login/data/authentication_manager.dart';
 import 'login/presentation/login_screen.dart';
@@ -33,6 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   final AuthenticationManager _authmanager = Get.put(AuthenticationManager());
   final LineController _lineController = Get.put(LineController());
+  final UserInfoController _userController = Get.put(UserInfoController());
 
   Future<void> initializeSettings() async {
     _authmanager.checkLoginStatus();
@@ -75,8 +77,9 @@ class _SplashScreenState extends State<SplashScreen> {
             SvgPicture.asset(
               'assets/images/saera_splash.svg',
               alignment: Alignment.center,
+              fit: BoxFit.cover,
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              //height: MediaQuery.of(context).size.height,
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -90,14 +93,6 @@ class _SplashScreenState extends State<SplashScreen> {
             )
           ],
         )
-        // Container(
-        //   decoration: const BoxDecoration(
-        //     image: DecorationImage(
-        //         image: AssetImage('assets/images/splash_bg.png',),
-        //         fit: BoxFit.cover
-        //     ),
-        //   ),
-        // )
     );
   }
 

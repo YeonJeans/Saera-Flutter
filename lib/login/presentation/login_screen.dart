@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:saera/login/data/login_platform.dart';
+import 'package:saera/login/data/user_info_controller.dart';
 import 'package:saera/server.dart';
 import 'package:saera/style/font.dart';
 import 'package:saera/tabbar.dart';
@@ -26,6 +27,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late final AuthenticationManager _authManager;
   LoginPlatform _loginPlatform = LoginPlatform.none;
+
+  final UserInfoController _userController = Get.find();
 
   Future<dynamic> getToken(String ?serverAuthCode) async {
 
@@ -54,6 +57,29 @@ class _LoginPageState extends State<LoginPage> {
     _authManager = Get.find();
   }
 
+  getUserExp() async {
+    var url = Uri.parse('${serverHttp}/member');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      int xp = 0;
+
+      setState(() {
+        xp = body["xp"];
+      });
+
+      _userController.saveExp(xp);
+
+      Get.offAll(() => TabBarMainPage());
+
+    }
+    else{
+      print(jsonDecode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
   void signInWithGoogle() async {
     if(Platform.isAndroid){
       final GoogleSignInAccount? googleUser = await GoogleSignIn(
@@ -69,7 +95,8 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _loginPlatform = LoginPlatform.google;
         });
-        Get.offAll(() => TabBarMainPage());
+
+        getUserExp();
       }
     }
     else{
@@ -188,13 +215,12 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               SvgPicture.asset(
                 'assets/images/saera_splash.svg',
+                fit: BoxFit.cover,
                 alignment: Alignment.center,
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
               ),
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
                 child: Center(
                   child: SvgPicture.asset(
                     'assets/images/saera_title.svg',

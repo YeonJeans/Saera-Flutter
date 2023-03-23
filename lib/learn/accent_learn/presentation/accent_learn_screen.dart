@@ -26,6 +26,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../../login/data/authentication_manager.dart';
+import '../../../login/data/user_info_controller.dart';
 import '../../../login/presentation/widget/profile_image_clipper.dart';
 
 
@@ -42,6 +43,8 @@ class AccentPracticePage extends StatefulWidget {
 
 class _AccentPracticePageState extends State<AccentPracticePage> with TickerProviderStateMixin {
   final AuthenticationManager _authManager = Get.find();
+  final UserInfoController _userController = Get.find();
+
   late FToast fToast;
 
   String content = "";
@@ -261,6 +264,27 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
     }
   }
 
+  getUserExp() async {
+    var url = Uri.parse('${serverHttp}/member');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      int xp = 0;
+
+      setState(() {
+        xp = body["xp"];
+      });
+
+      _userController.saveExp(xp);
+
+    }
+    else{
+      print(jsonDecode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
   getAccentEvaluation() async {
     var url = Uri.parse('${serverHttp}/practice?type=STATEMENT&fk=${widget.id.toString()}&isTodayStudy=true');
     var request = http.MultipartRequest('POST', url);
@@ -319,6 +343,8 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             ],
         ),
       );
+
+      getUserExp();
 
       return true;
     }

@@ -25,6 +25,7 @@ import 'package:saera/learn/pronounce_learn/today_learn_word_list.dart';
 import 'dart:convert';
 
 import '../../../login/data/authentication_manager.dart';
+import '../../login/data/user_info_controller.dart';
 import '../../login/presentation/widget/profile_image_clipper.dart';
 
 class PronouncePracticePage extends StatefulWidget {
@@ -43,6 +44,8 @@ class PronouncePracticePage extends StatefulWidget {
 
 class _PronouncePracticePageState extends State<PronouncePracticePage> with TickerProviderStateMixin {
   final AuthenticationManager _authManager = Get.find();
+  final UserInfoController _userController = Get.find();
+
   late FToast fToast;
 
   int contentTag = 0;
@@ -256,6 +259,28 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
     }
   }
 
+  getUserExp() async {
+    var url = Uri.parse('${serverHttp}/member');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+
+      int xp = 0;
+
+      setState(() {
+        xp = body["xp"];
+        print("xp changed : $xp");
+      });
+
+      _userController.saveExp(xp);
+
+    }
+    else{
+      print(jsonDecode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
   completePractice() async {
     var url = Uri.parse('${serverHttp}/practice?type=WORD&fk=${widget.wordList[widget.idx].toString()}&isTodayStudy=${widget.isTodayLearn}');
     var request = http.MultipartRequest('POST', url);
@@ -277,6 +302,8 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
       setState(() {
         _isPracticed = true;
       });
+
+      getUserExp();
       return true;
     }
   }
