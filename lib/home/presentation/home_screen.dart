@@ -111,7 +111,8 @@ class _HomePageState extends State<HomePage> {
       }
       return top5StatementList;
     } else {
-      return throw Exception("top5StatementList 서버 에러");
+      top5StatementList.add(top5Statement(id: 0, content: "네트워크 오류로 정보가 없습니다."));
+      return top5StatementList;
     }
   }
 
@@ -172,20 +173,6 @@ class _HomePageState extends State<HomePage> {
       )
     );
 
-    Widget speechImageSection = Container(
-      margin: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height*0.12,
-          left: MediaQuery.of(context).size.width*0.6
-      ),
-      child: const SizedBox(
-        width: 116,
-        height: 54,
-        child: Image(
-            image: AssetImage('assets/images/home_speech_bubble.png')
-        ),
-      )
-    );
-
     Widget searchSection = Container(
       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
       margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
@@ -242,7 +229,7 @@ class _HomePageState extends State<HomePage> {
         },
         child: Container(
           margin: const EdgeInsets.only(
-            top: 12,
+            top: 8,
             bottom: 12
           ),
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
@@ -481,7 +468,6 @@ class _HomePageState extends State<HomePage> {
               body: Stack(
                 children: [
                   greetingTextSection,
-                  //speechImageSection,
                   learnDateTextSection,
                   container,
                   imageSection,
