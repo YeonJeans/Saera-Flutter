@@ -217,10 +217,10 @@ class _LoginPageState extends State<LoginPage> {
                 'assets/images/saera_splash.svg',
                 fit: BoxFit.cover,
                 alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width,
+                // width: MediaQuery.of(context).size.width,
               ),
               Container(
-                width: MediaQuery.of(context).size.width,
+                // width: MediaQuery.of(context).size.width,
                 child: Center(
                   child: SvgPicture.asset(
                     'assets/images/saera_title.svg',

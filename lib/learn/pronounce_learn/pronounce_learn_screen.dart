@@ -458,7 +458,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
                   }
                   else if((isRecord  || (widget.isTodayLearn && _authManager.getTodayWordIdx()! >= widget.idx) ) && widget.idx + 1 == 5 && widget.isTodayLearn){
                     //TODO 학습 결과 리스트를 보여주는 페이지로 페이지 전환
-                    _authManager.saveTodayStatementIdx(widget.idx + 1);
+                    _authManager.saveTodayWordIdx(widget.idx + 1);
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) => TodayLearnWordListPage(wordList: [], isTodayWord: true, tagList: [],),

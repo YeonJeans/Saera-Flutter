@@ -78,12 +78,12 @@ class _SplashScreenState extends State<SplashScreen> {
               'assets/images/saera_splash.svg',
               alignment: Alignment.center,
               fit: BoxFit.cover,
-              width: MediaQuery.of(context).size.width,
+              //width: MediaQuery.of(context).size.width,
               //height: MediaQuery.of(context).size.height,
             ),
             Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              // width: MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).size.height,
               child: Center(
                 child: SvgPicture.asset(
                   'assets/images/saera_title.svg',
