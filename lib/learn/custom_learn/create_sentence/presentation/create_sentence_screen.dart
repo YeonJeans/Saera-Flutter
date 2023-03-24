@@ -191,7 +191,6 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
     RegExp hannum = new RegExp(r'^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|\s]*$');
     return Container(
       child: TextField(
-        autofocus: true,
         controller: _textEditingController,
         maxLines: 2,
         onChanged: (text){
@@ -331,7 +330,6 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                       return SizedBox(
                         width: 280,
                         child: TextField(
-                          autofocus: false,
                           enabled: _tags.length >= 3 ? false : true,
                           controller: _controller,
                           onSubmitted: (_) => _addTag(),
