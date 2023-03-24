@@ -623,7 +623,8 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
       if (await Permission.storage.request().isGranted){
 
         if(Platform.isAndroid){
-          Directory appFolder = Directory("/storage/emulated/0/saera");
+          final tempDir = await getTemporaryDirectory();
+          Directory appFolder = Directory("${tempDir.path}/saera");
           bool appFolderExists = await appFolder.exists();
 
           if (!appFolderExists) {
@@ -645,7 +646,8 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
       return;
     }
     if(Platform.isAndroid){
-      await _recorder.startRecorder(toFile: '/storage/emulated/0/saera/practiceAudio.wav');
+      final tempDir = await getTemporaryDirectory();
+      await _recorder.startRecorder(toFile: '${tempDir.path}/saera/practiceAudio.wav');
     }
     else{
       await _recorder.startRecorder(toFile: 'audio.wav');
@@ -663,7 +665,8 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
     print("녹음이 완료되었습니다. ${audioFile.path}");
 
     if(Platform.isAndroid){
-      recordingPath = '/storage/emulated/0/saera/practiceAudio.wav';
+      final tempDir = await getTemporaryDirectory();
+      recordingPath = '${tempDir.path}/saera/practiceAudio.wav';
     }
   }
 
@@ -1267,6 +1270,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                             practiceSentenceSection(),
                             exampleSection(),
                             practiceSection(),
+                            SizedBox(height: 20,),
                           ],
                         ),
                       )
