@@ -54,9 +54,11 @@ dependencies:
 
 flutter_icons:
   android: "ic_launcher"
-  image_path: "assets/icons/saera_app_icon.png"
-  adaptive_icon_background: "assets/icons/saera_app_icon.png"
-  adaptive_icon_foreground: "assets/icons/saera_app_icon.png"
+  ios: true
+  image_path_android: "assets/icons/saera_app_icon_android.png"
+  image_path_ios: "assets/icons/saera_app_icon_ios.png"
+  adaptive_icon_background: "assets/icons/saera_app_icon_android.png"
+  adaptive_icon_foreground: "assets/icons/saera_app_icon_android.png"
 
 
 dev_dependencies:
