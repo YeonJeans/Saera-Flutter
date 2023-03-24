@@ -228,11 +228,8 @@ class _HomePageState extends State<HomePage> {
           );
         },
         child: Container(
-          margin: const EdgeInsets.only(
-            top: 8,
-            bottom: 12
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+          margin: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(12.0)),
@@ -284,7 +281,8 @@ class _HomePageState extends State<HomePage> {
               );
             } else {
               return Container(
-                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                 child: CarouselSlider.builder(
                   itemCount: snapshot.data?.length,
                   options: CarouselOptions(

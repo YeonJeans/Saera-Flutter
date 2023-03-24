@@ -53,11 +53,12 @@ dependencies:
   device_info: ^2.0.3
 
 flutter_icons:
-  android: "launcher_icon"
-  ios: "true"
-  image_path: "assets/icons/saera_app_icon.png"
-  adaptive_icon_background: "assets/icons/saera_app_icon.png"
-  adaptive_icon_foreground: "assets/icons/saera_app_icon.png"
+  android: "ic_launcher"
+  ios: true
+  image_path_android: "assets/icons/saera_app_icon_android.png"
+  image_path_ios: "assets/icons/saera_app_icon_ios.png"
+  adaptive_icon_background: "assets/icons/saera_app_icon_android.png"
+  adaptive_icon_foreground: "assets/icons/saera_app_icon_android.png"
 
 
 dev_dependencies:
