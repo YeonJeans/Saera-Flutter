@@ -2,14 +2,22 @@
 
 
 <br/>
-Sae:ra is providing educational solutions based on the app's high accessibility to help North Koreans make a smooth transition to South Korea.
+Saera is providing educational solutions based on the app's high accessibility to help North Koreans make a smooth transition to South Korea.
 
 ## ❗️  Introduction
-North and South Korea use the same writing system and have similar grammar, but they have developed linguistic differences over the years due to their different environments and societies where they lived for many years after the division. For North Koreans adjusting to life in South Korea, pronunciation and accent can be some of the most challenging differences, leading to discrimination. To bridge this gap, we created SAERA, an app that enables users to learn pronunciation and accent by providing word examples with standard pronunciation and tips on how to pronounce words and what to pay attention to when pronouncing words based on the differences between South and North Korean.  
+North and South Korea use the same writing system and have similar grammar, but they have developed linguistic differences over the years due to their different environments and societies where they lived for many years after the division. For North Koreans adjusting to life in South Korea, pronunciation and accent can be some of the most challenging differences, leading to discrimination. To bridge this gap, we created SAERA, an app that enables users to learn pronunciation and accent. In pronunciation learning, we provide word examples with standard pronunciation and tips on how to pronounce words and what to pay attention to when pronouncing words based on the differences between South and North Korean. For intonation learning, SAERA presents the target intonation and voice audibly and visually through a Korean TTS and pitch graph generation model. It also visualizes the user's recorded voice in a graph and evaluates it with a rating for each graph. <br/>
+
+With SAERA, we hope North Korean defectors can quickly learn the South Korean language system and overcome language barriers to settle into South Korean society stably.
+
 <br/>
 
 ## 🗒  Role division
-
+| Name                     | Role |
+|--------------------------|------|
+| 김도은 <br/> (Doeun Kim) | - UI Screen <br/>(Splash & Login Screen, Persistent TabBar, Today Learn Screen, Pronunciation Learn Screen, Accent Learn Screen, Create Custom Sentence Screen, MyPage Screen) <br/> - Automatic login <br/> - Today Learn <br/> - Pronunciation Learn <br/> - Accent Learn|
+| 남수연 <br/> (Suyeon Nam)|- Extract pitch graph from voice using SPICE<br/>- Similarity Search<br/>- Calculate similarity between two pitch graphs<br/>- Deploy FastAPI + Nginx environment to GCP Virtual Machine<br/>- UX/UI Design<br/>- Train a model to classify end-of-speech pitch (deprecated)|
+| 이주은 <br/> (Jueun Lee)          |- Deploy spring server with GCP Virtual Machine<br/>- Manage MySql DB with GCP SQL<br/>- Server APIs|
+| 황연진 <br/> (Yeonjin Hwang) | - UI Screen <br/>(Home Screen, Bookmark Screen, Learn Screen, Accent Main Screen, Pronunciation Main Screen, Search Learn Screen, Custom Sentence Loading & Done Screen, Custom Sentence Home Screen, Today Learn Word & Sentence List Screen) <br/> - Home <br/> - Search & Filter <br/> - Learn Pronunciation & Accent Retrieve |
 
 <br/>
 
@@ -29,17 +37,17 @@ North and South Korea use the same writing system and have similar grammar, but 
 ### 01 Initial Screen
 | Android Screen                                                                                                                 | iOS Screen | Explanation                              |
 |--------------------------------------------------------------------------------------------------------------------------------|------------|------------------------------------------|
-| <img src="https://user-images.githubusercontent.com/61380136/229187779-eb9e0f87-4881-465b-8a56-21b92a39d14e.gif" width="250"/> | <img src="https://user-images.githubusercontent.com/61380136/229757086-f452ee6b-4fbe-4187-8914-cd24aa2cae9b.gif" width="250"/>  | Enjoy Saera Through Your Google Account! &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+| <img src="https://user-images.githubusercontent.com/61380136/229187779-eb9e0f87-4881-465b-8a56-21b92a39d14e.gif" width="250"/> | <img src="https://user-images.githubusercontent.com/61380136/229757086-f452ee6b-4fbe-4187-8914-cd24aa2cae9b.gif" width="250"/>  | Enjoy Saera Through Your Google Account. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 
 ### 02 Home Screen
 | Screen                                                                                                                        | Explanation                                           |
 |-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
-| <img src="https://user-images.githubusercontent.com/61380136/229188331-aba2c8b1-b7de-4c6f-aced-c4caac693e6e.gif" width="250"> | Learn the 5 most learned sentences and today's lesson &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+| <img src="https://user-images.githubusercontent.com/61380136/229188331-aba2c8b1-b7de-4c6f-aced-c4caac693e6e.gif" width="250"> | Learn the 5 most learned sentences and today's lesson. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 
 ### 03 Learn Screen
 | Screen                                | Explanation |
 |---------------------------------------|-------------------------------------------------------|
-|**1) Pronuciation Learning** <br/> <br/> <img src="https://user-images.githubusercontent.com/61380136/229590186-580638f7-11e6-4c13-b0bd-bf1db7fa6ee6.gif" width="250"/> | To help you learn pronunciation systematically, there are 6 categories organized by pronunciation. <br/> <br/> [ User Guide ] <br/> 1. Listen example speech for the word. <br/> 2. Look at the example sentences to see how this word would be used! <br/> 3. Record your voice. <br/> 4. Press the next button to practice as many times as you want. <br/> 5. Click stop button and check out the learning report. |
+|**1) Pronuciation Learning** <br/> <br/> <img src="https://user-images.githubusercontent.com/61380136/229590186-580638f7-11e6-4c13-b0bd-bf1db7fa6ee6.gif" width="250"/> | To help you learn pronunciation systematically, there are 6 categories organized by pronunciation. <br/> <br/> [ User Guide ] <br/> 1. Listen example speech for the word. <br/> 2. Look at the example sentences to see how this word would be used. <br/> 3. Record your voice. <br/> 4. Press the next button to practice as many times as you want. <br/> 5. Click stop button and check out the learning report. |
 | **2) Accent Learning** <br/> <br/> <img src="https://user-images.githubusercontent.com/61380136/229347561-820f69c3-2840-4d68-b8cd-9b43fcda6e17.gif" width="250"/> | [ User Guide ] <br/> 1. We provide example speech for the sentence. <br/> 2. Record your voice. <br/> 3. You will be given an intonation graph and rating for your voice. |
 | **3) Custom Sentence** <br/> <br/> <img src="https://user-images.githubusercontent.com/61380136/229347375-d3f2e958-d7e1-4b37-bcef-27588e1b2607.gif" width="250"/> | Create intonation practice content by entering sentences and tags that you want to practice. <br/> You can create the intonation content in 3 seconds. <br/>  <br/> [ User Guide ] <br/> 1. Press the ‘+’ floating button in the bottom right corner. <br/> 2. Write down a sentence you want to learn and enter the appropriate tags. <br/> 3. Press the "Generate Sentence" button. |
 | **4) Search** <br/> (Provide Similarity Search) <br/> <br/> <img src="https://user-images.githubusercontent.com/61380136/229589104-73d9f6a3-49a8-46d1-8dca-b261f3b0458a.gif" width="250"/> | We have introduced similarity search to recommend sentences that include similar meanings by understanding the user’s intent. <br/> <br/>[ User Guide ] <br/> 1. Search the word you want to learn. <br/> 2. You can select a situation or sentence type tag to choose the sentences you want to practice on. <br/> 3. Click the sentence you want to study. |
@@ -62,7 +70,7 @@ North and South Korea use the same writing system and have similar grammar, but 
 
 ###  For Android User
 
-1. Download the apk file at Release tab
+1. Download the apk file at Releases tab.
 2. Run the apk file on your phone.
 
 ### For iOS User
