@@ -32,7 +32,6 @@ class _HomePageState extends State<HomePage> {
 
   List<int> wordList = [];
   List<int> statementList = [];
-  List<top5Statement> top5StatementList = [];
 
   int todayWordLearnIdx = 0;
   int todayStatementLearnIdx = 0;
@@ -40,6 +39,7 @@ class _HomePageState extends State<HomePage> {
   int todayWordProgressIdx = 0;
   int todayStatementProgressIdx = 0;
 
+  late Future<List<top5Statement>> top5StatementList;
   late Future<int> continuousLearnDate;
 
   @override
@@ -54,10 +54,10 @@ class _HomePageState extends State<HomePage> {
     todayWordProgressIdx = _authManager.getTodayWordIdx()!;
     todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
 
-    getTop5SentenceList();
+    top5StatementList = getTop5SentenceList();
+    continuousLearnDate = getContinuousLearnDate();
     getTodayWordList();
     getTodaySentenceList();
-    continuousLearnDate = getContinuousLearnDate();
     super.initState();
   }
 
@@ -104,6 +104,7 @@ class _HomePageState extends State<HomePage> {
     var url = Uri.parse('$serverHttp/top5-statement');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
+    List<top5Statement> top5StatementList = [];
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
       top5StatementList.clear();
@@ -136,8 +137,8 @@ class _HomePageState extends State<HomePage> {
 
     Widget imageSection = Container(
       margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.147,
-        left: MediaQuery.of(context).size.width*0.05
+          top: MediaQuery.of(context).size.height*0.147,
+          left: MediaQuery.of(context).size.width*0.05
       ),
       child: SvgPicture.asset('assets/images/home_image.svg'),
     );
@@ -291,7 +292,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget top5StatementSection = FutureBuilder(
-        future: getTop5SentenceList(),
+        future: top5StatementList,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -307,11 +308,11 @@ class _HomePageState extends State<HomePage> {
           } else if (snapshot.connectionState == ConnectionState.done){
             if (snapshot.hasError) {
               return Center(
-                child: Container(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
-                  child: Text(snapshot.error.toString())
-                )
+                  child: Container(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                      child: Text(snapshot.error.toString())
+                  )
               );
             } else {
               return Container(
@@ -468,24 +469,24 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget container = Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.25),
-      decoration: const BoxDecoration(
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.25),
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(32.0), topRight: Radius.circular(32.0)),
-      ),
-      child: Container(
-        child: ListView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            searchSection,
-            mostLearnTextSection,
-            top5StatementSection,
-            todayRecommandSection,
-            todayRecommandTextSection,
-            todayLearnSection,
-          ],
         ),
-      )
+        child: Container(
+          child: ListView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              searchSection,
+              mostLearnTextSection,
+              top5StatementSection,
+              todayRecommandSection,
+              todayRecommandTextSection,
+              todayLearnSection,
+            ],
+          ),
+        )
     );
 
     return Stack(
