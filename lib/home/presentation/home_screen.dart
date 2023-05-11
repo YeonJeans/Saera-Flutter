@@ -40,6 +40,8 @@ class _HomePageState extends State<HomePage> {
   int todayWordProgressIdx = 0;
   int todayStatementProgressIdx = 0;
 
+  late Future<int> continuousLearnDate;
+
   @override
   void initState() {
     if(_authManager.getTodayStatementIdx() == null){
@@ -55,6 +57,7 @@ class _HomePageState extends State<HomePage> {
     getTop5SentenceList();
     getTodayWordList();
     getTodaySentenceList();
+    continuousLearnDate = getContinuousLearnDate();
     super.initState();
   }
 
@@ -116,6 +119,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<int> getContinuousLearnDate() async {
+    var url = Uri.parse('$serverHttp/get-attendance-days');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+    int date = 0;
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      date = body["numberOfDays"];
+    }
+    return date;
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
@@ -140,37 +154,57 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Widget learnDateTextSection = Container(
-      width: 116,
-      height: 54,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-           image: AssetImage('assets/images/home_speech_bubble.png'),
-           alignment: Alignment.center
-        ),
-      ),
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.12,
-        left: MediaQuery.of(context).size.width*0.63
-      ),
-      child: Container(
-        margin: EdgeInsets.only(top: 6),
-        child: const Text.rich(
-          TextSpan(
-              children: [
-                TextSpan(
-                  text: '8일 연속',
-                  style: TextStyles.small55BoldTextStyle,
+    Widget learnDateTextSection = FutureBuilder(
+        future: continuousLearnDate,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+                width: 116,
+                height: 54,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/home_speech_bubble.png'),
+                      alignment: Alignment.center
+                  ),
                 ),
-                TextSpan(
-                    text: '으로\n학습 중이에요',
-                    style: TextStyles.small55TextStyle
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height*0.12,
+                    left: MediaQuery.of(context).size.width*0.63
+                ),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 6),
+                  child: Text.rich(
+                    TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${snapshot.data.toString()}일 연속',
+                            style: TextStyles.small55BoldTextStyle,
+                          ),
+                          const TextSpan(
+                              text: '으로\n학습 중이에요',
+                              style: TextStyles.small55TextStyle
+                          )
+                        ]
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 )
-              ]
-          ),
-          textAlign: TextAlign.center,
-        ),
-      )
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error} 에러");
+          } else {
+            return Center(
+              child: Container(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                  child: LoadingAnimationWidget.waveDots(
+                      color: ColorStyles.expFillGray,
+                      size: 24.0
+                  )
+              ),
+            );
+          }
+        }
     );
 
     Widget searchSection = Container(
