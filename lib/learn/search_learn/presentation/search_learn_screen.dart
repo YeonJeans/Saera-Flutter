@@ -516,7 +516,7 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Container(
                             margin: EdgeInsets.only(
-                              bottom: statements.length - 1 == index ? 120 : 0
+                              bottom: statements.length - 1 == index ? 160 : 0
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
