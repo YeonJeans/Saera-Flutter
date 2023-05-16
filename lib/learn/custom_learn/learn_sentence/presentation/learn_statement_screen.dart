@@ -31,6 +31,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
   List<Tag> tagList = [];
   final List<ChipData> _chipList = [];
   int? _selectedIndex;
+  int? _selectedOptionIndex = 0;
 
   late TextEditingController _textEditingController;
 
@@ -190,6 +191,31 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
+    List<String> optionList = ['내가 만든 문장', '공개된 문장'];
+    Widget publicOptionSection = Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      alignment: Alignment.center,
+      child: Wrap(
+        spacing: 24,
+        children: List.generate(optionList.length, (index) {
+          return ChoiceChip(
+              label: Text(optionList[index]),
+              labelStyle: _selectedOptionIndex == index ? TextStyles.regularNormalWhiteTextStyle : TextStyles.regular52TextStyle,
+              labelPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 36),
+              selectedColor: ColorStyles.saeraAppBar,
+              backgroundColor: Colors.white,
+              side: const BorderSide(color: Colors.transparent),
+              selected: _selectedOptionIndex == index,
+              onSelected: (bool selected) {
+                setState(() {
+                  _selectedOptionIndex = selected ? index : _selectedOptionIndex;
+                });
+              },
+          );
+        }).toList(),
+      ),
+    );
 
     Widget appBarSection = Container(
       padding: const EdgeInsets.symmetric(vertical: 5),
@@ -606,6 +632,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 21.0),
                     children: <Widget>[
                       appBarSection,
+                      publicOptionSection,
                       searchSection,
                       filterSection,
                       selectCategorySection,

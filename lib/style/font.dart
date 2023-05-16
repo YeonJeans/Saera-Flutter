@@ -28,6 +28,7 @@ class TextStyles {
   static const regular00BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xff000000));
   static const regular25TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff252525));
   static const regular25TextStyleHeight = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff252525), height: 1.7);
+  static const regular52TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff525252));
   static const regular55TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff555555));
   static const regular99TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff999999));
   static const regular25BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xff252525));
@@ -40,6 +41,7 @@ class TextStyles {
   static const regularHighlightBlueBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xff86C4CC));
   static const regularOliveTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xff9EA615));
   static const regularWhiteTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xffFFFFFF));
+  static const regularNormalWhiteTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xffFFFFFF));
   static const regularGreenTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xffA5AA68));
 
   static const selectedTagTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 15, fontWeight: FontWeight.normal, color: Color(0xff000000));
