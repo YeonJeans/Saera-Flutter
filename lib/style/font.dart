@@ -46,6 +46,7 @@ class TextStyles {
 
   static const selectedTagTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 15, fontWeight: FontWeight.normal, color: Color(0xff000000));
 
+  static const medium00LightTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xff000000));
   static const medium00TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xff000000));
   static const medium00MediumTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xff000000));
   static const medium00BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xff000000));

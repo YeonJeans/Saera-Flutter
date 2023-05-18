@@ -8,7 +8,6 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
 import 'package:saera/learn/custom_learn/create_sentence/presentation/create_sentence_screen.dart';
 import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
-import 'package:saera/learn/search_learn/presentation/widgets/search_learn_background.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../login/data/authentication_manager.dart';
@@ -28,10 +27,10 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 
   Future<dynamic>? statementData;
   int tagCount = 0;
-  List<Tag> tagList = [];
+  List<Tag> tagList = [Tag(id: 1, name: "공유된 문장")];
   final List<ChipData> _chipList = [];
   int? _selectedIndex;
-  int? _selectedOptionIndex = 0;
+  int _selectedOptionIndex = 0;
 
   late TextEditingController _textEditingController;
 
@@ -245,46 +244,48 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       ),
     );
 
-    Widget searchSection = Container(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: Row(
-        children: <Widget>[
-          Flexible(
-              child: TextField(
-                controller: _textEditingController,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'[a-z|A-Z|0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ᆞ|ᆢ|ㆍ|ᆢ|ᄀᆞ|ᄂᆞ|ᄃᆞ|ᄅᆞ|ᄆᆞ|ᄇᆞ|ᄉᆞ|ᄋᆞ|ᄌᆞ|ᄎᆞ|ᄏᆞ|ᄐᆞ|ᄑᆞ|ᄒᆞ]'))
-                ],
-                maxLines: 1,
-                onSubmitted: (s) {
-                  setState(() {
-                    statementData = searchCustomStatement(s);
-                  });
-                },
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  prefixIcon: Container(
-                    margin: const EdgeInsets.only(left: 8),
-                    child: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
-                  ),
-                  hintText: '${_authManager.getName()}님이 만든 문장 내에서 검색합니다.',
-                  hintStyle: TextStyles.mediumAATextStyle,
-                  enabledBorder: const OutlineInputBorder(
+    Widget searchSection(int selectedIndex) {
+      return Container(
+        padding: const EdgeInsets.only(bottom: 10.0),
+        child: Row(
+          children: <Widget>[
+            Flexible(
+                child: TextField(
+                  controller: _textEditingController,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-z|A-Z|0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ᆞ|ᆢ|ㆍ|ᆢ|ᄀᆞ|ᄂᆞ|ᄃᆞ|ᄅᆞ|ᄆᆞ|ᄇᆞ|ᄉᆞ|ᄋᆞ|ᄌᆞ|ᄎᆞ|ᄏᆞ|ᄐᆞ|ᄑᆞ|ᄒᆞ]'))
+                  ],
+                  maxLines: 1,
+                  onSubmitted: (s) {
+                    setState(() {
+                      statementData = searchCustomStatement(s);
+                    });
+                  },
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    prefixIcon: Container(
+                      margin: const EdgeInsets.only(left: 8),
+                      child: SvgPicture.asset('assets/icons/search.svg', fit: BoxFit.scaleDown),
+                    ),
+                    hintText: selectedIndex == 0 ? '${_authManager.getName()}님이 만든 문장 내에서 검색합니다.' : '공개로 설정된 문장 내에서 검색합니다.',
+                    hintStyle: TextStyles.mediumAATextStyle,
+                    enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(99.0)),
+                        borderSide: BorderSide(color: ColorStyles.searchFillGray)
+                    ),
+                    focusedBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(99.0)),
-                      borderSide: BorderSide(color: ColorStyles.searchFillGray)
+                      borderSide: BorderSide(color: ColorStyles.searchFillGray),
+                    ),
+                    filled: true,
+                    fillColor: ColorStyles.searchFillGray,
                   ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(99.0)),
-                    borderSide: BorderSide(color: ColorStyles.searchFillGray),
-                  ),
-                  filled: true,
-                  fillColor: ColorStyles.searchFillGray,
-                ),
-              )
-          )
-        ],
-      ),
-    );
+                )
+            )
+          ],
+        ),
+      );
+    }
 
     List<String> filterList = ['태그'];
     Widget filterSection = Wrap(
@@ -577,6 +578,106 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       );
     }
 
+    FutureBuilder existPublicStatement(List<Statement> statements) {
+      return FutureBuilder(
+          future: statementData,
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Container(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                    child: LoadingAnimationWidget.waveDots(
+                        color: ColorStyles.expFillGray,
+                        size: 45.0
+                    )
+                ),
+              );
+            } else if (snapshot.connectionState == ConnectionState.done){
+              if (snapshot.hasError) {
+                return Center(
+                    child: Container(
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                        margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                        child: Text(snapshot.error.toString())
+                    )
+                );
+              } else {
+                return Container(
+                    padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
+                    height: MediaQuery.of(context).size.height*0.72,
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        setState(() {
+                          statementData = searchCustomStatement("");
+                        });
+                      },
+                      child: ListView.separated(
+                          itemBuilder: ((context, index) {
+                            Statement statement = statements[index];
+                            return InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => AccentPracticePage(id: statement.id, isCustom: true),
+                                  ));
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      bottom: statements.length - 1 == index ? 160 : 0
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        statement.content,
+                                        style: TextStyles.medium00LightTextStyle
+                                      ),
+                                      IconButton(
+                                          onPressed: (){
+                                            if(statement.bookmarked){
+                                              setState(() {
+                                                statement.bookmarked = false;
+                                              });
+                                              deleteBookmark(statement.id);
+                                            }
+                                            else{
+                                              setState(() {
+                                                statement.bookmarked = true;
+                                              });
+                                              createBookmark(statement.id);
+                                            }
+                                          },
+                                          icon: statement.bookmarked?
+                                          SvgPicture.asset(
+                                            'assets/icons/star_fill.svg',
+                                            fit: BoxFit.scaleDown,
+                                          )
+                                              :
+                                          SvgPicture.asset(
+                                            'assets/icons/star_unfill.svg',
+                                            fit: BoxFit.scaleDown,
+                                          )
+                                      )
+                                    ],
+                                  ),
+                                )
+                            );
+                          }),
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const Divider(thickness: 1,);
+                          },
+                          itemCount: statements.length
+                      ),
+                    )
+                );
+              }
+            } else {
+              return throw Exception("오류");
+            }
+          })
+      );
+    }
+
     Widget statementSection = FutureBuilder(
         future: statementData,
         builder: ((context, snapshot) {
@@ -594,7 +695,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               if (statements.isEmpty) {
                 return notExistStatement();
               } else {
-                return existStatement(statements);
+                if (_selectedOptionIndex == 0) {
+                  return existStatement(statements);
+                } else {
+                  return existPublicStatement(statements);
+                }
               }
             }
           } else {
@@ -616,6 +721,35 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       ),
     );
 
+    Widget listSection() {
+      if (_selectedOptionIndex == 0) {
+        return ListView(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 21.0),
+          children: [
+            appBarSection,
+            publicOptionSection,
+            searchSection(_selectedOptionIndex),
+            filterSection,
+            selectCategorySection,
+            chipSection,
+            statementSection,
+          ],
+        );
+      } else {
+        return ListView(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 21.0),
+          children: [
+            appBarSection,
+            publicOptionSection,
+            searchSection(_selectedOptionIndex),
+            statementSection,
+          ],
+        );
+      }
+    }
+
     return Stack(
       children: [
         Container(
@@ -627,19 +761,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                 resizeToAvoidBottomInset: false,
                 body: GestureDetector(
                   onTap: () => FocusScope.of(context).unfocus(),
-                  child: ListView(
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 21.0),
-                    children: <Widget>[
-                      appBarSection,
-                      publicOptionSection,
-                      searchSection,
-                      filterSection,
-                      selectCategorySection,
-                      chipSection,
-                      statementSection,
-                    ],
-                  ),
+                  child: listSection()
                 ),
               floatingActionButton: floatingButtonSection,
             )
