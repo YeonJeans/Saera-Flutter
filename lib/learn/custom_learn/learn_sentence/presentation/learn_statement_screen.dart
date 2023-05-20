@@ -201,7 +201,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
           return ChoiceChip(
               label: Text(optionList[index]),
               labelStyle: _selectedOptionIndex == index ? TextStyles.regularNormalWhiteTextStyle : TextStyles.regular52TextStyle,
-              labelPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 36),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 32),
               selectedColor: ColorStyles.saeraAppBar,
               backgroundColor: Colors.white,
               side: const BorderSide(color: Colors.transparent),
