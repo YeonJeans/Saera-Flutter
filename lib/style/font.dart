@@ -29,6 +29,8 @@ class TextStyles {
   static const regular25TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff252525));
   static const regular25TextStyleHeight = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff252525), height: 1.7);
   static const regular52TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff525252));
+  static const regular52LightTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xff525252));
+  static const regular52BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xff525252));
   static const regular55TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff555555));
   static const regular99TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff999999));
   static const regular25BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xff252525));
@@ -43,6 +45,7 @@ class TextStyles {
   static const regularWhiteTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xffFFFFFF));
   static const regularNormalWhiteTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xffFFFFFF));
   static const regularGreenTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xffA5AA68));
+  static const regularMintLightTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xff4DC6A9));
 
   static const selectedTagTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 15, fontWeight: FontWeight.normal, color: Color(0xff000000));
 
@@ -53,10 +56,12 @@ class TextStyles {
   static const medium25TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xff252525), decoration: TextDecoration.none,);
   static const medium25400TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xff252525), decoration: TextDecoration.none,);
   static const medium25BoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xff252525));
+  static const medium52TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xff525252));
   static const medium55TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xff555555));
   static const medium99TextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xff999999));
   static const mediumAATextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xffAAAAAA));
   static const mediumWhiteTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xffFFFFFF));
+  static const mediumWhiteVeryBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xffFFFFFF));
   static const mediumGrayTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xff75817E));
   static const mediumEFTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xffEFEFEF), decoration: TextDecoration.none,);
   static const mediumWhiteBoldTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xffFFFFFF));
@@ -86,4 +91,5 @@ class TextStyles {
 
   static const xxxLargeTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xff000000));
 
+  static const xxxxLargeTextStyle = TextStyle(fontFamily: "NotoSansKR", fontSize: 40, fontWeight: FontWeight.normal, color: Color(0xff000000), decoration: TextDecoration.none,);
 }

@@ -155,13 +155,30 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   Widget createBtn(){
     return GestureDetector(
       onTap: (){
-        Future<int> id;
+
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              insetPadding: EdgeInsets.symmetric(horizontal: 17),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+              title: const Center(
+                child: Text("\u{1f389}", style: TextStyles.xxxxLargeTextStyle),
+              ),
+              content: Container(
+                child: publicStatementDialogSection(),
+              ),
+            )
+        );
+
+        /*Future<int> id;
         id = createStatement();
         id.then((id){
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
           );
-        });
+        });*/
       },
       child: Container(
           margin: const EdgeInsets.only(left: 14, right: 14, bottom: 15),
@@ -387,6 +404,87 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
         child: enterTag()
     );
   }
+
+  Widget dialogButton(Color color, String text) {
+    return GestureDetector(
+      onTap: null,
+      child: Container(
+        height: 48,
+        width: MediaQuery.of(context).size.width*0.37,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: color,
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: text == '문장 공개' ? TextStyles.mediumWhiteVeryBoldTextStyle : TextStyles.medium52TextStyle,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget publicStatementDialogSection() {
+    return Container(
+      height: MediaQuery.of(context).size.height*0.31,
+      child: Column(
+        children: [
+          Text(
+            "${_authManager.getName()}님이 이 문장을 생성한\n첫번째 사용자네요!",
+            style: TextStyles.medium00TextStyle,
+            textAlign: TextAlign.center,
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 18),
+            child: Text(
+              "문장을 공개하면 다른 사용자들도 ${_authManager.getName()}님이 만든 문장을 학습할 수 있어요. 문장을 공개하시겠어요?",
+              style: TextStyles.regular52LightTextStyle,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 14),
+            child: const Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: "공개된 문장은 ",
+                    style: TextStyles.regular52LightTextStyle
+                  ),
+                  TextSpan(
+                    text: "'사용자 정의 문장 학습 > 공개된 문장 탭'",
+                    style: TextStyles.regularMintLightTextStyle
+                  ),
+                  TextSpan(
+                    text: "에서 확인할 수 있어요.",
+                    style: TextStyles.regular52LightTextStyle
+                  ),
+                ]
+              )
+            )
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 14),
+            child: const Text(
+              "공개한 문장은 비공개로 변경하거나 삭제할 수 없어요.",
+              style: TextStyles.regular52BoldTextStyle,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 18),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                dialogButton(ColorStyles.searchFillGray, "문장 비공개"),
+                dialogButton(ColorStyles.saeraAppBar, "문장 공개")
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+  
 
   @override
   Widget build(BuildContext context) {
