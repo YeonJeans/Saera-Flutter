@@ -26,6 +26,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
   final AuthenticationManager _authManager = Get.find();
 
   Future<dynamic>? statementData;
+  Future<dynamic>? statementPublicData;
   int tagCount = 0;
   List<Tag> tagList = [Tag(id: 1, name: "공유된 문장")];
   final List<ChipData> _chipList = [];
@@ -135,9 +136,9 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
     return tagList;
   }
 
-  Future<List<Statement>> searchCustomStatement(String input) async {
+  Future<List<CustomStatement>> searchCustomStatement(String input) async { //사용자 정의 문장 검색
     await Future.delayed(const Duration(milliseconds: 300));
-    List<Statement> _list = [];
+    List<CustomStatement> _list = [];
     Uri url;
     String tags = "";
     for (int i = _chipList.length-1; i >= 0; i--) {
@@ -158,7 +159,37 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
           List<String> tags = List.from(i["tags"]);
           bool bookmarked = i["bookmarked"];
           bool recommended = i["recommended"];
-          _list.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended));
+          bool isPublic = i["isPublic"];
+          _list.add(CustomStatement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, isPublic: isPublic));
+        }
+      }
+      return _list;
+    } else {
+      throw Exception("데이터를 불러오는데 실패했습니다.");
+    }
+  }
+
+  Future<List<CustomStatement>> searchPublicCustomStatement(String input) async { //사용자 정의 문장 중 공개된 문장 검색
+    await Future.delayed(const Duration(milliseconds: 300));
+    List<CustomStatement> _list = [];
+    Uri url;
+    if (input == "") {
+      url = Uri.parse('$serverHttp/customs?isPublic=true');
+    } else {
+      url = Uri.parse('$serverHttp/customs?isPublic=true&content=$input');
+    }
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      if (_list.isEmpty) {
+        for (dynamic i in body) {
+          int id = i["id"];
+          String content = i["content"];
+          List<String> tags = List.from(i["tags"]);
+          bool bookmarked = i["bookmarked"];
+          bool recommended = i["recommended"];
+          bool isPublic = i["isPublic"];
+          _list.add(CustomStatement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, isPublic: isPublic));
         }
       }
       return _list;
@@ -179,6 +210,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
     _textEditingController = TextEditingController();
     getTag();
     statementData = searchCustomStatement("");
+    statementPublicData = searchPublicCustomStatement("");
   }
 
   @override
@@ -436,7 +468,27 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       );
     }
 
-    FutureBuilder existStatement(List<Statement> statements) {
+    Container publicStatement(CustomStatement statement) {
+      if (statement.isPublic == true) {
+        return Container(
+          margin: EdgeInsets.only(left: 5),
+          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 7),
+          decoration: BoxDecoration(
+              color: ColorStyles.backIconGreen.withOpacity(0.5),
+              borderRadius: BorderRadius.all(Radius.circular(4.0))
+          ),
+          child: const Text(
+            '공유됨',
+            style: TextStyles.tinyGreenTextStyle,
+            textAlign: TextAlign.center,
+          ),
+        );
+      } else {
+        return Container();
+      }
+    }
+
+    FutureBuilder existStatement(List<CustomStatement> statements) { //여기는 그냥 일반 문장 보여주는 곳
       return FutureBuilder(
         future: statementData,
         builder: ((context, snapshot) {
@@ -472,7 +524,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                   },
                   child: ListView.separated(
                       itemBuilder: ((context, index) {
-                        Statement statement = statements[index];
+                        CustomStatement statement = statements[index];
                         return Dismissible(
                             key: Key(statement.id.toString()),
                             background: Container(
@@ -488,9 +540,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                             direction: DismissDirection.endToStart,
                             onDismissed: (direction) {
                               setState(() {
-                                statements.removeAt(index);
-                                deleteCustomStatement(statement.id);
-                                statementData = searchCustomStatement("");
+                                if (statement.isPublic == false) {
+                                  statements.removeAt(index);
+                                  deleteCustomStatement(statement.id);
+                                  statementData = searchCustomStatement("");
+                                }
                               });
                             },
                             child: InkWell(
@@ -509,12 +563,17 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(vertical: 3),
-                                          child: Text(
-                                              statement.content,
-                                              style: TextStyles.regular00TextStyle
-                                          ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.symmetric(vertical: 3),
+                                              child: Text(
+                                                  statement.content,
+                                                  style: TextStyles.regular00TextStyle
+                                              ),
+                                            ),
+                                            publicStatement(statement)
+                                          ],
                                         ),
                                         SizedBox(
                                           width: MediaQuery.of(context).size.width*0.7,
@@ -578,9 +637,9 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       );
     }
 
-    FutureBuilder existPublicStatement(List<Statement> statements) {
+    FutureBuilder existPublicStatement(List<CustomStatement> statements) { //여기는 공개된 문장 보여주는 곳
       return FutureBuilder(
-          future: statementData,
+          future: statementPublicData,
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -609,12 +668,12 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                     child: RefreshIndicator(
                       onRefresh: () async {
                         setState(() {
-                          statementData = searchCustomStatement("");
+                          statementPublicData = searchPublicCustomStatement("");
                         });
                       },
                       child: ListView.separated(
                           itemBuilder: ((context, index) {
-                            Statement statement = statements[index];
+                            CustomStatement statement = statements[index];
                             return InkWell(
                                 onTap: (){
                                   Navigator.push(context, MaterialPageRoute(
@@ -678,35 +737,37 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       );
     }
 
-    Widget statementSection = FutureBuilder(
-        future: statementData,
-        builder: ((context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(
-                  child: Container(
-                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
-                      child: Text(snapshot.error.toString())
-                  )
-              );
-            } else {
-              List<Statement> statements = snapshot.data;
-              if (statements.isEmpty) {
-                return notExistStatement();
+    Widget statementSection() {
+      return FutureBuilder(
+          future: _selectedOptionIndex == 0 ? statementData : statementPublicData,
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return Center(
+                    child: Container(
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                        margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                        child: Text(snapshot.error.toString())
+                    )
+                );
               } else {
-                if (_selectedOptionIndex == 0) {
-                  return existStatement(statements);
+                List<CustomStatement> statements = snapshot.data;
+                if (statements.isEmpty) {
+                  return notExistStatement();
                 } else {
-                  return existPublicStatement(statements);
+                  if (_selectedOptionIndex == 0) {
+                    return existStatement(statements);
+                  } else {
+                    return existPublicStatement(statements);
+                  }
                 }
               }
+            } else {
+              return notExistStatement();
             }
-          } else {
-            return notExistStatement();
-          }
-        })
-    );
+          })
+      );
+    }
 
     Widget floatingButtonSection = Container(
       margin: EdgeInsets.only(right: 8, bottom: 8),
@@ -733,7 +794,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
             filterSection,
             selectCategorySection,
             chipSection,
-            statementSection,
+            statementSection(),
           ],
         );
       } else {
@@ -744,7 +805,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
             appBarSection,
             publicOptionSection,
             searchSection(_selectedOptionIndex),
-            statementSection,
+            statementSection(),
           ],
         );
       }
@@ -781,4 +842,14 @@ class Tag {
   final int id;
   final String name;
   Tag({required this.id, required this.name});
+}
+
+class CustomStatement {
+  final int id;
+  final String content;
+  final List<String> tags;
+  bool bookmarked;
+  final bool recommended;
+  bool isPublic;
+  CustomStatement({required this.id, required this.content, required this.tags, required this.bookmarked, required this.recommended, required this.isPublic});
 }
