@@ -431,7 +431,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
       child: Column(
         children: [
           Text(
-            "${_authManager.getName()}님이 이 문장을 생성한\n첫번째 사용자네요!",
+            "${_authManager.getName()}님이 이 문장을 생성한\n첫 번째 사용자네요!",
             style: TextStyles.medium00TextStyle,
             textAlign: TextAlign.center,
           ),
@@ -452,7 +452,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                     style: TextStyles.regular52LightTextStyle
                   ),
                   TextSpan(
-                    text: "'사용자 정의 문장 학습 > 공개된 문장 탭'",
+                    text: "'내가 만든 문장 학습 > 공개된 문장 탭'",
                     style: TextStyles.regularMintLightTextStyle
                   ),
                   TextSpan(
