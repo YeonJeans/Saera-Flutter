@@ -15,6 +15,7 @@ class TabBarMainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: '새터민을 위한 억양 연습',
       home: BottomNavigator(
         key: TabBarMainPage.myTabbedPageKey,

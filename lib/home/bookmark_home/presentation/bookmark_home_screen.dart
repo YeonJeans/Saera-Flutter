@@ -53,13 +53,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
         bool recommended = i["recommended"];
         statementList.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, ));
       }
-    } else if (response.statusCode == 401) {
-      String? before = _authManager.getToken();
-      await RefreshToken(context);
-
-      if(before != _authManager.getToken()){
-        getStatement(_selectedIndex);
-      }
     }
   }
 
@@ -78,13 +71,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
         String tag = i["tag"];
         bool bookmarked = i["bookmarked"];
         wordList.add(Word(id: id, notation: notation, pronunciation: pronunciation, tag: tag, bookmarked: bookmarked));
-      }
-    } else if (response.statusCode == 401){
-      String? before = _authManager.getToken();
-      await RefreshToken(context);
-
-      if(before != _authManager.getToken()){
-        getWord(_selectedIndex);
       }
     }
   }
