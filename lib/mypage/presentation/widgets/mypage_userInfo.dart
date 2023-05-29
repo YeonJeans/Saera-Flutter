@@ -67,7 +67,7 @@ class _UserInfoState extends State<UserInfo> {
                     child: Container(
                       width: 165,
                       height: 158,
-                      child: Image.network("${_authManager.getPhoto()}",
+                      child: Image.network("${_userController.getImage()}",
                         fit: BoxFit.cover,
                       ),
                     )
@@ -91,7 +91,7 @@ class _UserInfoState extends State<UserInfo> {
           Text("Lv. ${1+( _userController.getExp() / 1000).floor()} ",
             style: TextStyles.largeGreenTextStyle,
           ),
-          Text("${_authManager.getName()} ",
+          Text("${_userController.getUserName()} ",
             style: TextStyles.large00TextStyle,
           ),
           const Text("님",
@@ -106,7 +106,7 @@ class _UserInfoState extends State<UserInfo> {
   Widget userLevelInfoSection(){
     return Container(
       margin: const EdgeInsets.only(top: 6.0),
-      child: Text("다음 레벨까지 ${_userController.getExp() != 0 ? 1000 - _userController.getExp()! % 1000 : ""} xp 남았어요.",
+      child: Text("다음 레벨까지 ${_userController.getExp() != 0 ? 1000 - _userController.getExp()! % 1000 : "1000"} xp 남았어요.",
         style: TextStyles.medium55TextStyle,
       ),
     );
