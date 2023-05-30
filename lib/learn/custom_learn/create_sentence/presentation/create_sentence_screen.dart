@@ -47,6 +47,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
         body: body
     );
     int customStatementId = 0;
+    print(response.statusCode);
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
         int id = body["id"];
@@ -55,6 +56,20 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
       throw Exception("커스텀 문자 생성 오류 발생");
     }
     return customStatementId;
+  }
+
+  createPublic(int customStatementId) async {
+    var url = Uri.parse('$serverHttp/customs/set-public');
+    var data = {
+      "id" : customStatementId
+    };
+    var body = json.encode(data);
+    final response = await http.post(
+        url,
+        headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" },
+        body: body
+    );
+    print("public setting : $response");
   }
 
   // @override
