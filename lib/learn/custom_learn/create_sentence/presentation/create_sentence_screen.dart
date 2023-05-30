@@ -170,7 +170,6 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   Widget createBtn(){
     return GestureDetector(
       onTap: (){
-
         showDialog(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -184,16 +183,68 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
               content: Container(
                 child: publicStatementDialogSection(),
               ),
+              actions: [
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Future<int> id;
+                              id = createStatement();
+                              id.then((id){
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+                                );
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                                fixedSize: const Size(144, 48),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)
+                                ),
+                                backgroundColor: ColorStyles.searchFillGray
+                            ),
+                            child: const Text(
+                              "문장 비공개",
+                              style: TextStyles.medium52TextStyle,
+                            )
+                        ),
+                        const Padding(padding: EdgeInsets.all(10)),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Future<int> id;
+                              id = createStatement();
+                              id.then((id){
+                                createPublic(id);
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+                                );
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                                fixedSize: const Size(144, 48),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)
+                                ),
+                                backgroundColor: ColorStyles.saeraAppBar
+                            ),
+                            child: const Text(
+                              "문장 공개",
+                              style: TextStyles.mediumWhiteVeryBoldTextStyle,
+                            )
+                        )
+                      ],
+                    ),
+                    const Padding(padding: EdgeInsets.all(4))
+                  ],
+                )
+              ],
             )
         );
-
-        /*Future<int> id;
-        id = createStatement();
-        id.then((id){
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
-          );
-        });*/
       },
       child: Container(
           margin: const EdgeInsets.only(left: 14, right: 14, bottom: 15),
@@ -420,29 +471,9 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
     );
   }
 
-  Widget dialogButton(Color color, String text) {
-    return GestureDetector(
-      onTap: null,
-      child: Container(
-        height: 48,
-        width: MediaQuery.of(context).size.width*0.37,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: color,
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: text == '문장 공개' ? TextStyles.mediumWhiteVeryBoldTextStyle : TextStyles.medium52TextStyle,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget publicStatementDialogSection() {
     return Container(
-      height: MediaQuery.of(context).size.height*0.31,
+      height: MediaQuery.of(context).size.height*0.23,
       child: Column(
         children: [
           Text(
@@ -485,16 +516,6 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
               style: TextStyles.regular52BoldTextStyle,
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 18),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                dialogButton(ColorStyles.searchFillGray, "문장 비공개"),
-                dialogButton(ColorStyles.saeraAppBar, "문장 공개")
-              ],
-            ),
-          )
         ],
       ),
     );
