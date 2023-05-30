@@ -497,7 +497,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
 
   String accuracyComment(double score){
     if (score > 5 ) {
-      return "조금 더 노력해 봅시다!";
+      return "노력해 봅시다!";
     }
     else if(score > 3 && score <= 5) {
       return "거의 완벽했어요!";

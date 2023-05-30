@@ -17,6 +17,7 @@ void main() async {
   await GetStorage.init();
   runApp(
     const GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'saera',
       home: SplashScreen(),
     )

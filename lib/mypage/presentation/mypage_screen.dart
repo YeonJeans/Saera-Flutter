@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:saera/mypage/mypage_edit_screen.dart';
 import 'package:saera/mypage/presentation/widgets/mypage_userInfo.dart';
 
 import 'package:saera/style/color.dart';
@@ -79,6 +80,12 @@ class _MyPageState extends State<MyPage> {
                 _authManager.logOut();
                 return Get.to(() => LoginPage());
               }
+              else{
+                return Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => UserInfoEditPage())
+                );
+              }
             }();
           },
           child: Container(
@@ -140,7 +147,9 @@ class _MyPageState extends State<MyPage> {
                           Container(
                             margin: EdgeInsets.only(top: 52, bottom: 4),
                             child: _mypageButton("프로필 수정", "edit.svg", true, (){
-                              return print("here");
+                              // Navigator.push(context, MaterialPageRoute(
+                              //   builder: (context) => UserInfoEditPage(),
+                              // ));
                             }),
                           ),
                           _mypageButton("로그아웃", "signout.svg", false, signOut())
