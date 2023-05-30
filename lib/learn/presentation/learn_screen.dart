@@ -91,7 +91,7 @@ class _LearnPageState extends State<LearnPage> {
               ),
               child: const Text(
                 '내가 만든 문장 학습/문장 생성',
-                style: TextStyles.medium00TextStyle,
+                style: TextStyles.medium00MediumTextStyle,
               ),
             ),
             Container(
@@ -105,17 +105,17 @@ class _LearnPageState extends State<LearnPage> {
 
     Container buttonTitle(String text) {
       return Container(
-        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.035, left: MediaQuery.of(context).size.width*0.07),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.032, left: MediaQuery.of(context).size.width*0.07),
         child: Text(
           text,
-          style: TextStyles.large00NormalTextStyle,
+          style: TextStyles.large00MediumTextStyle,
         ),
       );
     }
     
     Container buttonDescription(String text) {
       return Container(
-        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.085, left: MediaQuery.of(context).size.width*0.07),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.082, left: MediaQuery.of(context).size.width*0.07),
         child: Text(
           text,
           style: TextStyles.regular55TextStyle,
@@ -131,7 +131,7 @@ class _LearnPageState extends State<LearnPage> {
       },
       child: Container(
         margin: const EdgeInsets.only(top: 16),
-        padding: EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
             color: ColorStyles.saeraAccent,
             borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -150,28 +150,28 @@ class _LearnPageState extends State<LearnPage> {
             buttonDescription('자연스러운 표준어 표현과\n억양을 익혀요.'),
             Container(
                 margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height*0.08,
+                    top: MediaQuery.of(context).size.height*0.077,
                     left: MediaQuery.of(context).size.width*0.562
                 ),
                 child: SvgPicture.asset('assets/icons/statement_button_1.svg')
             ),
             Container(
               margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height*0.16,
+                  top: MediaQuery.of(context).size.height*0.155,
                   left: MediaQuery.of(context).size.width*0.43
               ),
               child: SvgPicture.asset('assets/icons/statement_button_2.svg'),
             ),
             Container(
                 margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height*0.058,
+                    top: MediaQuery.of(context).size.height*0.055,
                     left: MediaQuery.of(context).size.width*0.61
                 ),
                 child: SvgPicture.asset('assets/icons/statement_button_1_1.svg')
             ),
             Container(
                 margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height*0.145,
+                    top: MediaQuery.of(context).size.height*0.14,
                     left: MediaQuery.of(context).size.width*0.47
                 ),
                 child: SvgPicture.asset('assets/icons/statement_button_2_1.svg')
@@ -208,14 +208,14 @@ class _LearnPageState extends State<LearnPage> {
             buttonDescription('단어를 따라 읽으며\n올바른 표준어 발음을 익혀요.'),
             Container(
               margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height*0.08,
+                  top: MediaQuery.of(context).size.height*0.077,
                   left: MediaQuery.of(context).size.width*0.574
               ),
               child: SvgPicture.asset('assets/icons/word_button_1.svg')
             ),
             Container(
               margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height*0.16,
+                  top: MediaQuery.of(context).size.height*0.155,
                   left: MediaQuery.of(context).size.width*0.43
               ),
               child: SvgPicture.asset('assets/icons/word_button_2.svg'),
@@ -251,8 +251,8 @@ class _LearnPageState extends State<LearnPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   customButtonSection,
-                  goAccentButtonSection,
                   goPronunciationButtonSection,
+                  goAccentButtonSection,
                 ],
               ),
             ),
