@@ -509,11 +509,9 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
           direction: DismissDirection.endToStart,
           onDismissed: (direction) {
             setState(() {
-              if (statement.isPublic == false) {
-                statements.removeAt(index);
-                deleteCustomStatement(statement.id);
-                statementData = searchCustomStatement("");
-              }
+              statements.removeAt(index);
+              deleteCustomStatement(statement.id);
+              statementData = searchCustomStatement("");
             });
           },
           child: InkWell(
@@ -726,7 +724,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       );
     }
 
-    FutureBuilder existPublicStatement(List<CustomStatement> statements) { //여기는 공개된 문장 보여주는 곳
+    FutureBuilder existPublicStatement(List<CustomStatement> statements) {
       return FutureBuilder(
           future: statementPublicData,
           builder: ((context, snapshot) {
