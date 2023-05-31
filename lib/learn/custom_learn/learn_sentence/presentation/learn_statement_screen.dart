@@ -288,9 +288,15 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                   ],
                   maxLines: 1,
                   onSubmitted: (s) {
-                    setState(() {
-                      statementData = searchCustomStatement(s);
-                    });
+                    if (selectedIndex == 0) {
+                      setState(() {
+                        statementData = searchCustomStatement(s);
+                      });
+                    } else {
+                      setState(() {
+                        statementPublicData = searchPublicCustomStatement(s);
+                      });
+                    }
                   },
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
