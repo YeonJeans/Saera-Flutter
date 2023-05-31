@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -58,6 +59,9 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
   bool _isBookmarked = false;
   bool _isRecording = false;
   bool _isPracticed = false;
+
+  bool isSwitched = false;
+
   late Future <dynamic> _isAudioReady;
 
   AudioPlayer audioPlayer = AudioPlayer();
@@ -373,6 +377,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
       return true;
     }
     else{
+      print(response.bodyBytes);
       return false;
     }
   }
@@ -462,7 +467,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8))
           ),
-          title: Text("억양 등급",
+          title: const Text("억양 등급",
             style: TextStyles.large25TextStyle,
             textAlign: TextAlign.center,
           ),
@@ -795,7 +800,7 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                 );
               }
               else {
-                return AccentLineChart(x: x, y: y, isRecord: false);
+                return AccentLineChart(x: x, y: y, isRecord: false, isStandard: false);
               }
             }),
       ),
@@ -1012,7 +1017,22 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
           ),
           child: Container(
             padding: const EdgeInsets.all(25),
-            child: AccentLineChart(x: x2, y: y2, isRecord: true),
+            child: Stack(
+              children: [
+                (){
+                  if(isSwitched){
+                    return Container(
+                      padding: const EdgeInsets.all(25),
+                      child: AccentLineChart(x: x, y: y, isRecord: true, isStandard: true),
+                    );
+                  }
+                  else{
+                    return Container();
+                  }
+                }(),
+                AccentLineChart(x: x2, y: y2, isRecord: true, isStandard: false)
+              ],
+            ),
           ),
         ),
 
@@ -1093,9 +1113,6 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
                 children: [
                   SizedBox(height: 8,),
                   rankIcon(accuracyRate),
-                  // const SizedBox(
-                  //   width: 16,
-                  // )
                 ],
               ),
             )
@@ -1231,6 +1248,35 @@ class _AccentTodayPracticePageState extends State<AccentTodayPracticePage> with 
             }
             return practiceGraph();
           }(),
+
+          const SizedBox(height: 12,),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "표준 억양 그래프 보기",
+                  style: TextStyles.medium25TextStyle,
+                ),
+                FlutterSwitch(
+                  width: 60,
+                  height: 32,
+                  toggleSize: 32,
+                  value: isSwitched,
+                  activeColor: ColorStyles.saeraPink,
+                  onToggle: (val) {
+                    setState(() {
+                      isSwitched = val;
+                    });
+                  },
+                ),
+
+              ],
+            ),
+          )
         ],
       ),
     );

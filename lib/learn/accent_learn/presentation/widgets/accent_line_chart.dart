@@ -3,15 +3,17 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../style/color.dart';
 import '../../data/line_controller.dart';
 
 class AccentLineChart extends StatefulWidget {
-  const AccentLineChart({Key? key, required this.x, required this.y, required this.isRecord}) : super(key: key);
+  const AccentLineChart({Key? key, required this.x, required this.y, required this.isRecord, required this.isStandard}) : super(key: key);
 
   final List<double> x;
   final List<double> y;
 
   final bool isRecord;
+  final bool isStandard;
 
   @override
   State<AccentLineChart> createState() => _AccentLineChartState();
@@ -80,7 +82,7 @@ class _AccentLineChartState extends State<AccentLineChart> {
                           (point) => point.y == 0 ? FlSpot.nullSpot :FlSpot(point.x, point.y)
                   ).toList();
                 }(),
-                  color: Colors.black,
+                  color: widget.isStandard ? ColorStyles.saeraRed.withOpacity(0.3) : Colors.black,
                   dotData: FlDotData(
                     show: false,
                   ),
@@ -91,7 +93,7 @@ class _AccentLineChartState extends State<AccentLineChart> {
         //이곳에 라인 지나가도록 추가
         Obx(() =>
                 (){
-              if(widget.isRecord){
+              if(widget.isRecord && !widget.isStandard){
                 return Positioned(
                   left: width / _lineManager.rduration.value * _lineManager.rposition.value,
                   child: Container(
@@ -103,7 +105,7 @@ class _AccentLineChartState extends State<AccentLineChart> {
                   ),
                 );
               }
-              else{
+              else if(!widget.isStandard){
                 return Positioned(
                   left: width / _lineManager.duration.value * _lineManager.position.value,
                   child: Container(
@@ -111,6 +113,18 @@ class _AccentLineChartState extends State<AccentLineChart> {
                     height: MediaQuery.of(context).size.height,
                     decoration: const BoxDecoration(
                       color: Colors.red,
+                    ),
+                  ),
+                );
+              }
+              else{
+                return Positioned(
+                  left: _lineManager.position.value,
+                  child: Container(
+                    width: 1,
+                    height: MediaQuery.of(context).size.height,
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
                     ),
                   ),
                 );
