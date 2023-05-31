@@ -184,11 +184,10 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
         for (dynamic i in body) {
           int id = i["id"];
           String content = i["content"];
-          List<String> tags = List.from(i["tags"]);
           bool bookmarked = i["bookmarked"];
           bool recommended = i["recommended"];
           bool isPublic = i["isPublic"];
-          _list.add(CustomStatement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, isPublic: isPublic));
+          _list.add(CustomStatement(id: id, content: content, tags: ["없음"], bookmarked: bookmarked, recommended: recommended, isPublic: isPublic));
         }
       }
       return _list;
