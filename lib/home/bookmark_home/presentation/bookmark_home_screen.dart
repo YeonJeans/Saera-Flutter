@@ -132,7 +132,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
       )
     );
 
-    List<String> filterList = ['발음', '억양', '사용자 정의'];
+    List<String> filterList = ['발음', '억양', '내가 만든 문장'];
     Widget filterSection = Container(
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).size.height*0.02,

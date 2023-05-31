@@ -30,7 +30,7 @@ class CustomDonePage extends StatelessWidget {
     Widget doneSection = Container(
       padding: EdgeInsets.only(top: 36.0),
       child: const Text(
-        "문장이 생성되었어요!\n'학습 - 사용자 정의 문장 학습/생성'에서\n방금 만든 문장을 학습할 수 있어요.",
+        "문장이 생성되었어요!\n'학습 - 내가 만든 문장 학습/생성'에서\n방금 만든 문장을 학습할 수 있어요.",
         style: TextStyles.large25TextStyle,
         textAlign: TextAlign.center,
       ),

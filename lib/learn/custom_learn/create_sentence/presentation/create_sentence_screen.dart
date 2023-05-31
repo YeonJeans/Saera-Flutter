@@ -47,6 +47,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
         body: body
     );
     int customStatementId = 0;
+    print(response.statusCode);
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
         int id = body["id"];
@@ -55,6 +56,20 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
       throw Exception("커스텀 문자 생성 오류 발생");
     }
     return customStatementId;
+  }
+
+  createPublic(int customStatementId) async {
+    var url = Uri.parse('$serverHttp/customs/set-public');
+    var data = {
+      "id" : customStatementId
+    };
+    var body = json.encode(data);
+    final response = await http.post(
+        url,
+        headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" },
+        body: body
+    );
+    print("public setting : $response");
   }
 
   // @override
@@ -155,13 +170,81 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   Widget createBtn(){
     return GestureDetector(
       onTap: (){
-        Future<int> id;
-        id = createStatement();
-        id.then((id){
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
-          );
-        });
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              insetPadding: EdgeInsets.symmetric(horizontal: 17),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+              title: const Center(
+                child: Text("\u{1f389}", style: TextStyles.xxxxLargeTextStyle),
+              ),
+              content: Container(
+                child: publicStatementDialogSection(),
+              ),
+              actions: [
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Future<int> id;
+                              id = createStatement();
+                              id.then((id){
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+                                );
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                                fixedSize: const Size(144, 48),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)
+                                ),
+                                backgroundColor: ColorStyles.searchFillGray
+                            ),
+                            child: const Text(
+                              "문장 비공개",
+                              style: TextStyles.medium52TextStyle,
+                            )
+                        ),
+                        const Padding(padding: EdgeInsets.all(10)),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Future<int> id;
+                              id = createStatement();
+                              id.then((id){
+                                createPublic(id);
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+                                );
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                                fixedSize: const Size(144, 48),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)
+                                ),
+                                backgroundColor: ColorStyles.saeraAppBar
+                            ),
+                            child: const Text(
+                              "문장 공개",
+                              style: TextStyles.mediumWhiteVeryBoldTextStyle,
+                            )
+                        )
+                      ],
+                    ),
+                    const Padding(padding: EdgeInsets.all(4))
+                  ],
+                )
+              ],
+            )
+        );
       },
       child: Container(
           margin: const EdgeInsets.only(left: 14, right: 14, bottom: 15),
@@ -387,6 +470,57 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
         child: enterTag()
     );
   }
+
+  Widget publicStatementDialogSection() {
+    return Container(
+      height: MediaQuery.of(context).size.height*0.23,
+      child: Column(
+        children: [
+          Text(
+            "${_authManager.getName()}님이 이 문장을 생성한\n첫 번째 사용자네요!",
+            style: TextStyles.medium00TextStyle,
+            textAlign: TextAlign.center,
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 18),
+            child: Text(
+              "문장을 공개하면 다른 사용자들도 ${_authManager.getName()}님이 만든 문장을 학습할 수 있어요. 문장을 공개하시겠어요?",
+              style: TextStyles.regular52LightTextStyle,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 14),
+            child: const Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: "공개된 문장은 ",
+                    style: TextStyles.regular52LightTextStyle
+                  ),
+                  TextSpan(
+                    text: "'내가 만든 문장 학습 > 공개된 문장 탭'",
+                    style: TextStyles.regularMintLightTextStyle
+                  ),
+                  TextSpan(
+                    text: "에서 확인할 수 있어요.",
+                    style: TextStyles.regular52LightTextStyle
+                  ),
+                ]
+              )
+            )
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 14),
+            child: const Text(
+              "공개한 문장은 비공개로 변경하거나 삭제할 수 없어요.",
+              style: TextStyles.regular52BoldTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
 
   @override
   Widget build(BuildContext context) {
