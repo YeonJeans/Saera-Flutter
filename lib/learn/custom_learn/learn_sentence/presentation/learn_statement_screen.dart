@@ -7,7 +7,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:saera/learn/accent_learn/presentation/accent_learn_screen.dart';
 import 'package:saera/learn/custom_learn/create_sentence/presentation/create_sentence_screen.dart';
-import 'package:saera/learn/search_learn/presentation/widgets/response_statement.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../login/data/authentication_manager.dart';
@@ -328,8 +327,8 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
             labelStyle: TextStyles.small25TextStyle,
             avatar: _selectedIndex == index ? SvgPicture.asset('assets/icons/filter_up.svg') : SvgPicture.asset('assets/icons/filter_down.svg'),
             backgroundColor: Colors.white,
-            side: _selectedIndex == index? BorderSide(color: Colors.transparent) : BorderSide(color: ColorStyles.disableGray),
-            visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
+            side: _selectedIndex == index? const BorderSide(color: Colors.transparent) : const BorderSide(color: ColorStyles.disableGray),
+            visualDensity: const VisualDensity(horizontal: 0.0, vertical: -2),
             selected: _selectedIndex == index,
             onSelected: (bool selected) {
               setState(() {
@@ -427,7 +426,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                           label: Text(
                             chip.name,
                           ),
-                          visualDensity: VisualDensity(horizontal: 0.0, vertical: -2),
+                          visualDensity: const VisualDensity(horizontal: 0.0, vertical: -2),
                           onDeleted: () => _deleteChip(chip.id),
                         )).toList()
                     )
@@ -456,7 +455,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
           child: Column(
             children: [
               SvgPicture.asset('assets/icons/box_open.svg'),
-              Padding(padding: EdgeInsets.all(4)),
+              const Padding(padding: EdgeInsets.all(4)),
               const Text(
                 '아직 생성한 문장이 없습니다.\n화면 우측 하단의 + 버튼을 눌러\n직접 학습할 문장을 생성해 보세요.',
                 style: TextStyles.regular82TextStyleWithHeight,
@@ -471,11 +470,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
     Container publicStatement(CustomStatement statement) {
       if (statement.isPublic == true) {
         return Container(
-          margin: EdgeInsets.only(left: 5),
-          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 7),
+          margin: const EdgeInsets.only(left: 5),
+          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 7),
           decoration: BoxDecoration(
               color: ColorStyles.backIconGreen.withOpacity(0.5),
-              borderRadius: BorderRadius.all(Radius.circular(4.0))
+              borderRadius: const BorderRadius.all(Radius.circular(4.0))
           ),
           child: const Text(
             '공유됨',
@@ -488,7 +487,182 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
       }
     }
 
-    FutureBuilder existStatement(List<CustomStatement> statements) { //여기는 그냥 일반 문장 보여주는 곳
+    Dismissible notPublicStatementList(List<CustomStatement> statements, CustomStatement statement, int index) {
+      return Dismissible(
+          key: Key(statement.id.toString()),
+          background: Container(
+              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              child: const Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: 28,
+              )
+          ),
+          direction: DismissDirection.endToStart,
+          onDismissed: (direction) {
+            setState(() {
+              if (statement.isPublic == false) {
+                statements.removeAt(index);
+                deleteCustomStatement(statement.id);
+                statementData = searchCustomStatement("");
+              }
+            });
+          },
+          child: InkWell(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => AccentPracticePage(id: statement.id, isCustom: true),
+                ));
+              },
+              child: Container(
+                margin: EdgeInsets.only(
+                    bottom: statements.length - 1 == index ? 160 : 0
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 3),
+                              child: Text(
+                                  statement.content,
+                                  style: TextStyles.regular00TextStyle
+                              ),
+                            ),
+                            publicStatement(statement)
+                          ],
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width*0.7,
+                          child: Wrap(
+                            spacing: 7.0,
+                            children: statement.tags.map((tag) {
+                              return Chip(
+                                  label: Text(tag),
+                                  labelStyle: TextStyles.small00TextStyle,
+                                  visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4)
+                              );
+                            }).toList(),
+                          ),
+                        )
+                      ],
+                    ),
+                    IconButton(
+                        onPressed: (){
+                          if(statement.bookmarked){
+                            setState(() {
+                              statement.bookmarked = false;
+                            });
+                            deleteBookmark(statement.id);
+                          }
+                          else{
+                            setState(() {
+                              statement.bookmarked = true;
+                            });
+                            createBookmark(statement.id);
+                          }
+                        },
+                        icon: statement.bookmarked?
+                        SvgPicture.asset(
+                          'assets/icons/star_fill.svg',
+                          fit: BoxFit.scaleDown,
+                        )
+                            :
+                        SvgPicture.asset(
+                          'assets/icons/star_unfill.svg',
+                          fit: BoxFit.scaleDown,
+                        )
+                    )
+                  ],
+                ),
+              )
+          )
+      );
+    }
+
+    InkWell existPublicStatementList(List<CustomStatement> statements, CustomStatement statement, int index) {
+      return InkWell(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => AccentPracticePage(id: statement.id, isCustom: true),
+            ));
+          },
+          child: Container(
+            margin: EdgeInsets.only(
+                bottom: statements.length - 1 == index ? 160 : 0
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          child: Text(
+                              statement.content,
+                              style: TextStyles.regular00TextStyle
+                          ),
+                        ),
+                        publicStatement(statement)
+                      ],
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.7,
+                      child: Wrap(
+                        spacing: 7.0,
+                        children: statement.tags.map((tag) {
+                          return Chip(
+                              label: Text(tag),
+                              labelStyle: TextStyles.small00TextStyle,
+                              visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4)
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  ],
+                ),
+                IconButton(
+                    onPressed: (){
+                      if(statement.bookmarked){
+                        setState(() {
+                          statement.bookmarked = false;
+                        });
+                        deleteBookmark(statement.id);
+                      }
+                      else{
+                        setState(() {
+                          statement.bookmarked = true;
+                        });
+                        createBookmark(statement.id);
+                      }
+                    },
+                    icon: statement.bookmarked?
+                    SvgPicture.asset(
+                      'assets/icons/star_fill.svg',
+                      fit: BoxFit.scaleDown,
+                    )
+                        :
+                    SvgPicture.asset(
+                      'assets/icons/star_unfill.svg',
+                      fit: BoxFit.scaleDown,
+                    )
+                )
+              ],
+            ),
+          )
+      );
+    }
+
+    FutureBuilder existStatement(List<CustomStatement> statements) {
       return FutureBuilder(
         future: statementData,
         builder: ((context, snapshot) {
@@ -514,7 +688,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
               );
             } else {
               return Container(
-                padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
+                padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
                 height: MediaQuery.of(context).size.height*0.72,
                 child: RefreshIndicator(
                   onRefresh: () async {
@@ -525,102 +699,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                   child: ListView.separated(
                       itemBuilder: ((context, index) {
                         CustomStatement statement = statements[index];
-                        return Dismissible(
-                            key: Key(statement.id.toString()),
-                            background: Container(
-                                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
-                                color: Colors.red,
-                                alignment: Alignment.centerRight,
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
-                                  size: 28,
-                                )
-                            ),
-                            direction: DismissDirection.endToStart,
-                            onDismissed: (direction) {
-                              setState(() {
-                                if (statement.isPublic == false) {
-                                  statements.removeAt(index);
-                                  deleteCustomStatement(statement.id);
-                                  statementData = searchCustomStatement("");
-                                }
-                              });
-                            },
-                            child: InkWell(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => AccentPracticePage(id: statement.id, isCustom: true),
-                                ));
-                              },
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                    bottom: statements.length - 1 == index ? 160 : 0
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              padding: EdgeInsets.symmetric(vertical: 3),
-                                              child: Text(
-                                                  statement.content,
-                                                  style: TextStyles.regular00TextStyle
-                                              ),
-                                            ),
-                                            publicStatement(statement)
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context).size.width*0.7,
-                                          child: Wrap(
-                                            spacing: 7.0,
-                                            children: statement.tags.map((tag) {
-                                              return Chip(
-                                                  label: Text(tag),
-                                                  labelStyle: TextStyles.small00TextStyle,
-                                                  visualDensity: VisualDensity(horizontal: 0.0, vertical: -4)
-                                              );
-                                            }).toList(),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    IconButton(
-                                        onPressed: (){
-                                          if(statement.bookmarked){
-                                            setState(() {
-                                              statement.bookmarked = false;
-                                            });
-                                            deleteBookmark(statement.id);
-                                          }
-                                          else{
-                                            setState(() {
-                                              statement.bookmarked = true;
-                                            });
-                                            createBookmark(statement.id);
-                                          }
-                                        },
-                                        icon: statement.bookmarked?
-                                        SvgPicture.asset(
-                                          'assets/icons/star_fill.svg',
-                                          fit: BoxFit.scaleDown,
-                                        )
-                                            :
-                                        SvgPicture.asset(
-                                          'assets/icons/star_unfill.svg',
-                                          fit: BoxFit.scaleDown,
-                                        )
-                                    )
-                                  ],
-                                ),
-                              )
-                            )
-                        );
+                        if (statement.isPublic == false){
+                          return notPublicStatementList(statements, statement, index);
+                        } else {
+                          return existPublicStatementList(statements, statement, index);
+                        }
                       }),
                       separatorBuilder: (BuildContext context, int index) {
                         return const Divider(thickness: 1,);
@@ -663,7 +746,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
                 );
               } else {
                 return Container(
-                    padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
+                    padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 16),
                     height: MediaQuery.of(context).size.height*0.72,
                     child: RefreshIndicator(
                       onRefresh: () async {
@@ -770,11 +853,11 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
     }
 
     Widget floatingButtonSection = Container(
-      margin: EdgeInsets.only(right: 8, bottom: 8),
+      margin: const EdgeInsets.only(right: 8, bottom: 8),
       child: FloatingActionButton(
         onPressed: (){
           Navigator.push(context, MaterialPageRoute(
-            builder: (context) => CreateSentenceScreen(),
+            builder: (context) => const CreateSentenceScreen(),
           ));
         },
         backgroundColor: ColorStyles.saeraAppBar,
