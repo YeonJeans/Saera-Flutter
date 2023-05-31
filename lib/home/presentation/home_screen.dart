@@ -83,6 +83,9 @@ class _HomePageState extends State<HomePage> {
         getTodayWordList();
       }
     }
+    else{
+      print(jsonDecode(utf8.decode(response.bodyBytes)));
+    }
   }
 
   getTodaySentenceList() async {
@@ -97,6 +100,9 @@ class _HomePageState extends State<HomePage> {
       if(statementList[0] != todayStatementLearnIdx){
         _authManager.saveTodayStatementIdx(0);
       }
+    }
+    else{
+      print(jsonDecode(utf8.decode(response.bodyBytes)));
     }
   }
 
