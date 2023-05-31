@@ -157,9 +157,8 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
           String content = i["content"];
           List<String> tags = List.from(i["tags"]);
           bool bookmarked = i["bookmarked"];
-          bool recommended = i["recommended"];
           bool isPublic = i["isPublic"];
-          _list.add(CustomStatement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, isPublic: isPublic));
+          _list.add(CustomStatement(id: id, content: content, tags: tags, bookmarked: bookmarked, isPublic: isPublic));
         }
       }
       return _list;
@@ -185,8 +184,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
           int id = i["id"];
           String content = i["content"];
           bool bookmarked = i["bookmarked"];
-          bool recommended = i["recommended"];
-          _list.add(CustomStatement(id: id, content: content, tags: ["없음"], bookmarked: bookmarked, recommended: recommended, isPublic: true));
+          _list.add(CustomStatement(id: id, content: content, tags: ["없음"], bookmarked: bookmarked, isPublic: true));
         }
       }
       return _list;
@@ -934,7 +932,6 @@ class CustomStatement {
   final String content;
   final List<String> tags;
   bool bookmarked;
-  final bool recommended;
   bool isPublic;
-  CustomStatement({required this.id, required this.content, required this.tags, required this.bookmarked, required this.recommended, required this.isPublic});
+  CustomStatement({required this.id, required this.content, required this.tags, required this.bookmarked, required this.isPublic});
 }
