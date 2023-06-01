@@ -54,7 +54,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
   String contentInfo = "";
   String userName = "";
 
-  double accuracyRate = 0;
+  bool accuracyRate = true;
   int recordingState = 1;
 
 
@@ -282,7 +282,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
   }
 
   completePractice() async {
-    var url = Uri.parse('${serverHttp}/practice?type=WORD&fk=${widget.wordList[widget.idx].toString()}&isTodayStudy=${widget.isTodayLearn}');
+    var url = Uri.parse('${serverHttp}/practice-word?type=WORD&fk=${widget.wordList[widget.idx].toString()}&isTodayStudy=${widget.isTodayLearn}');
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'accept': 'application/json', "content-type": "multipart/form-data" , "authorization" : "Bearer ${_authManager.getToken()}"});
 
@@ -301,7 +301,38 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
       print(body);
       setState(() {
         _isPracticed = true;
+        accuracyRate = body["result"];
       });
+
+      if (!mounted) return;
+
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          contentPadding: EdgeInsets.only(left: 24.0, right: 24.0, top: 12.0, bottom: 4.0),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8))
+          ),
+          title: const Text("억양 등급",
+            style: TextStyles.large25TextStyle,
+            textAlign: TextAlign.center,
+          ),
+          content:  Container(
+            child: expSection(),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                '확인',
+                style: TextStyles.medium25400TextStyle,
+              ),
+            ),
+          ],
+        ),
+      );
 
       getUserExp();
       return true;
@@ -1027,6 +1058,83 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
         ],
       ),
     );
+  }
+
+  Widget expSection() {
+    return Container(
+        margin: const EdgeInsets.only(top: 8),
+        height: 56,
+        width: MediaQuery.of(context).size.width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+
+          children: [
+            Container(
+              height: 56,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  Row(
+                    children: [
+                      Text(
+                        accuracyComment(accuracyRate),
+                        style: TextStyles.medium25TextStyle,
+                      )
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 7),
+                    child: const Text("학습 완료 경험치 +100xp",
+                      style: TextStyles.small99TextStyle,
+                    ),
+                  )
+                ],
+              ),
+            ),
+
+            Container(
+              height: 56,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  rankIcon(accuracyRate),
+                ],
+              ),
+            )
+          ],
+        )
+    );
+  }
+
+  String accuracyComment(bool result){
+    if (result == false) {
+      return "노력해 봅시다!";
+    }
+    else{
+      return "완벽합니다!!";
+    }
+  }
+
+  Widget rankIcon(bool result){
+    if (result == false) {
+      return const Stack(
+        alignment: Alignment.center,
+        children: [
+          Text("\u{1F44E}", style: TextStyles.xxxxLargeTextStyle)
+        ],
+      );
+    }
+    else{
+      return const Stack(
+        alignment: Alignment.center,
+        children: [
+          Text("\u{1F44D}", style: TextStyles.xxxxLargeTextStyle)
+        ],
+      );
+    }
   }
 
   @override
