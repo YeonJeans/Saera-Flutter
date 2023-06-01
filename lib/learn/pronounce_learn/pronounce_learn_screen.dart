@@ -808,7 +808,8 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
             child: Container(
               width: 20,
               height: 21,
-              child: Image.network("${_authManager.getPhoto()}"),
+              child: Image.network("${_authManager.getPhoto()}",
+                fit: BoxFit.cover,),
             )
 
         ),
