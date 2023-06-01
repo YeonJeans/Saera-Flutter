@@ -478,7 +478,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
         children: [
           Text(
             "${_authManager.getName()}님이 이 문장을 생성한\n첫 번째 사용자네요!",
-            style: TextStyles.medium00TextStyle,
+            style: TextStyles.medium00MediumTextStyle,
             textAlign: TextAlign.center,
           ),
           Container(
