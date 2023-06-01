@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart' show rootBundle;
+
 import 'package:saera/learn/custom_learn/create_sentence/presentation/custom_statement_done_screen.dart';
+import 'package:saera/learn/custom_learn/create_sentence/presentation/widgets/check_badword.dart';
 import 'package:saera/learn/custom_learn/create_sentence/presentation/widgets/subtitle_section.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:saera/style/font.dart';
 import 'package:saera/style/color.dart';
 
@@ -56,18 +60,6 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
     }
     return customStatementId;
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _scrollController = ScrollController();
-  // }
-
-  // @override
-  // void dispose() {
-  //   _scrollController.dispose();
-  //   super.dispose();
-  // }
 
   Widget appBarSection() {
     return Row(
@@ -154,14 +146,71 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
 
   Widget createBtn(){
     return GestureDetector(
-      onTap: (){
-        Future<int> id;
-        id = createStatement();
-        id.then((id){
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+      onTap: () async {
+        // 비속어 검사 진행
+        var check = await isBadWord(customStatement);
+        print("check: $check");
+
+        if(check){
+          showDialog(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                insetPadding: EdgeInsets.symmetric(horizontal: 18),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                title: const Center(
+                  child: Text("\u{1f625}"),
+                ),
+                content: Container(
+                  child: Text(
+                    "비속어가 포함된 문장은 생성할 수 없어요.",
+                    style: TextStyles.medium00TextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                actions: [
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Padding(padding: EdgeInsets.all(4)),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              style: TextButton.styleFrom(
+                                  fixedSize: Size(MediaQuery.sizeOf(context).width - 80, 48),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)
+                                  ),
+                                  backgroundColor: ColorStyles.saeraAppBar
+                              ),
+                              child: const Text(
+                                "다른 문장 만들러 가기",
+                                style: TextStyles.mediumWhiteTextStyle,
+                              )
+                          ),
+                          const Padding(padding: EdgeInsets.all(4))
+                        ],
+                      ),
+                       const Padding(padding: EdgeInsets.all(4))
+                    ],
+                  )
+                ],
+              )
           );
-        });
+        }
+        else{
+          Future<int> id;
+          id = createStatement();
+          id.then((id){
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+            );
+          });
+        }
       },
       child: Container(
           margin: const EdgeInsets.only(left: 14, right: 14, bottom: 15),
