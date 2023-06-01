@@ -62,29 +62,38 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  void checkSituationCategorySelected(String categoryName) {
+  void checkSituationCategorySelected(String categoryName){
     bool isSituationCategorySelected = false;
+    bool isSame = false;
+    int index = 0;
     setState(() {
       for (int i = _chipList.length-1; i >= 0; i--) {
-        if (_chipList[i].name == categoryName) {
-          isSituationCategorySelected = true;
-          _deleteChip(_chipList[i].id);
-          break;
-        } else {
-          isSituationCategorySelected = false;
-        }
         for (int j = 0; j < situationList.length; j++) {
           if (_chipList[i].name == situationList[j]) {
+            if (_chipList[i].name == categoryName) {
+              isSame = true;
+            }
             isSituationCategorySelected = true;
-            _deleteChip(_chipList[i].id);
-            _addChip(categoryName);
+            index = i;
             break;
+          } else {
+            isSituationCategorySelected = false;
           }
         }
+        if (isSituationCategorySelected == true) {
+          break;
+        }
       }
-      if (isSituationCategorySelected == false) {
+
+      if (isSituationCategorySelected == true) {
+        if (_chipList[index].name != categoryName) {
+          _deleteChip(_chipList[index].id);
+          _addChip(categoryName);
+        } else if (_chipList[index].name == categoryName && isSame == true){
+          _deleteChip(_chipList[index].id);
+        }
+      } else {
         _addChip(categoryName);
-        isSituationCategorySelected == true;
       }
     });
   }
@@ -507,7 +516,7 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Container(
                             margin: EdgeInsets.only(
-                              bottom: statements.length - 1 == index ? 120 : 0
+                              bottom: statements.length - 1 == index ? 160 : 0
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

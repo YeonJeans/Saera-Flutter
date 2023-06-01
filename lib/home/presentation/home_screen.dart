@@ -32,13 +32,15 @@ class _HomePageState extends State<HomePage> {
 
   List<int> wordList = [];
   List<int> statementList = [];
-  List<top5Statement> top5StatementList = [];
 
   int todayWordLearnIdx = 0;
   int todayStatementLearnIdx = 0;
 
   int todayWordProgressIdx = 0;
   int todayStatementProgressIdx = 0;
+
+  late Future<List<top5Statement>> top5StatementList;
+  late Future<int> continuousLearnDate;
 
   @override
   void initState() {
@@ -52,7 +54,8 @@ class _HomePageState extends State<HomePage> {
     todayWordProgressIdx = _authManager.getTodayWordIdx()!;
     todayStatementProgressIdx = _authManager.getTodayStatementIdx()!;
 
-    getTop5SentenceList();
+    top5StatementList = getTop5SentenceList();
+    continuousLearnDate = getContinuousLearnDate();
     getTodayWordList();
     getTodaySentenceList();
     super.initState();
@@ -107,6 +110,7 @@ class _HomePageState extends State<HomePage> {
     var url = Uri.parse('$serverHttp/top5-statement');
     final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
 
+    List<top5Statement> top5StatementList = [];
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
       top5StatementList.clear();
@@ -122,14 +126,25 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<int> getContinuousLearnDate() async {
+    var url = Uri.parse('$serverHttp/get-attendance-days');
+    final response = await http.get(url, headers: {'accept': 'application/json', "content-type": "application/json", "authorization" : "Bearer ${_authManager.getToken()}" });
+    int date = 0;
+    if (response.statusCode == 200) {
+      var body = jsonDecode(utf8.decode(response.bodyBytes));
+      date = body["numberOfDays"];
+    }
+    return date;
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     Widget imageSection = Container(
       margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.147,
-        left: MediaQuery.of(context).size.width*0.05
+          top: MediaQuery.of(context).size.height*0.147,
+          left: MediaQuery.of(context).size.width*0.05
       ),
       child: SvgPicture.asset('assets/images/home_image.svg'),
     );
@@ -146,37 +161,57 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Widget learnDateTextSection = Container(
-      width: 116,
-      height: 54,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-           image: AssetImage('assets/images/home_speech_bubble.png'),
-           alignment: Alignment.center
-        ),
-      ),
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height*0.12,
-        left: MediaQuery.of(context).size.width*0.63
-      ),
-      child: Container(
-        margin: EdgeInsets.only(top: 6),
-        child: const Text.rich(
-          TextSpan(
-              children: [
-                TextSpan(
-                  text: '8일 연속',
-                  style: TextStyles.small55BoldTextStyle,
+    Widget learnDateTextSection = FutureBuilder(
+        future: continuousLearnDate,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+                width: 116,
+                height: 54,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/home_speech_bubble.png'),
+                      alignment: Alignment.center
+                  ),
                 ),
-                TextSpan(
-                    text: '으로\n학습 중이에요',
-                    style: TextStyles.small55TextStyle
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height*0.12,
+                    left: MediaQuery.of(context).size.width*0.63
+                ),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 6),
+                  child: Text.rich(
+                    TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${snapshot.data.toString()}일 연속',
+                            style: TextStyles.small55BoldTextStyle,
+                          ),
+                          const TextSpan(
+                              text: '으로\n학습 중이에요',
+                              style: TextStyles.small55TextStyle
+                          )
+                        ]
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 )
-              ]
-          ),
-          textAlign: TextAlign.center,
-        ),
-      )
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error} 에러");
+          } else {
+            return Center(
+              child: Container(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                  child: LoadingAnimationWidget.waveDots(
+                      color: ColorStyles.expFillGray,
+                      size: 24.0
+                  )
+              ),
+            );
+          }
+        }
     );
 
     Widget searchSection = Container(
@@ -263,7 +298,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget top5StatementSection = FutureBuilder(
-        future: getTop5SentenceList(),
+        future: top5StatementList,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -279,11 +314,11 @@ class _HomePageState extends State<HomePage> {
           } else if (snapshot.connectionState == ConnectionState.done){
             if (snapshot.hasError) {
               return Center(
-                child: Container(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
-                  child: Text(snapshot.error.toString())
-                )
+                  child: Container(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                      child: Text(snapshot.error.toString())
+                  )
               );
             } else {
               return Container(
@@ -440,24 +475,24 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget container = Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.25),
-      decoration: const BoxDecoration(
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.25),
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(32.0), topRight: Radius.circular(32.0)),
-      ),
-      child: Container(
-        child: ListView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            searchSection,
-            mostLearnTextSection,
-            top5StatementSection,
-            todayRecommandSection,
-            todayRecommandTextSection,
-            todayLearnSection,
-          ],
         ),
-      )
+        child: Container(
+          child: ListView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              searchSection,
+              mostLearnTextSection,
+              top5StatementSection,
+              todayRecommandSection,
+              todayRecommandTextSection,
+              todayLearnSection,
+            ],
+          ),
+        )
     );
 
     return Stack(

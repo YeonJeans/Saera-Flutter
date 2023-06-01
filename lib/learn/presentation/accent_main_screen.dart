@@ -50,56 +50,10 @@ class AccentMainPage extends StatelessWidget {
       ),
     );
 
-    Widget customButtonSection = InkWell(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => LearnStatementPage(),
-        ));
-      },
-      child: Container(
-        margin: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height*0.01,
-            left: 20, right: 20
-        ),
-        decoration: BoxDecoration(
-            color: ColorStyles.saeraAccent,
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            boxShadow: [
-              BoxShadow(
-                color: ColorStyles.saeraAccent.withOpacity(0.3),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 8),
-              )
-            ]
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height*0.023,
-                bottom: MediaQuery.of(context).size.height*0.023,
-                left: MediaQuery.of(context).size.width*0.04
-              ),
-              child: const Text(
-                '내가 만든 문장 학습/문장 생성',
-                style: TextStyles.medium00MediumTextStyle,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
-              child: SvgPicture.asset('assets/icons/custom_statement.svg'),
-            )
-          ],
-        ),
-      ),
-    );
-
     Widget situationTextSection = Container(
       margin: EdgeInsets.only(
         left: 20.0,
-        top: MediaQuery.of(context).size.height*0.025,
+        top: MediaQuery.of(context).size.height*0.02,
         bottom: MediaQuery.of(context).size.height*0.02
       ),
       child: const Text(
@@ -222,7 +176,6 @@ class AccentMainPage extends StatelessWidget {
               margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
               child: ListView(
                 children: [
-                  customButtonSection,
                   situationTextSection,
                   situationSection,
                   statementTypeTextSection,
