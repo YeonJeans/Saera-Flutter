@@ -44,14 +44,24 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
     if (response.statusCode == 200) {
       var body = jsonDecode(utf8.decode(response.bodyBytes));
-      statementList.clear();
-      for (dynamic i in body) {
-        int id = i["id"];
-        String content = i["content"];
-        List<String> tags = List.from(i["tags"]);
-        bool bookmarked = i["bookmarked"];
-        bool recommended = i["recommended"];
-        statementList.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: recommended, ));
+
+      if (_selectedIndex == 1) {
+        statementList.clear();
+        for (dynamic i in body) {
+          int id = i["id"];
+          String content = i["content"];
+          List<String> tags = List.from(i["tags"]);
+          bool bookmarked = i["bookmarked"];
+          statementList.add(Statement(id: id, content: content, tags: tags, bookmarked: bookmarked, recommended: true, ));
+        }
+      } else if (_selectedIndex == 2){
+        statementList.clear();
+        for (dynamic i in body) {
+          int id = i["id"];
+          String content = i["content"];
+          bool bookmarked = i["bookmarked"];
+          statementList.add(Statement(id: id, content: content, tags: ["null"], bookmarked: bookmarked, recommended: true, ));
+        }
       }
     }
   }
@@ -198,9 +208,15 @@ class _BookmarkPageState extends State<BookmarkPage> {
                           itemBuilder: ((context, index) {
                             return InkWell(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => AccentPracticePage(id: statementList[index].id, isCustom: false),
-                                ));
+                                if (_selectedIndex == 1) {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => AccentPracticePage(id: statementList[index].id, isCustom: false),
+                                  ));
+                                } else {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => AccentPracticePage(id: statementList[index].id, isCustom: true),
+                                  ));
+                                }
                               },
                               child: Container(
                                 margin: EdgeInsets.only(
@@ -209,31 +225,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(vertical: 3),
-                                          child: Text(
-                                              statementList[index].content,
-                                              style: TextStyles.regular00TextStyle
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context).size.width*0.7,
-                                          child: Wrap(
-                                            spacing: 7.0,
-                                            children: statementList[index].tags.map((tag) {
-                                              return Chip(
-                                                label: Text(tag),
-                                                labelStyle: TextStyles.small00TextStyle,
-                                                backgroundColor: selectTagColor(tag),
-                                                visualDensity: const VisualDensity(vertical: -4),
-                                              );
-                                            }).toList(),
-                                          ),
-                                        )
-                                      ],
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 3),
+                                      child: Text(
+                                          statementList[index].content,
+                                          style: TextStyles.regular00TextStyle
+                                      ),
                                     ),
                                     IconButton(
                                         onPressed: (){

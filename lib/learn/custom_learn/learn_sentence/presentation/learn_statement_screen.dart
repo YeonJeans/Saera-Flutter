@@ -664,7 +664,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 
     FutureBuilder existStatement(List<CustomStatement> statements) {
       return FutureBuilder(
-        future: statementData,
+        future: statementData = searchCustomStatement(""),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -722,7 +722,7 @@ class _LearnStatementPageState extends State<LearnStatementPage> {
 
     FutureBuilder existPublicStatement(List<CustomStatement> statements) {
       return FutureBuilder(
-          future: statementPublicData,
+          future: statementPublicData = searchPublicCustomStatement(""),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
