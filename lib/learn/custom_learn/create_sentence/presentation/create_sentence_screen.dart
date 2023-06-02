@@ -235,117 +235,129 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                           const Padding(padding: EdgeInsets.all(4))
                         ],
                       ),
-                       const Padding(padding: EdgeInsets.all(4))
+                      const Padding(padding: EdgeInsets.all(4))
                     ],
                   )
                 ],
               )
           );
-        }
-        else{
+        } else {
           Future<dynamic> state = checkDuplication(customStatement);
-        state.then((result){
-          if (result == true) { //중복이 없다면
-            showDialog(
-                context: context,
-                builder: (dialogContext) => AlertDialog(
-                  insetPadding: EdgeInsets.symmetric(horizontal: 17),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20))
-                  ),
-                  title: const Center(
-                    child: Text("\u{1f389}", style: TextStyles.xxxxLargeTextStyle),
-                  ),
-                  content: Container(
-                    child: publicStatementDialogSection(),
-                  ),
-                  actions: [
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(dialogContext).pop();
-                                  whatClick = false;
-                                  Future<int> id;
-                                  id = createStatement();
-                                  id.then((id){
-                                    Navigator.push(
-                                        context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
-                                    );
-                                  });
-                                },
-                                style: TextButton.styleFrom(
-                                    fixedSize: const Size(144, 48),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12)
-                                    ),
-                                    backgroundColor: ColorStyles.searchFillGray
-                                ),
-                                child: const Text(
-                                  "문장 비공개",
-                                  style: TextStyles.medium52BoldTextStyle,
-                                )
-                            ),
-                            const Padding(padding: EdgeInsets.all(10)),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(dialogContext).pop();
-                                  whatClick = true;
-                                  Future<int> id;
-                                  id = createStatement();
-                                  id.then((id){
-                                    Navigator.push(
-                                        context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
-                                    );
-                                  });
-                                },
-                                style: TextButton.styleFrom(
-                                    fixedSize: const Size(144, 48),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12)
-                                    ),
-                                    backgroundColor: ColorStyles.saeraAppBar
-                                ),
-                                child: const Text(
-                                  "문장 공개",
-                                  style: TextStyles.mediumWhiteVeryBoldTextStyle,
-                                )
-                            )
-                          ],
+          state.then((result) {
+            if (result == true) { //중복이 없다면
+              showDialog(
+                  context: context,
+                  builder: (dialogContext) =>
+                      AlertDialog(
+                        insetPadding: EdgeInsets.symmetric(horizontal: 17),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20))
                         ),
-                        const Padding(padding: EdgeInsets.all(4))
-                      ],
-                    )
-                  ],
-                )
-            );
-          } else {
-            whatClick = false;
-            Future<int> id = createStatement();
-            id.then((id){
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+                        title: const Center(
+                          child: Text("\u{1f389}",
+                              style: TextStyles.xxxxLargeTextStyle),
+                        ),
+                        content: Container(
+                          child: publicStatementDialogSection(),
+                        ),
+                        actions: [
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(dialogContext).pop();
+                                        whatClick = false;
+                                        Future<int> id;
+                                        id = createStatement();
+                                        id.then((id) {
+                                          Navigator.push(
+                                              context, MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CustomDonePage(id: id,))
+                                          );
+                                        });
+                                      },
+                                      style: TextButton.styleFrom(
+                                          fixedSize: const Size(144, 48),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius
+                                                  .circular(12)
+                                          ),
+                                          backgroundColor: ColorStyles
+                                              .searchFillGray
+                                      ),
+                                      child: const Text(
+                                        "문장 비공개",
+                                        style: TextStyles.medium52BoldTextStyle,
+                                      )
+                                  ),
+                                  const Padding(padding: EdgeInsets.all(10)),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(dialogContext).pop();
+                                        whatClick = true;
+                                        Future<int> id;
+                                        id = createStatement();
+                                        id.then((id) {
+                                          Navigator.push(
+                                              context, MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CustomDonePage(id: id,))
+                                          );
+                                        });
+                                      },
+                                      style: TextButton.styleFrom(
+                                          fixedSize: const Size(144, 48),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius
+                                                  .circular(12)
+                                          ),
+                                          backgroundColor: ColorStyles
+                                              .saeraAppBar
+                                      ),
+                                      child: const Text(
+                                        "문장 공개",
+                                        style: TextStyles
+                                            .mediumWhiteVeryBoldTextStyle,
+                                      )
+                                  )
+                                ],
+                              ),
+                              const Padding(padding: EdgeInsets.all(4))
+                            ],
+                          )
+                        ],
+                      )
               );
-            });
-          }
-      
-      }
+            } else {
+              whatClick = false;
+              Future<int> id = createStatement();
+              id.then((id) {
+                Navigator.push(
+                    context, MaterialPageRoute(
+                    builder: (context) => CustomDonePage(id: id,))
+                );
+              });
+            }
+          });
+        }
+      },
       child: Container(
           margin: const EdgeInsets.only(left: 14, right: 14, bottom: 15),
           height: 56,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: ColorStyles.saeraAppBar,
-              boxShadow:[
-                BoxShadow(
-                  color: ColorStyles.black00.withOpacity(0.1),
-                  blurRadius: 16,
-                  offset: const Offset(0, 8), // changes position of shadow
-                ),
-              ],
+            borderRadius: BorderRadius.circular(8),
+            color: ColorStyles.saeraAppBar,
+            boxShadow:[
+              BoxShadow(
+                color: ColorStyles.black00.withOpacity(0.1),
+                blurRadius: 16,
+                offset: const Offset(0, 8), // changes position of shadow
+              ),
+            ],
           ),
           child: const Center(
             child: Text(
@@ -607,7 +619,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
       ),
     );
   }
-  
+
 
   @override
   Widget build(BuildContext context) {
