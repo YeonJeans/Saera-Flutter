@@ -188,13 +188,26 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                     borderRadius: BorderRadius.all(Radius.circular(20))
                 ),
                 title: const Center(
-                  child: Text("\u{1f625}"),
+                  child: Text("\u{1f625}", style: TextStyles.xxxxLargeTextStyle),
                 ),
                 content: Container(
-                  child: Text(
-                    "비속어가 포함된 문장은 생성할 수 없어요.",
-                    style: TextStyles.medium00TextStyle,
-                    textAlign: TextAlign.center,
+                  height: MediaQuery.of(context).size.height*0.075,
+                  child: Column(
+                    children: [
+                      Text(
+                        "문장 생성에 실패했습니다!",
+                        style: TextStyles.medium00TextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 18),
+                        child: Text(
+                          "비속어가 포함된 문장은 생성할 수 없어요.",
+                          style: TextStyles.regular52LightTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 actions: [
@@ -217,7 +230,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                               ),
                               child: const Text(
                                 "다른 문장 만들러 가기",
-                                style: TextStyles.mediumWhiteTextStyle,
+                                style: TextStyles.mediumWhiteVeryBoldTextStyle,
                               )
                           ),
                           const Padding(padding: EdgeInsets.all(4))
@@ -233,89 +246,88 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
         else{
           Future<int> id;
           id = createStatement();
+          showDialog(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                insetPadding: EdgeInsets.symmetric(horizontal: 17),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                title: const Center(
+                  child: Text("\u{1f389}", style: TextStyles.xxxxLargeTextStyle),
+                ),
+                content: Container(
+                  child: publicStatementDialogSection(),
+                ),
+                actions: [
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Future<int> id;
+                                id = createStatement();
+                                id.then((id){
+                                  Navigator.push(
+                                      context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+                                  );
+                                });
+                              },
+                              style: TextButton.styleFrom(
+                                  fixedSize: const Size(144, 48),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)
+                                  ),
+                                  backgroundColor: ColorStyles.searchFillGray
+                              ),
+                              child: const Text(
+                                "문장 비공개",
+                                style: TextStyles.medium52TextStyle,
+                              )
+                          ),
+                          const Padding(padding: EdgeInsets.all(10)),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Future<int> id;
+                                id = createStatement();
+                                id.then((id){
+                                  createPublic(id);
+                                  Navigator.push(
+                                      context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
+                                  );
+                                });
+                              },
+                              style: TextButton.styleFrom(
+                                  fixedSize: const Size(144, 48),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)
+                                  ),
+                                  backgroundColor: ColorStyles.saeraAppBar
+                              ),
+                              child: const Text(
+                                "문장 공개",
+                                style: TextStyles.mediumWhiteVeryBoldTextStyle,
+                              )
+                          )
+                        ],
+                      ),
+                      const Padding(padding: EdgeInsets.all(4))
+                    ],
+                  )
+                ],
+              )
+          );
           id.then((id){
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
             );
           });
         }
-      onTap: (){
-        showDialog(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              insetPadding: EdgeInsets.symmetric(horizontal: 17),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20))
-              ),
-              title: const Center(
-                child: Text("\u{1f389}", style: TextStyles.xxxxLargeTextStyle),
-              ),
-              content: Container(
-                child: publicStatementDialogSection(),
-              ),
-              actions: [
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              Future<int> id;
-                              id = createStatement();
-                              id.then((id){
-                                Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
-                                );
-                              });
-                            },
-                            style: TextButton.styleFrom(
-                                fixedSize: const Size(144, 48),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)
-                                ),
-                                backgroundColor: ColorStyles.searchFillGray
-                            ),
-                            child: const Text(
-                              "문장 비공개",
-                              style: TextStyles.medium52TextStyle,
-                            )
-                        ),
-                        const Padding(padding: EdgeInsets.all(10)),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              Future<int> id;
-                              id = createStatement();
-                              id.then((id){
-                                createPublic(id);
-                                Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
-                                );
-                              });
-                            },
-                            style: TextButton.styleFrom(
-                                fixedSize: const Size(144, 48),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)
-                                ),
-                                backgroundColor: ColorStyles.saeraAppBar
-                            ),
-                            child: const Text(
-                              "문장 공개",
-                              style: TextStyles.mediumWhiteVeryBoldTextStyle,
-                            )
-                        )
-                      ],
-                    ),
-                    const Padding(padding: EdgeInsets.all(4))
-                  ],
-                )
-              ],
-            )
-        );
-      },
+        },
       child: Container(
           margin: const EdgeInsets.only(left: 14, right: 14, bottom: 15),
           height: 56,
