@@ -161,7 +161,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
       child: const Center(
         child: Text(
           "문장 생성",
-          style: TextStyles.medium99TextStyle,
+          style: TextStyles.medium99BoldTextStyle,
         ),
       )
     );
@@ -277,7 +277,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
           child: const Center(
             child: Text(
               "문장 생성",
-              style: TextStyles.mediumWhiteTextStyle,
+              style: TextStyles.mediumWhiteBoldTextStyle,
             ),
           )
       ),
