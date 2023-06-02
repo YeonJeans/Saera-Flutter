@@ -313,7 +313,7 @@ class _PronouncePracticePageState extends State<PronouncePracticePage> with Tick
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8))
           ),
-          title: const Text("억양 등급",
+          title: const Text("발음 정확도",
             style: TextStyles.large25TextStyle,
             textAlign: TextAlign.center,
           ),
