@@ -187,13 +187,26 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                     borderRadius: BorderRadius.all(Radius.circular(20))
                 ),
                 title: const Center(
-                  child: Text("\u{1f625}"),
+                  child: Text("\u{1f625}", style: TextStyles.xxxxLargeTextStyle),
                 ),
                 content: Container(
-                  child: Text(
-                    "비속어가 포함된 문장은 생성할 수 없어요.",
-                    style: TextStyles.medium00TextStyle,
-                    textAlign: TextAlign.center,
+                  height: MediaQuery.of(context).size.height*0.075,
+                  child: Column(
+                    children: [
+                      Text(
+                        "문장 생성에 실패했습니다!",
+                        style: TextStyles.medium00TextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 18),
+                        child: Text(
+                          "비속어가 포함된 문장은 생성할 수 없어요.",
+                          style: TextStyles.regular52LightTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 actions: [
@@ -216,7 +229,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                               ),
                               child: const Text(
                                 "다른 문장 만들러 가기",
-                                style: TextStyles.mediumWhiteTextStyle,
+                                style: TextStyles.mediumWhiteVeryBoldTextStyle,
                               )
                           ),
                           const Padding(padding: EdgeInsets.all(4))
@@ -230,16 +243,7 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
           );
         }
         else{
-          Future<int> id;
-          id = createStatement();
-          id.then((id){
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomDonePage(id: id,))
-            );
-          });
-        }
-      onTap: (){
-        Future<dynamic> state = checkDuplication(customStatement);
+          Future<dynamic> state = checkDuplication(customStatement);
         state.then((result){
           if (result == true) { //중복이 없다면
             showDialog(
@@ -327,8 +331,8 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
               );
             });
           }
-        });
-      },
+      
+      }
       child: Container(
           margin: const EdgeInsets.only(left: 14, right: 14, bottom: 15),
           height: 56,
