@@ -15,6 +15,7 @@ import 'package:saera/style/font.dart';
 import 'package:saera/style/color.dart';
 
 import '../../../../login/data/authentication_manager.dart';
+import '../../../../login/data/user_info_controller.dart';
 import '../../../../server.dart';
 
 class CreateSentenceScreen extends StatefulWidget {
@@ -26,6 +27,7 @@ class CreateSentenceScreen extends StatefulWidget {
 
 class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
   final AuthenticationManager _authManager = Get.find();
+  final UserInfoController _userController = Get.find();
 
   final TextEditingController _textEditingController = TextEditingController();
   bool isComplete = false;
@@ -76,11 +78,14 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
     return isDuplicate;
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _scrollController = ScrollController();
-  // }
+  @override
+  void initState() {
+    if(_userController.getUserName() == ""){
+      _userController.saveUserName(_authManager.getName()!);
+    }
+
+    super.initState();
+  }
 
   // @override
   // void dispose() {
@@ -190,12 +195,12 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                   child: Text("\u{1f625}", style: TextStyles.xxxxLargeTextStyle),
                 ),
                 content: Container(
-                  height: MediaQuery.of(context).size.height*0.075,
+                  height: MediaQuery.of(context).size.height*0.075- 2,
                   child: Column(
                     children: [
                       Text(
-                        "문장 생성에 실패했습니다!",
-                        style: TextStyles.medium00TextStyle,
+                        "문장 생성에 실패했어요!",
+                        style: TextStyles.medium00MediumTextStyle,
                         textAlign: TextAlign.center,
                       ),
                       Container(
@@ -221,14 +226,14 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
                                 Navigator.of(context).pop();
                               },
                               style: TextButton.styleFrom(
-                                  fixedSize: Size(MediaQuery.sizeOf(context).width - 80, 48),
+                                  fixedSize: Size(MediaQuery.sizeOf(context).width-70, 48),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16)
+                                      borderRadius: BorderRadius.circular(12)
                                   ),
                                   backgroundColor: ColorStyles.saeraAppBar
                               ),
                               child: const Text(
-                                "다른 문장 만들러 가기",
+                                "다른 문장 생성",
                                 style: TextStyles.mediumWhiteVeryBoldTextStyle,
                               )
                           ),
@@ -576,14 +581,14 @@ class _CreateSentenceScreenState extends State<CreateSentenceScreen> {
       child: Column(
         children: [
           Text(
-            "${_authManager.getName()}님이 이 문장을 생성한\n첫 번째 사용자네요!",
+            "${_userController.getUserName()}님이 이 문장을 생성한\n첫 번째 사용자네요!",
             style: TextStyles.medium00MediumTextStyle,
             textAlign: TextAlign.center,
           ),
           Container(
             margin: const EdgeInsets.only(top: 18),
             child: Text(
-              "문장을 공개하면 다른 사용자들도 ${_authManager.getName()}님이 만든 문장을 학습할 수 있어요. 문장을 공개하시겠어요?",
+              "문장을 공개하면 다른 사용자들도 ${_userController.getUserName()}님이 만든 문장을 학습할 수 있어요. 문장을 공개하시겠어요?",
               style: TextStyles.regular52LightTextStyle,
             ),
           ),
