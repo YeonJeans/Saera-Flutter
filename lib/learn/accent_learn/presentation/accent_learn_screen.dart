@@ -720,9 +720,10 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             child: Container(
               width: 20,
               height: 21,
-              child: Image.network("${_authManager.getPhoto()}"),
+              child: Image.network("${_authManager.getPhoto()}",
+                fit: BoxFit.cover,
+              ),
             )
-
         ),
         const SizedBox(width: 9,),
         Text(
@@ -1112,23 +1113,25 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
             return practiceGraph();
           }(),
 
-          const SizedBox(height: 20,),
+          const SizedBox(height: 12,),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            // padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
                   "표준 억양 그래프 보기",
-                  style: TextStyles.medium25TextStyle,
+                  style: TextStyles.regular55TextStyle,
                 ),
+                const SizedBox(width: 12,),
                 FlutterSwitch(
-                  width: 60,
-                  height: 32,
-                  toggleSize: 32,
+                  width: 52,
+                  height: 28,
+                  // toggleSize: 28,
                   value: isSwitched,
+                  padding: 3,
                   activeColor: ColorStyles.saeraPink,
                   onToggle: (val) {
                     setState(() {
@@ -1171,7 +1174,7 @@ class _AccentPracticePageState extends State<AccentPracticePage> with TickerProv
                         practiceSentenceSection(),
                         exampleSection(),
                         practiceSection(),
-                        SizedBox(height: 20,),
+                        const SizedBox(height: 20,),
                       ],
                     ),
                   )
